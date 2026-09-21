@@ -23,8 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupUnidadAccordion();
   setupAdminHandlers();
   iniciarSesionYEstado();
-});
 
+  setupHeroCarousel();
+});
 /* ============================================================
    PANTALLA DE CARGA
    ============================================================ */
@@ -432,4 +433,62 @@ async function manejarEliminacion(btn) {
   } finally {
     btn.disabled = false;
   }
+}
+ /* ============================================================
+   CARRUSEL HERO — 10 MOTOCICLETAS
+   ============================================================ */
+function setupHeroCarousel() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  const prev = document.getElementById('heroPrev');
+  const next = document.getElementById('heroNext');
+
+  if (!slides.length) return;
+
+  let current = 0;
+  let timer = null;
+
+  function mostrarSlide(index) {
+    current = (index + slides.length) % slides.length;
+
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('is-active', i === current);
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === current);
+      dot.setAttribute(
+        'aria-current',
+        i === current ? 'true' : 'false'
+      );
+    });
+  }
+
+  function iniciarAutoPlay() {
+    clearInterval(timer);
+
+    timer = setInterval(() => {
+      mostrarSlide(current + 1);
+    }, 5000);
+  }
+
+  prev?.addEventListener('click', () => {
+    mostrarSlide(current - 1);
+    iniciarAutoPlay();
+  });
+
+  next?.addEventListener('click', () => {
+    mostrarSlide(current + 1);
+    iniciarAutoPlay();
+  });
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      mostrarSlide(index);
+      iniciarAutoPlay();
+    });
+  });
+
+  mostrarSlide(0);
+  iniciarAutoPlay();
 }
