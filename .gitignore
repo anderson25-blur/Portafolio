@@ -1,0 +1,11 @@
+target/
+*.class
+*.war
+*.log
+.idea/
+*.iml
+.vscode/
+.DS_Store
+.env
+
+src/main/resources/application.properties
