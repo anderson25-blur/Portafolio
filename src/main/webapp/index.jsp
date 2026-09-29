@@ -987,6 +987,216 @@
             </div>
           </div>
         </article>
+        <article class="info-card" data-slot="21">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 21</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="22">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 22</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="23">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 23</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="24">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 24</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="25">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 25</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="26">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 26</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="27">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 27</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="28">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 28</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="29">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 29</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
+        <article class="info-card" data-slot="30">
+          <div class="info-thumb" data-thumb>
+            <img data-thumb-img alt="" hidden>
+          </div>
+          <div class="info-body">
+            <h4>Infografía 30</h4>
+            <p data-empty-text>Se publicará próximamente.</p>
+            <div class="info-actions">
+              <a class="semana-btn semana-btn-download" data-download hidden title="Descargar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
+              </a>
+              <button type="button" class="semana-btn semana-btn-delete" data-delete hidden title="Eliminar infografía">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/></svg>
+              </button>
+              <label class="semana-btn semana-btn-upload admin-only" hidden title="Subir infografía">
+                <input type="file" accept="image/*,.pdf" data-upload-input hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/></svg>
+              </label>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
