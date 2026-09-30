@@ -1710,7 +1710,9 @@ function setupAdminHandlers() {
 
 async function manejarSubida(input) {
 
-    const file = input.files && input.files[0];
+    const file =
+        input.files && input.files[0];
+
 
     if (!file) {
         return;
@@ -1740,6 +1742,7 @@ async function manejarSubida(input) {
     const infoCard =
         input.closest('.info-card');
 
+
     const semanaItem =
         input.closest('.semana-item');
 
@@ -1760,25 +1763,55 @@ async function manejarSubida(input) {
 
 
         /*
-         * Los datos principales están directamente
-         * en .info-card.
+         * La información principal debe estar
+         * directamente en .info-card.
+         *
+         * Ejemplo:
+         *
+         * data-unidad="1"
+         * data-semana="1"
+         * data-slot="1"
          */
 
         unidad =
             infoCard.dataset.unidad ||
-            semanaItem?.dataset.unidad ||
             null;
 
 
         semana =
             infoCard.dataset.semana ||
-            semanaItem?.dataset.semana ||
             null;
 
 
         slot =
             infoCard.dataset.slot ||
             null;
+
+
+        /*
+         * Respaldo:
+         *
+         * Si .info-card no tiene unidad o semana,
+         * buscamos los datos en .semana-item.
+         */
+
+        if (
+            (!unidad || !semana) &&
+            semanaItem
+        ) {
+
+            unidad =
+                unidad ||
+                semanaItem.dataset.unidad ||
+                null;
+
+
+            semana =
+                semana ||
+                semanaItem.dataset.semana ||
+                null;
+
+        }
 
 
         console.log(
@@ -1792,26 +1825,36 @@ async function manejarSubida(input) {
         );
 
 
+        /* ====================================================
+           VALIDAR DATOS
+           ==================================================== */
+
+        const unidadNumero =
+            Number(unidad);
+
+
+        const semanaNumero =
+            Number(semana);
+
+
+        const slotNumero =
+            Number(slot);
+
+
         if (
-            !unidad ||
-            !semana ||
-            !slot
+            !Number.isInteger(unidadNumero) ||
+            unidadNumero < 1 ||
+            unidadNumero > 4
         ) {
 
             console.error(
-                'Datos incompletos de la infografía:',
-                {
-                    infoCard,
-                    semanaItem,
-                    unidad,
-                    semana,
-                    slot
-                }
+                'Unidad inválida:',
+                unidad
             );
 
 
             alert(
-                'No se pudo determinar la unidad, semana o slot de la infografía.'
+                'La unidad de la infografía no es válida.'
             );
 
 
@@ -1819,6 +1862,68 @@ async function manejarSubida(input) {
 
             return;
         }
+
+
+        if (
+            !Number.isInteger(semanaNumero) ||
+            semanaNumero < 1 ||
+            semanaNumero > 16
+        ) {
+
+            console.error(
+                'Semana inválida:',
+                semana
+            );
+
+
+            alert(
+                'La semana de la infografía no es válida.'
+            );
+
+
+            input.value = '';
+
+            return;
+        }
+
+
+        if (
+            !Number.isInteger(slotNumero) ||
+            slotNumero < 1 ||
+            slotNumero > 4
+        ) {
+
+            console.error(
+                'Slot inválido:',
+                slot
+            );
+
+
+            alert(
+                'El número de infografía debe estar entre 1 y 4.'
+            );
+
+
+            input.value = '';
+
+            return;
+        }
+
+
+        /*
+         * Normalizamos los valores.
+         */
+
+        unidad =
+            unidadNumero;
+
+
+        semana =
+            semanaNumero;
+
+
+        slot =
+            slotNumero;
 
 
         /* ====================================================
@@ -1830,6 +1935,7 @@ async function manejarSubida(input) {
             alert(
                 'Las infografías deben estar en formato JPG, JPEG o PNG.'
             );
+
 
             input.value = '';
 
@@ -1868,23 +1974,32 @@ async function manejarSubida(input) {
         );
 
 
+        /* ====================================================
+           VALIDAR DATOS
+           ==================================================== */
+
+        const unidadNumero =
+            Number(unidad);
+
+
+        const semanaNumero =
+            Number(semana);
+
+
         if (
-            !unidad ||
-            !semana
+            !Number.isInteger(unidadNumero) ||
+            unidadNumero < 1 ||
+            unidadNumero > 4
         ) {
 
             console.error(
-                'Datos incompletos del trabajo:',
-                {
-                    semanaItem,
-                    unidad,
-                    semana
-                }
+                'Unidad inválida:',
+                unidad
             );
 
 
             alert(
-                'No se pudo determinar la unidad o semana del trabajo.'
+                'La unidad del trabajo no es válida.'
             );
 
 
@@ -1892,6 +2007,41 @@ async function manejarSubida(input) {
 
             return;
         }
+
+
+        if (
+            !Number.isInteger(semanaNumero) ||
+            semanaNumero < 1 ||
+            semanaNumero > 16
+        ) {
+
+            console.error(
+                'Semana inválida:',
+                semana
+            );
+
+
+            alert(
+                'La semana del trabajo no es válida.'
+            );
+
+
+            input.value = '';
+
+            return;
+        }
+
+
+        /*
+         * Normalizamos los valores.
+         */
+
+        unidad =
+            unidadNumero;
+
+
+        semana =
+            semanaNumero;
 
 
         /* ====================================================
@@ -1903,6 +2053,7 @@ async function manejarSubida(input) {
             alert(
                 'El trabajo debe estar en formato PDF.'
             );
+
 
             input.value = '';
 
@@ -1922,6 +2073,7 @@ async function manejarSubida(input) {
             'El input de archivo no pertenece a una semana válida:',
             input
         );
+
 
         input.value = '';
 
@@ -1961,7 +2113,9 @@ async function manejarSubida(input) {
     );
 
 
-    if (tipo === 'infografia') {
+    if (
+        tipo === 'infografia'
+    ) {
 
         formData.append(
             'slot',
@@ -2003,6 +2157,10 @@ async function manejarSubida(input) {
         );
 
 
+        /* ====================================================
+           ENVIAR AL SERVIDOR
+           ==================================================== */
+
         const res =
             await fetch(
                 API.subir,
@@ -2012,6 +2170,10 @@ async function manejarSubida(input) {
                 }
             );
 
+
+        /* ====================================================
+           LEER RESPUESTA
+           ==================================================== */
 
         const data =
             await res.json();
@@ -2025,6 +2187,10 @@ async function manejarSubida(input) {
             }
         );
 
+
+        /* ====================================================
+           ERROR
+           ==================================================== */
 
         if (
             !res.ok ||
@@ -2052,17 +2218,15 @@ async function manejarSubida(input) {
 
 
         /*
-         * Volvemos a consultar Supabase.
+         * Volvemos a consultar los archivos.
          *
-         * Esto hace que aparezcan:
+         * Esto actualiza:
          *
-         * VER
-         * DESCARGAR
-         * ELIMINAR
-         *
-         * y, para imágenes:
-         *
-         * la miniatura.
+         * - nombre del archivo
+         * - miniatura
+         * - VER
+         * - DESCARGAR
+         * - ELIMINAR
          */
 
         await cargarEstadoArchivos();
@@ -2081,6 +2245,11 @@ async function manejarSubida(input) {
 
     } finally {
 
+        /*
+         * Limpiamos el input para permitir
+         * seleccionar nuevamente el mismo archivo.
+         */
+
         input.value = '';
 
 
@@ -2095,7 +2264,6 @@ async function manejarSubida(input) {
     }
 
 }
-
 /* ============================================================
    ELIMINAR ARCHIVO
    ============================================================ */
