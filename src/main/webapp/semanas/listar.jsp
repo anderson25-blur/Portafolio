@@ -16,7 +16,6 @@ try {
 if (unidad < 1 || unidad > 4) {
     unidad = 1;
 }
-
 %>
 
 <!DOCTYPE html>
@@ -25,13 +24,19 @@ if (unidad < 1 || unidad > 4) {
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-<title>Unidad <%= unidad %> | MiPortafolio</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="../css/style.css">
-```
+    <title>
+        Unidad <%= unidad %> | MiPortafolio
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css">
 
 </head>
 
@@ -41,7 +46,10 @@ if (unidad < 1 || unidad > 4) {
 
 <section class="section">
 
-    <!-- ENCABEZADO -->
+    <!-- =====================================================
+         ENCABEZADO
+         ===================================================== -->
+
     <div class="section-head">
 
         <div>
@@ -63,7 +71,9 @@ if (unidad < 1 || unidad > 4) {
         <a
             class="btn"
             href="../unidades/listar.jsp">
+
             ← Unidades
+
         </a>
 
     </div>
@@ -82,7 +92,10 @@ if (unidad < 1 || unidad > 4) {
                 data-unidad="<%= unidad %>"
                 data-semana="<%= semana %>">
 
-                <!-- CABECERA DE SEMANA -->
+
+                <!-- =================================================
+                     CABECERA DE SEMANA
+                     ================================================= -->
 
                 <div class="semana-header">
 
@@ -116,6 +129,7 @@ if (unidad < 1 || unidad > 4) {
                             </span>
 
                             <div>
+
                                 <h3>
                                     Trabajos
                                 </h3>
@@ -123,11 +137,14 @@ if (unidad < 1 || unidad > 4) {
                                 <p>
                                     Documento PDF de la semana.
                                 </p>
+
                             </div>
 
                         </div>
 
+
                         <!-- SUBIR TRABAJO -->
+
                         <label
                             class="btn semana-btn-upload admin-only"
                             hidden>
@@ -145,7 +162,9 @@ if (unidad < 1 || unidad > 4) {
                     </div>
 
 
-                    <!-- ESTADO DEL TRABAJO -->
+                    <!-- =================================================
+                         ESTADO DEL TRABAJO
+                         ================================================= -->
 
                     <div class="archivo-item">
 
@@ -154,7 +173,9 @@ if (unidad < 1 || unidad > 4) {
                             <span
                                 class="archivo-status"
                                 data-status>
+
                                 Sin trabajo
+
                             </span>
 
                         </div>
@@ -163,32 +184,41 @@ if (unidad < 1 || unidad > 4) {
                         <div class="archivo-actions">
 
                             <!-- VER -->
+
                             <a
                                 class="btn btn-small"
                                 data-view
                                 target="_blank"
                                 rel="noopener"
                                 hidden>
+
                                 👁 Ver
+
                             </a>
 
 
                             <!-- DESCARGAR -->
+
                             <a
                                 class="btn btn-small"
                                 data-download
                                 hidden>
+
                                 ↓ Descargar
+
                             </a>
 
 
                             <!-- ELIMINAR -->
+
                             <button
                                 type="button"
                                 class="btn btn-small btn-danger admin-only"
                                 data-delete
                                 hidden>
+
                                 Eliminar
+
                             </button>
 
                         </div>
@@ -229,14 +259,18 @@ if (unidad < 1 || unidad > 4) {
                     </div>
 
 
-                    <!-- GRID DE INFOGRAFÍAS -->
+                    <!-- =================================================
+                         GRID DE INFOGRAFÍAS
+                         ================================================= -->
 
                     <div
                         class="info-grid"
                         data-info-grid>
 
 
-                        <!-- INFOGRAFÍA 1 -->
+                        <!-- =================================================
+                             INFOGRAFÍA 1
+                             ================================================= -->
 
                         <article
                             class="info-card"
@@ -257,11 +291,13 @@ if (unidad < 1 || unidad > 4) {
 
                             </div>
 
+
                             <div class="info-card-footer">
 
                                 <span>
                                     Infografía 1
                                 </span>
+
 
                                 <div class="info-actions">
 
@@ -279,28 +315,37 @@ if (unidad < 1 || unidad > 4) {
 
                                     </label>
 
+
                                     <a
                                         class="btn btn-small"
                                         data-view
                                         target="_blank"
                                         rel="noopener"
                                         hidden>
+
                                         👁 Ver
+
                                     </a>
+
 
                                     <a
                                         class="btn btn-small"
                                         data-download
                                         hidden>
+
                                         ↓
+
                                     </a>
+
 
                                     <button
                                         type="button"
                                         class="btn btn-small btn-danger admin-only"
                                         data-delete
                                         hidden>
+
                                         ×
+
                                     </button>
 
                                 </div>
@@ -310,7 +355,9 @@ if (unidad < 1 || unidad > 4) {
                         </article>
 
 
-                        <!-- INFOGRAFÍA 2 -->
+                        <!-- =================================================
+                             INFOGRAFÍA 2
+                             ================================================= -->
 
                         <article
                             class="info-card"
@@ -331,11 +378,13 @@ if (unidad < 1 || unidad > 4) {
 
                             </div>
 
+
                             <div class="info-card-footer">
 
                                 <span>
                                     Infografía 2
                                 </span>
+
 
                                 <div class="info-actions">
 
@@ -353,28 +402,37 @@ if (unidad < 1 || unidad > 4) {
 
                                     </label>
 
+
                                     <a
                                         class="btn btn-small"
                                         data-view
                                         target="_blank"
                                         rel="noopener"
                                         hidden>
+
                                         👁 Ver
+
                                     </a>
+
 
                                     <a
                                         class="btn btn-small"
                                         data-download
                                         hidden>
+
                                         ↓
+
                                     </a>
+
 
                                     <button
                                         type="button"
                                         class="btn btn-small btn-danger admin-only"
                                         data-delete
                                         hidden>
+
                                         ×
+
                                     </button>
 
                                 </div>
@@ -384,7 +442,9 @@ if (unidad < 1 || unidad > 4) {
                         </article>
 
 
-                        <!-- INFOGRAFÍA 3 -->
+                        <!-- =================================================
+                             INFOGRAFÍA 3
+                             ================================================= -->
 
                         <article
                             class="info-card"
@@ -405,11 +465,13 @@ if (unidad < 1 || unidad > 4) {
 
                             </div>
 
+
                             <div class="info-card-footer">
 
                                 <span>
                                     Infografía 3
                                 </span>
+
 
                                 <div class="info-actions">
 
@@ -427,28 +489,37 @@ if (unidad < 1 || unidad > 4) {
 
                                     </label>
 
+
                                     <a
                                         class="btn btn-small"
                                         data-view
                                         target="_blank"
                                         rel="noopener"
                                         hidden>
+
                                         👁 Ver
+
                                     </a>
+
 
                                     <a
                                         class="btn btn-small"
                                         data-download
                                         hidden>
+
                                         ↓
+
                                     </a>
+
 
                                     <button
                                         type="button"
                                         class="btn btn-small btn-danger admin-only"
                                         data-delete
                                         hidden>
+
                                         ×
+
                                     </button>
 
                                 </div>
@@ -458,7 +529,9 @@ if (unidad < 1 || unidad > 4) {
                         </article>
 
 
-                        <!-- INFOGRAFÍA 4 -->
+                        <!-- =================================================
+                             INFOGRAFÍA 4
+                             ================================================= -->
 
                         <article
                             class="info-card"
@@ -479,11 +552,13 @@ if (unidad < 1 || unidad > 4) {
 
                             </div>
 
+
                             <div class="info-card-footer">
 
                                 <span>
                                     Infografía 4
                                 </span>
+
 
                                 <div class="info-actions">
 
@@ -501,28 +576,37 @@ if (unidad < 1 || unidad > 4) {
 
                                     </label>
 
+
                                     <a
                                         class="btn btn-small"
                                         data-view
                                         target="_blank"
                                         rel="noopener"
                                         hidden>
+
                                         👁 Ver
+
                                     </a>
+
 
                                     <a
                                         class="btn btn-small"
                                         data-download
                                         hidden>
+
                                         ↓
+
                                     </a>
+
 
                                     <button
                                         type="button"
                                         class="btn btn-small btn-danger admin-only"
                                         data-delete
                                         hidden>
+
                                         ×
+
                                     </button>
 
                                 </div>
@@ -546,6 +630,7 @@ if (unidad < 1 || unidad > 4) {
 
 </main>
 
+
 <!-- =============================================================
      VISOR DE ARCHIVOS
      ============================================================= -->
@@ -556,32 +641,38 @@ if (unidad < 1 || unidad > 4) {
     hidden
     aria-hidden="true">
 
-<div class="archivo-viewer-overlay"></div>
+    <div class="archivo-viewer-overlay"></div>
 
-<div
-    class="archivo-viewer-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Visualizador de archivo">
-
-    <button
-        type="button"
-        id="archivoViewerClose"
-        class="archivo-viewer-close">
-        ×
-    </button>
 
     <div
-        id="archivoViewerContent"
-        class="archivo-viewer-content">
+        class="archivo-viewer-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Visualizador de archivo">
+
+
+        <button
+            type="button"
+            id="archivoViewerClose"
+            class="archivo-viewer-close">
+
+            ×
+
+        </button>
+
+
+        <div
+            id="archivoViewerContent"
+            class="archivo-viewer-content">
+        </div>
+
     </div>
 
 </div>
 
-</div>
 
 <script src="../js/main.js"></script>
 
 </body>
-</html>
 
+</html>
