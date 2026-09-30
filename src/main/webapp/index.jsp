@@ -71,12 +71,12 @@
       <nav class="hud-nav">
 
         <a href="#unidades">
-          Unidades
+          Sobre mí
         </a>
 
         <!-- Las infografías ahora se gestionan dentro de cada semana -->
         <a href="unidades/listar.jsp">
-          Infografías
+          Unidades del ciclo
         </a>
 
       </nav>
@@ -193,7 +193,7 @@
           <a
             href="#unidades"
             class="hero-cta">
-            Ver unidades
+            Conóceme
           </a>
 
         </div>
@@ -450,1807 +450,178 @@
       </div>
 
     </section>
+    <!-- ===================== SOBRE MÍ ===================== -->
+<section id="sobre-mi" class="about-section">
+
+  <div class="section-head">
+
+    <h2>
+      Sobre mí
+    </h2>
+
+    <p>
+      Estudiante de Ingeniería de Sistemas · UPLA
+    </p>
+
+  </div>
 
 
-    <!-- ===================== UNIDADES ===================== -->
-    <section id="unidades">
+  <div class="about-grid">
 
-      <div class="section-head">
+    <!-- PERFIL -->
+    <article class="about-card about-main">
 
-        <h2>
-          Unidades
-        </h2>
+      <div class="about-number">
+        01
+      </div>
+
+      <div class="about-content">
+
+        <span class="about-label">
+          PERFIL ACADÉMICO
+        </span>
+
+        <h3>
+          Anderson Mayta
+        </h3>
 
         <p>
-          4 unidades · 16 semanas en total
+          Soy estudiante de Ingeniería de Sistemas en la
+          Universidad Peruana Los Andes (UPLA). Actualmente
+          desarrollo mi formación académica enfocándome en
+          arquitectura de software, desarrollo de sistemas,
+          bases de datos y tecnologías orientadas a la
+          construcción de soluciones digitales.
+        </p>
+
+        <p>
+          Este portafolio reúne los principales trabajos,
+          actividades e infografías desarrollados durante el
+          curso de Arquitectura de Software, organizados por
+          unidades y semanas para facilitar su consulta.
         </p>
 
       </div>
 
+    </article>
 
-      <div class="unidad-grid">
 
+    <!-- FORMACIÓN -->
+    <article class="about-card">
 
-        <!-- =====================================================
-             UNIDAD 1
-             ===================================================== -->
-        <article class="unidad-card">
+      <div class="about-number">
+        02
+      </div>
 
-          <button
-            class="unidad-toggle"
-            aria-expanded="false"
-            aria-controls="panel-u1">
+      <div class="about-content">
 
-            <span class="unidad-num">
-              01
-            </span>
+        <span class="about-label">
+          FORMACIÓN
+        </span>
 
-            <span class="unidad-heading">
+        <h3>
+          Ingeniería de Sistemas
+        </h3>
 
-              <h3>
-                Fundamentos de la Arquitectura de Software y Estándares Internacionales
-              </h3>
+        <p>
+          Universidad Peruana Los Andes
+        </p>
 
-              <span class="unidad-meta">
+        <div class="about-tags">
 
-                <span>
-                  Semanas 1–4
-                </span>
+          <span>
+            Ingeniería de Sistemas
+          </span>
 
-                <span class="unidad-chevron">
-                  ▾
-                </span>
+          <span>
+            Arquitectura de Software
+          </span>
 
-              </span>
+          <span>
+            Desarrollo Web
+          </span>
 
-            </span>
-
-          </button>
-
-
-          <div
-            class="unidad-panel-wrap"
-            id="panel-u1">
-
-            <div class="unidad-panel">
-
-              <ol class="semana-list">
-
-
-                <!-- SEMANA 1 -->
-                <li
-                  class="semana-item"
-                  data-unidad="1"
-                  data-semana="1">
-
-                  <span class="semana-num">
-                    01
-                  </span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Introducción a la Arquitectura de Software
-                    </h4>
-
-                    <p>
-                      Conceptos, objetivos e importancia de la arquitectura de software.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span
-                      class="semana-status"
-                      data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 2 -->
-                <li
-                  class="semana-item"
-                  data-unidad="1"
-                  data-semana="2">
-
-                  <span class="semana-num">
-                    02
-                  </span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Principios, Atributos de Calidad y Estándares Internacionales
-                    </h4>
-
-                    <p>
-                      Calidad y sostenibilidad del proyecto según estándares internacionales.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 3 -->
-                <li
-                  class="semana-item"
-                  data-unidad="1"
-                  data-semana="3">
-
-                  <span class="semana-num">
-                    03
-                  </span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Estilos y Patrones Arquitectónicos
-                    </h4>
-
-                    <p>
-                      Comparación de estilos y selección del patrón más adecuado.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 4 -->
-                <li
-                  class="semana-item"
-                  data-unidad="1"
-                  data-semana="4">
-
-                  <span class="semana-num">
-                    04
-                  </span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Documentación y Representación Arquitectónica
-                    </h4>
-
-                    <p>
-                      Modelos, diagramas y buenas prácticas de documentación.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-              </ol>
-
-            </div>
-
-          </div>
-
-        </article>
-
-
-        <!-- =====================================================
-             UNIDAD 2
-             ===================================================== -->
-        <article class="unidad-card">
-
-          <button
-            class="unidad-toggle"
-            aria-expanded="false"
-            aria-controls="panel-u2">
-
-            <span class="unidad-num">
-              02
-            </span>
-
-            <span class="unidad-heading">
-
-              <h3>
-                Modelado de la Arquitectura de Software mediante Programación Orientada a Objetos
-              </h3>
-
-              <span class="unidad-meta">
-
-                <span>
-                  Semanas 5–8
-                </span>
-
-                <span class="unidad-chevron">
-                  ▾
-                </span>
-
-              </span>
-
-            </span>
-
-          </button>
-
-
-          <div
-            class="unidad-panel-wrap"
-            id="panel-u2">
-
-            <div class="unidad-panel">
-
-              <ol class="semana-list">
-
-
-                <!-- SEMANA 5 -->
-                <li
-                  class="semana-item"
-                  data-unidad="2"
-                  data-semana="5">
-
-                  <span class="semana-num">05</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Principios de POO aplicados a la Arquitectura
-                    </h4>
-
-                    <p>
-                      Abstracción, encapsulamiento, herencia y polimorfismo.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 6 -->
-                <li
-                  class="semana-item"
-                  data-unidad="2"
-                  data-semana="6">
-
-                  <span class="semana-num">06</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Modelado Arquitectónico con UML
-                    </h4>
-
-                    <p>
-                      Diagramas de casos de uso, clases y paquetes.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 7 -->
-                <li
-                  class="semana-item"
-                  data-unidad="2"
-                  data-semana="7">
-
-                  <span class="semana-num">07</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Diseño de Componentes y Capas de la Arquitectura
-                    </h4>
-
-                    <p>
-                      Responsabilidades, cohesión y bajo acoplamiento.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 8 -->
-                <li
-                  class="semana-item"
-                  data-unidad="2"
-                  data-semana="8">
-
-                  <span class="semana-num">08</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Elaboración y Validación del Modelo Arquitectónico
-                    </h4>
-
-                    <p>
-                      Artefactos de modelado y sustento técnico de las decisiones.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-              </ol>
-
-            </div>
-
-          </div>
-
-        </article>
-
-
-        <!-- =====================================================
-             UNIDAD 3
-             ===================================================== -->
-        <article class="unidad-card">
-
-          <button
-            class="unidad-toggle"
-            aria-expanded="false"
-            aria-controls="panel-u3">
-
-            <span class="unidad-num">
-              03
-            </span>
-
-            <span class="unidad-heading">
-
-              <h3>
-                Comunicación e Integración de Arquitecturas de Software
-              </h3>
-
-              <span class="unidad-meta">
-
-                <span>
-                  Semanas 9–12
-                </span>
-
-                <span class="unidad-chevron">
-                  ▾
-                </span>
-
-              </span>
-
-            </span>
-
-          </button>
-
-
-          <div
-            class="unidad-panel-wrap"
-            id="panel-u3">
-
-            <div class="unidad-panel">
-
-              <ol class="semana-list">
-
-
-                <!-- SEMANA 9 -->
-                <li
-                  class="semana-item"
-                  data-unidad="3"
-                  data-semana="9">
-
-                  <span class="semana-num">09</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Fundamentos de la Comunicación entre Arquitecturas
-                    </h4>
-
-                    <p>
-                      Mecanismos, protocolos y flujos de información entre componentes.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 10 -->
-                <li
-                  class="semana-item"
-                  data-unidad="3"
-                  data-semana="10">
-
-                  <span class="semana-num">10</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Métodos y Tecnologías para la Integración de Sistemas
-                    </h4>
-
-                    <p>
-                      Servicios web, APIs y mensajería para integrar aplicaciones.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 11 -->
-                <li
-                  class="semana-item"
-                  data-unidad="3"
-                  data-semana="11">
-
-                  <span class="semana-num">11</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Diseño de Interfaces y Transmisión de Datos
-                    </h4>
-
-                    <p>
-                      Interoperabilidad y modelado de servicios entre componentes.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 12 -->
-                <li
-                  class="semana-item"
-                  data-unidad="3"
-                  data-semana="12">
-
-                  <span class="semana-num">12</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Implementación y Validación de la Comunicación Arquitectónica
-                    </h4>
-
-                    <p>
-                      Pruebas de integridad, disponibilidad y eficiencia de la integración.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-              </ol>
-
-            </div>
-
-          </div>
-
-        </article>
-
-
-        <!-- =====================================================
-             UNIDAD 4
-             ===================================================== -->
-        <article class="unidad-card">
-
-          <button
-            class="unidad-toggle"
-            aria-expanded="false"
-            aria-controls="panel-u4">
-
-            <span class="unidad-num">
-              04
-            </span>
-
-            <span class="unidad-heading">
-
-              <h3>
-                Frameworks y Estándares para la Implementación de Arquitecturas de Software
-              </h3>
-
-              <span class="unidad-meta">
-
-                <span>
-                  Semanas 13–16
-                </span>
-
-                <span class="unidad-chevron">
-                  ▾
-                </span>
-
-              </span>
-
-            </span>
-
-          </button>
-
-
-          <div
-            class="unidad-panel-wrap"
-            id="panel-u4">
-
-            <div class="unidad-panel">
-
-              <ol class="semana-list">
-
-
-                <!-- SEMANA 13 -->
-                <li
-                  class="semana-item"
-                  data-unidad="4"
-                  data-semana="13">
-
-                  <span class="semana-num">13</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Fundamentos de Frameworks de Arquitectura de Software
-                    </h4>
-
-                    <p>
-                      Características, ventajas y ámbitos de aplicación de los principales frameworks.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 14 -->
-                <li
-                  class="semana-item"
-                  data-unidad="4"
-                  data-semana="14">
-
-                  <span class="semana-num">14</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Normas y Buenas Prácticas en Arquitectura de Software
-                    </h4>
-
-                    <p>
-                      Calidad, interoperabilidad, seguridad y rendimiento del proyecto.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 15 -->
-                <li
-                  class="semana-item"
-                  data-unidad="4"
-                  data-semana="15">
-
-                  <span class="semana-num">15</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Implementación de la Arquitectura utilizando Frameworks
-                    </h4>
-
-                    <p>
-                      Componentes, patrones de diseño y mecanismos de comunicación.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-
-                <!-- SEMANA 16 -->
-                <li
-                  class="semana-item"
-                  data-unidad="4"
-                  data-semana="16">
-
-                  <span class="semana-num">16</span>
-
-                  <span class="semana-info">
-
-                    <h4>
-                      Evaluación y Optimización de la Arquitectura de Software
-                    </h4>
-
-                    <p>
-                      Métricas de calidad y mejoras finales sobre lo implementado.
-                    </p>
-
-                  </span>
-
-                  <span class="semana-right">
-
-                    <span class="semana-status" data-status>
-                      Sin trabajo
-                    </span>
-
-                    <a
-                      class="semana-btn semana-btn-download"
-                      data-download
-                      hidden
-                      title="Descargar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>
-
-                      </svg>
-
-                    </a>
-
-                    <button
-                      type="button"
-                      class="semana-btn semana-btn-delete"
-                      data-delete
-                      hidden
-                      title="Eliminar trabajo">
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13"/>
-
-                      </svg>
-
-                    </button>
-
-                    <label
-                      class="semana-btn semana-btn-upload admin-only"
-                      hidden
-                      title="Subir trabajo">
-
-                      <input
-                        type="file"
-                        accept=".pdf,application/pdf"
-                        data-upload-input
-                        hidden>
-
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-
-                        <path d="M12 20V9m0 0l-4 4m4-4l4 4M5 4h14"/>
-
-                      </svg>
-
-                    </label>
-
-                  </span>
-
-                </li>
-
-              </ol>
-
-            </div>
-
-          </div>
-
-        </article>
+        </div>
 
       </div>
 
-    </section>
+    </article>
+
+
+    <!-- INTERESES -->
+    <article class="about-card">
+
+      <div class="about-number">
+        03
+      </div>
+
+      <div class="about-content">
+
+        <span class="about-label">
+          ÁREAS DE INTERÉS
+        </span>
+
+        <h3>
+          Tecnología y desarrollo
+        </h3>
+
+        <p>
+          Mis principales intereses están relacionados con
+          la investigación, ciberseguridad, bases de datos,
+          desarrollo de software y arquitectura de sistemas.
+        </p>
+
+        <div class="about-tags">
+
+          <span>
+            Ciberseguridad
+          </span>
+
+          <span>
+            Bases de datos
+          </span>
+
+          <span>
+            Software
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- OBJETIVO -->
+    <article class="about-card">
+
+      <div class="about-number">
+        04
+      </div>
+
+      <div class="about-content">
+
+        <span class="about-label">
+          OBJETIVO
+        </span>
+
+        <h3>
+          Seguir desarrollándome
+        </h3>
+
+        <p>
+          Busco fortalecer mis conocimientos técnicos y
+          desarrollar soluciones que integren tecnología,
+          diseño y buenas prácticas de ingeniería de software.
+        </p>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</section>
 
 
     <!-- ===================== FOOTER ===================== -->
