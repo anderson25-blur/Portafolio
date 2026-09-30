@@ -1,494 +1,2492 @@
-// ============================================================
-// ARQUITECTURA — Portafolio académico
-// Carga inicial + interacciones + integración con el backend
-// (login, sesión, subir/descargar/eliminar trabajos e infografías)
-// ============================================================
+/* ============================================================
+ARQUITECTURA — Portafolio académico
+===================================
+
+Funciones:
+
+* Loader
+* Hero / parallax / carrusel
+* Login y sesión
+* Trabajos por unidad + semana
+* Infografías por unidad + semana + slot
+* Subida de archivos
+* Eliminación de archivos
+* Visualización de PDF e imágenes
+* Descarga de archivos
+  ============================================================ */
+
+/* ============================================================
+CONFIGURACIÓN API
+============================================================ */
+
+/*
+
+* El JS se utiliza desde:
+*
+* /index.jsp
+* /semanas/listar.jsp
+* /unidades/listar.jsp
+* /videos/listar.jsp
+*
+* Por eso no podemos utilizar directamente:
+*
+* ```
+  api/archivos
+  ```
+*
+* porque desde /semanas/ se convertiría en:
+*
+* ```
+  /semanas/api/archivos
+  ```
+*
+* Buscamos la ubicación real de main.js para obtener
+* automáticamente el contexto de la aplicación.
+  */
+
+function obtenerContextPath() {
+
+const script = document.querySelector(
+'script[src*="/js/main.js"]'
+);
+
+if (script) {
+
+```
+const src = new URL(
+  script.getAttribute('src'),
+  window.location.href
+);
+
+const partes = src.pathname.split('/');
+
+/*
+ * main.js normalmente estará en:
+ *
+ * /MiPortafolio/js/main.js
+ *
+ * Quitamos:
+ *
+ * /js/main.js
+ *
+ * y conservamos:
+ *
+ * /MiPortafolio
+ */
+
+if (partes.length >= 3) {
+
+  partes.pop(); // main.js
+  partes.pop(); // js
+
+  return partes.join('/') || '';
+}
+```
+
+}
+
+return '';
+}
+
+const CONTEXT_PATH = obtenerContextPath();
 
 const API = {
-  sesion: 'api/sesion',
-  login: 'api/login',
-  logout: 'api/logout',
-  archivos: 'api/archivos',
-  subir: 'api/archivos/subir',
-  descargar: 'api/archivos/descargar',
-  eliminar: 'api/archivos/eliminar',
+
+sesion: CONTEXT_PATH + '/api/sesion',
+
+login: CONTEXT_PATH + '/api/login',
+
+logout: CONTEXT_PATH + '/api/logout',
+
+archivos: CONTEXT_PATH + '/api/archivos',
+
+subir: CONTEXT_PATH + '/api/archivos/subir',
+
+descargar: CONTEXT_PATH + '/api/archivos/descargar',
+
+eliminar: CONTEXT_PATH + '/api/archivos/eliminar',
+
 };
 
-let sesionActual = { autenticado: false, esAdmin: false };
+/* ============================================================
+ESTADO DE SESIÓN
+============================================================ */
+
+let sesionActual = {
+
+autenticado: false,
+
+esAdmin: false,
+
+};
+
+/* ============================================================
+INICIALIZACIÓN
+============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  runLoadingSequence();
-  setupHeroParallax();
-  setupUserModal();
-  setupUnidadAccordion();
-  setupAdminHandlers();
-  iniciarSesionYEstado();
 
-  setupHeroCarousel();
+runLoadingSequence();
+
+setupHeroParallax();
+
+setupUserModal();
+
+setupUnidadAccordion();
+
+setupAdminHandlers();
+
+setupArchivoViewer();
+
+iniciarSesionYEstado();
+
+setupHeroCarousel();
+
 });
+
 /* ============================================================
-   PANTALLA DE CARGA
-   ============================================================ */
+PANTALLA DE CARGA
+============================================================ */
+
 function runLoadingSequence() {
-  const loader = document.getElementById('loader');
-  const gaugeFill = document.getElementById('gaugeFill');
-  const percentEl = document.getElementById('loaderPercent');
-  const statusEl = document.getElementById('loaderStatus');
-  const barFill = document.getElementById('loaderBarFill');
-  const site = document.getElementById('site');
 
-  const CIRCUMFERENCE = 552.9;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const loader = document.getElementById('loader');
 
-  const stages = [
-    { at: 0,  text: 'Encendiendo motor…' },
-    { at: 28, text: 'Compilando arquitectura…' },
-    { at: 60, text: 'Cargando unidades…' },
-    { at: 90, text: 'Listo.' },
-  ];
+/*
 
-  let progress = 0;
-  const duration = reduceMotion ? 200 : 2200; // ms
-  const start = performance.now();
+* No todas las páginas tienen loader.
+* Por ejemplo, semanas/listar.jsp puede no tenerlo.
+  */
+  if (!loader) return;
 
-  function frame(now) {
-    const elapsed = now - start;
-    progress = Math.min(100, Math.round((elapsed / duration) * 100));
+const gaugeFill =
+document.getElementById('gaugeFill');
 
-    gaugeFill.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - progress / 100));
-    percentEl.textContent = String(progress);
-    barFill.style.width = progress + '%';
+const percentEl =
+document.getElementById('loaderPercent');
 
-    const stage = [...stages].reverse().find(s => progress >= s.at);
-    if (stage) statusEl.textContent = stage.text;
+const statusEl =
+document.getElementById('loaderStatus');
 
-    if (progress < 100) {
-      requestAnimationFrame(frame);
-    } else {
-      finishLoading();
-    }
+const barFill =
+document.getElementById('loaderBarFill');
+
+const site =
+document.getElementById('site');
+
+const CIRCUMFERENCE = 552.9;
+
+const reduceMotion =
+window.matchMedia(
+'(prefers-reduced-motion: reduce)'
+).matches;
+
+const stages = [
+
+```
+{
+  at: 0,
+  text: 'Encendiendo motor…'
+},
+
+{
+  at: 28,
+  text: 'Compilando arquitectura…'
+},
+
+{
+  at: 60,
+  text: 'Cargando unidades…'
+},
+
+{
+  at: 90,
+  text: 'Listo.'
+},
+```
+
+];
+
+let progress = 0;
+
+const duration =
+reduceMotion ? 200 : 2200;
+
+const start =
+performance.now();
+
+function frame(now) {
+
+```
+const elapsed =
+  now - start;
+
+progress =
+  Math.min(
+    100,
+    Math.round(
+      (elapsed / duration) * 100
+    )
+  );
+
+
+if (gaugeFill) {
+
+  gaugeFill.style.strokeDashoffset =
+    String(
+      CIRCUMFERENCE *
+      (1 - progress / 100)
+    );
+
+}
+
+
+if (percentEl) {
+
+  percentEl.textContent =
+    String(progress);
+
+}
+
+
+if (barFill) {
+
+  barFill.style.width =
+    progress + '%';
+
+}
+
+
+if (statusEl) {
+
+  const stage =
+    [...stages]
+      .reverse()
+      .find(
+        s => progress >= s.at
+      );
+
+  if (stage) {
+
+    statusEl.textContent =
+      stage.text;
+
   }
 
-  function finishLoading() {
-    setTimeout(() => {
-      loader.classList.add('is-done');
-      site.removeAttribute('aria-hidden');
-      site.classList.add('is-revealed');
-      const heading = document.querySelector('.hero h1');
-      if (heading) {
-        heading.setAttribute('tabindex', '-1');
-        heading.focus({ preventScroll: true });
-      }
-      loader.addEventListener('transitionend', () => loader.remove(), { once: true });
-    }, 260);
-  }
+}
+
+
+if (progress < 100) {
 
   requestAnimationFrame(frame);
+
+} else {
+
+  finishLoading();
+
+}
+```
+
 }
 
-/* ============================================================
-   HERO — un poco de movimiento extra: la moto responde al mouse
-   (además del zoom lento continuo que ya trae el CSS)
-   ============================================================ */
-function setupHeroParallax() {
-  const frame = document.querySelector('.hero-media-frame');
-  const img = frame ? frame.querySelector('img') : null;
-  if (!frame || !img) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (window.matchMedia('(hover: none)').matches) return; // sin mouse (touch), no aplica
+function finishLoading() {
 
-  frame.addEventListener('mousemove', (e) => {
-    const rect = frame.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;  // -0.5 .. 0.5
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    img.style.transform = `scale(1.12) translate(${x * -14}px, ${y * -10}px)`;
-  });
-  frame.addEventListener('mouseleave', () => {
-    img.style.transform = '';
-  });
-}
+```
+setTimeout(() => {
 
-/* ============================================================
-   ACORDEÓN DE UNIDADES
-   ============================================================ */
-function setupUnidadAccordion() {
-  document.querySelectorAll('.unidad-toggle').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.unidad-card');
-      const isOpen = card.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', String(isOpen));
+  loader.classList.add('is-done');
+
+
+  if (site) {
+
+    site.removeAttribute(
+      'aria-hidden'
+    );
+
+    site.classList.add(
+      'is-revealed'
+    );
+
+  }
+
+
+  const heading =
+    document.querySelector(
+      '.hero h1'
+    );
+
+
+  if (heading) {
+
+    heading.setAttribute(
+      'tabindex',
+      '-1'
+    );
+
+    heading.focus({
+      preventScroll: true
     });
-  });
+
+  }
+
+
+  loader.addEventListener(
+    'transitionend',
+    () => loader.remove(),
+    { once: true }
+  );
+
+}, 260);
+```
+
+}
+
+requestAnimationFrame(frame);
+
 }
 
 /* ============================================================
-   MODAL DE INGRESO
-   ============================================================ */
+HERO — PARALLAX
+============================================================ */
+
+function setupHeroParallax() {
+
+const frame =
+document.querySelector(
+'.hero-media-frame'
+);
+
+const img =
+frame
+? frame.querySelector('img')
+: null;
+
+if (!frame || !img) return;
+
+if (
+window.matchMedia(
+'(prefers-reduced-motion: reduce)'
+).matches
+) {
+
+```
+return;
+```
+
+}
+
+if (
+window.matchMedia(
+'(hover: none)'
+).matches
+) {
+
+```
+return;
+```
+
+}
+
+frame.addEventListener(
+'mousemove',
+(e) => {
+
+```
+  const rect =
+    frame.getBoundingClientRect();
+
+
+  const x =
+    (e.clientX - rect.left) /
+    rect.width - 0.5;
+
+
+  const y =
+    (e.clientY - rect.top) /
+    rect.height - 0.5;
+
+
+  img.style.transform =
+    `scale(1.12) translate(${x * -14}px, ${y * -10}px)`;
+
+}
+```
+
+);
+
+frame.addEventListener(
+'mouseleave',
+() => {
+
+```
+  img.style.transform = '';
+
+}
+```
+
+);
+
+}
+
+/* ============================================================
+ACORDEÓN DE UNIDADES
+============================================================ */
+
+function setupUnidadAccordion() {
+
+document
+.querySelectorAll('.unidad-toggle')
+.forEach((btn) => {
+
+```
+  btn.addEventListener(
+    'click',
+    () => {
+
+      const card =
+        btn.closest('.unidad-card');
+
+
+      if (!card) return;
+
+
+      const isOpen =
+        card.classList.toggle(
+          'is-open'
+        );
+
+
+      btn.setAttribute(
+        'aria-expanded',
+        String(isOpen)
+      );
+
+    }
+  );
+
+});
+```
+
+}
+
+/* ============================================================
+MODAL DE LOGIN
+============================================================ */
+
 function setupUserModal() {
-  const userBtn = document.getElementById('userBtn');
-  const overlay = document.getElementById('loginModal');
-  const closeBtn = document.getElementById('loginClose');
-  const form = document.getElementById('loginForm');
-  const submitBtn = document.getElementById('loginSubmit');
-  const errorEl = document.getElementById('loginError');
-  const logoutBtn = document.getElementById('logoutBtn');
 
-  if (!userBtn || !overlay) return;
+const userBtn =
+document.getElementById('userBtn');
 
-  const open = () => {
-    hideError();
-    overlay.classList.add('is-open');
-    const firstField = overlay.querySelector('input');
-    if (firstField) firstField.focus();
-  };
-  const close = () => overlay.classList.remove('is-open');
-  const showError = (msg) => { errorEl.textContent = msg; errorEl.hidden = false; };
-  const hideError = () => { errorEl.hidden = true; errorEl.textContent = ''; };
+const overlay =
+document.getElementById('loginModal');
 
-  userBtn.addEventListener('click', open);
-  closeBtn.addEventListener('click', close);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+const closeBtn =
+document.getElementById('loginClose');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    hideError();
+const form =
+document.getElementById('loginForm');
+
+const submitBtn =
+document.getElementById('loginSubmit');
+
+const errorEl =
+document.getElementById('loginError');
+
+const logoutBtn =
+document.getElementById('logoutBtn');
+
+/*
+
+* Si estamos en una página que no tiene
+* login, simplemente no hacemos nada.
+  */
+
+if (
+!userBtn ||
+!overlay ||
+!form
+) {
+
+```
+return;
+```
+
+}
+
+const open = () => {
+
+```
+hideError();
+
+overlay.classList.add(
+  'is-open'
+);
+
+
+const firstField =
+  overlay.querySelector(
+    'input'
+  );
+
+
+if (firstField) {
+
+  firstField.focus();
+
+}
+```
+
+};
+
+const close = () => {
+
+```
+overlay.classList.remove(
+  'is-open'
+);
+```
+
+};
+
+const showError = (msg) => {
+
+```
+if (!errorEl) return;
+
+errorEl.textContent = msg;
+
+errorEl.hidden = false;
+```
+
+};
+
+const hideError = () => {
+
+```
+if (!errorEl) return;
+
+errorEl.hidden = true;
+
+errorEl.textContent = '';
+```
+
+};
+
+userBtn.addEventListener(
+'click',
+open
+);
+
+closeBtn?.addEventListener(
+'click',
+close
+);
+
+overlay.addEventListener(
+'click',
+(e) => {
+
+```
+  if (
+    e.target === overlay
+  ) {
+
+    close();
+
+  }
+
+}
+```
+
+);
+
+document.addEventListener(
+'keydown',
+(e) => {
+
+```
+  if (e.key === 'Escape') {
+
+    close();
+
+  }
+
+}
+```
+
+);
+
+form.addEventListener(
+'submit',
+async (e) => {
+
+```
+  e.preventDefault();
+
+  hideError();
+
+
+  if (submitBtn) {
+
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Ingresando…';
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
+    submitBtn.textContent =
+      'Ingresando…';
+
+  }
+
+
+  const email =
+    document
+      .getElementById('email')
+      ?.value
+      .trim() || '';
+
+
+  const password =
+    document
+      .getElementById('password')
+      ?.value || '';
+
+
+  try {
+
+    const res =
+      await fetch(
+        API.login,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+              email,
+              password
+            }),
+
+        }
+      );
+
+
+    const data =
+      await res.json();
+
+
+    if (
+      !res.ok ||
+      !data.ok
+    ) {
+
+      showError(
+        data.error ||
+        'No se pudo iniciar sesión.'
+      );
+
+      return;
+
+    }
+
+
+    sesionActual = {
+
+      autenticado: true,
+
+      email: data.email,
+
+      rol: data.rol,
+
+      esAdmin:
+        data.rol === 'admin',
+
+    };
+
+
+    aplicarEstadoSesion();
+
+
+    close();
+
+    form.reset();
+
+
+    await cargarEstadoArchivos();
+
+  } catch (err) {
+
+    console.error(
+      'Error de login:',
+      err
+    );
+
+
+    showError(
+      'No se pudo conectar con el servidor.'
+    );
+
+  } finally {
+
+    if (submitBtn) {
+
+      submitBtn.disabled = false;
+
+      submitBtn.textContent =
+        'Ingresar';
+
+    }
+
+  }
+
+}
+```
+
+);
+
+if (logoutBtn) {
+
+```
+logoutBtn.addEventListener(
+  'click',
+  async () => {
+
+    logoutBtn.disabled = true;
+
 
     try {
-      const res = await fetch(API.login, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
 
-      if (!res.ok || !data.ok) {
-        showError(data.error || 'No se pudo iniciar sesión.');
-        return;
-      }
-
-      sesionActual = { autenticado: true, email: data.email, rol: data.rol, esAdmin: data.rol === 'admin' };
-      aplicarEstadoSesion();
-      close();
-      form.reset();
-      cargarEstadoArchivos();
+      await fetch(
+        API.logout,
+        {
+          method: 'POST'
+        }
+      );
 
     } catch (err) {
-      showError('No se pudo conectar con el servidor.');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Ingresar';
-    }
-  });
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      logoutBtn.disabled = true;
-      try {
-        await fetch(API.logout, { method: 'POST' });
-      } catch (err) {
-        // aunque falle la llamada, igual limpiamos el estado local
-      }
-      sesionActual = { autenticado: false, esAdmin: false };
-      aplicarEstadoSesion();
-      cargarEstadoArchivos();
-      logoutBtn.disabled = false;
-    });
+      console.error(
+        'Error cerrando sesión:',
+        err
+      );
+
+    }
+
+
+    sesionActual = {
+
+      autenticado: false,
+
+      esAdmin: false
+
+    };
+
+
+    aplicarEstadoSesion();
+
+
+    await cargarEstadoArchivos();
+
+
+    logoutBtn.disabled = false;
+
   }
+);
+```
+
+}
+
 }
 
 /* ============================================================
-   SESIÓN — consulta al backend quién está logueado
-   ============================================================ */
+SESIÓN
+============================================================ */
+
 async function iniciarSesionYEstado() {
-  try {
-    const res = await fetch(API.sesion);
-    const data = await res.json();
-    if (data.ok) {
-      sesionActual = {
-        autenticado: !!data.autenticado,
-        email: data.email,
-        rol: data.rol,
-        esAdmin: !!data.esAdmin,
-      };
-    }
-  } catch (err) {
-    sesionActual = { autenticado: false, esAdmin: false };
-  }
-  aplicarEstadoSesion();
-  cargarEstadoArchivos();
+
+try {
+
+```
+const res =
+  await fetch(API.sesion);
+
+
+const data =
+  await res.json();
+
+
+if (data.ok) {
+
+  sesionActual = {
+
+    autenticado:
+      !!data.autenticado,
+
+    email:
+      data.email,
+
+    rol:
+      data.rol,
+
+    esAdmin:
+      !!data.esAdmin,
+
+  };
+
 }
+```
+
+} catch (err) {
+
+```
+console.error(
+  'No se pudo consultar la sesión:',
+  err
+);
+
+
+sesionActual = {
+
+  autenticado: false,
+
+  esAdmin: false
+
+};
+```
+
+}
+
+aplicarEstadoSesion();
+
+await cargarEstadoArchivos();
+
+}
+
+/* ============================================================
+APLICAR ESTADO DE SESIÓN
+============================================================ */
 
 function aplicarEstadoSesion() {
-  const site = document.getElementById('site');
-  const chip = document.getElementById('hudChip');
-  const userBtn = document.getElementById('userBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
 
-  site.classList.toggle('is-admin', sesionActual.esAdmin);
+const site =
+document.getElementById('site');
 
-  document.querySelectorAll('.admin-only').forEach((el) => {
-    el.hidden = !sesionActual.esAdmin;
-  });
+const chip =
+document.getElementById('hudChip');
 
-  if (sesionActual.autenticado) {
-    chip.hidden = false;
-    chip.textContent = sesionActual.esAdmin ? `Admin · ${sesionActual.email}` : sesionActual.email;
-    userBtn.hidden = true;
-    logoutBtn.hidden = false;
-  } else {
-    chip.hidden = true;
-    userBtn.hidden = false;
-    logoutBtn.hidden = true;
-  }
+const userBtn =
+document.getElementById('userBtn');
+
+const logoutBtn =
+document.getElementById('logoutBtn');
+
+if (site) {
+
+```
+site.classList.toggle(
+  'is-admin',
+  sesionActual.esAdmin
+);
+```
+
+}
+
+document
+.querySelectorAll('.admin-only')
+.forEach((el) => {
+
+```
+  el.hidden =
+    !sesionActual.esAdmin;
+
+});
+```
+
+if (
+sesionActual.autenticado
+) {
+
+```
+if (chip) {
+
+  chip.hidden = false;
+
+  chip.textContent =
+    sesionActual.esAdmin
+      ? `Admin · ${sesionActual.email}`
+      : sesionActual.email;
+
+}
+
+
+if (userBtn) {
+
+  userBtn.hidden = true;
+
+}
+
+
+if (logoutBtn) {
+
+  logoutBtn.hidden = false;
+
+}
+```
+
+} else {
+
+```
+if (chip) {
+
+  chip.hidden = true;
+
+}
+
+
+if (userBtn) {
+
+  userBtn.hidden = false;
+
+}
+
+
+if (logoutBtn) {
+
+  logoutBtn.hidden = true;
+
+}
+```
+
+}
+
 }
 
 /* ============================================================
-   ESTADO DE ARCHIVOS — pinta "Sin trabajo" / "Subido" en cada semana
-   y las miniaturas de las infografías
-   ============================================================ */
+ESTADO DE ARCHIVOS
+============================================================ */
+
 async function cargarEstadoArchivos() {
-  await Promise.all([cargarTrabajos(), cargarInfografias()]);
+
+/*
+
+* Solamente intentamos cargar información si
+* la página contiene semanas.
+  */
+
+const semanas =
+document.querySelectorAll(
+'.semana-item'
+);
+
+if (!semanas.length) {
+
+```
+return;
+```
+
 }
 
-async function cargarTrabajos() {
-  try {
-    const res = await fetch(API.archivos);
-    const data = await res.json();
-    if (!data.ok) return;
+await cargarArchivosPorSemana();
 
-    // El más reciente de cada (unidad, semana) es el que se muestra.
-    const porSemana = new Map();
-    data.archivos.forEach((a) => {
-      const clave = a.unidad + '-' + a.semana;
-      if (!porSemana.has(clave)) porSemana.set(clave, a);
-    });
-
-    document.querySelectorAll('.semana-item').forEach((li) => {
-      const clave = li.dataset.unidad + '-' + li.dataset.semana;
-      pintarSemana(li, porSemana.get(clave) || null);
-    });
-  } catch (err) {
-    console.error('No se pudo cargar el estado de los trabajos:', err);
-  }
 }
 
-function pintarSemana(li, archivo) {
-  const status = li.querySelector('[data-status]');
-  const download = li.querySelector('[data-download]');
-  const del = li.querySelector('[data-delete]');
+/* ============================================================
+CARGAR ARCHIVOS POR UNIDAD + SEMANA
+============================================================ */
 
-  if (archivo) {
-    status.textContent = 'Subido: ' + truncar(archivo.nombreOriginal, 22);
-    status.classList.add('is-uploaded');
-    download.href = API.descargar + '?id=' + encodeURIComponent(archivo.id);
-    download.hidden = false;
-    del.hidden = !sesionActual.esAdmin;
-    del.dataset.id = archivo.id;
-  } else {
-    status.textContent = 'Sin trabajo';
-    status.classList.remove('is-uploaded');
-    download.hidden = true;
-    download.removeAttribute('href');
-    del.hidden = true;
-    delete del.dataset.id;
-  }
-}
+async function cargarArchivosPorSemana() {
 
-async function cargarInfografias() {
-  try {
-    const res = await fetch(API.archivos + '?tipo=infografia');
-    const data = await res.json();
-    if (!data.ok) return;
+const semanas =
+document.querySelectorAll(
+'.semana-item'
+);
 
-    const porSlot = new Map();
-    data.archivos.forEach((a) => {
-      if (!porSlot.has(a.slot)) porSlot.set(a.slot, a);
-    });
+/*
 
-    document.querySelectorAll('#infoGrid .info-card').forEach((card) => {
-      const slot = Number(card.dataset.slot);
-      pintarInfografia(card, porSlot.get(slot) || null);
-    });
-  } catch (err) {
-    console.error('No se pudo cargar las infografías:', err);
-  }
-}
+* Cada semana realiza una consulta:
+*
+* /api/archivos?unidad=1&semana=1
+*
+* Esto devuelve trabajos e infografías
+* de ESA semana.
+  */
 
-function pintarInfografia(card, archivo) {
-  const img = card.querySelector('[data-thumb-img]');
-  const emptyText = card.querySelector('[data-empty-text]');
-  const download = card.querySelector('[data-download]');
-  const del = card.querySelector('[data-delete]');
+await Promise.all(
 
-  if (archivo) {
-    const url = API.descargar + '?id=' + encodeURIComponent(archivo.id);
-    if (esImagen(archivo.nombreOriginal)) {
-      img.src = url;
-      img.hidden = false;
-    } else {
-      img.hidden = true;
-      img.removeAttribute('src');
+```
+[...semanas].map(
+  async (semanaItem) => {
+
+    const unidad =
+      semanaItem.dataset.unidad;
+
+    const semana =
+      semanaItem.dataset.semana;
+
+
+    if (!unidad || !semana) {
+
+      return;
+
     }
-    emptyText.textContent = archivo.nombreOriginal;
-    download.href = url;
-    download.hidden = false;
-    del.hidden = !sesionActual.esAdmin;
-    del.dataset.id = archivo.id;
-  } else {
-    img.hidden = true;
-    img.removeAttribute('src');
-    emptyText.textContent = 'Se publicará próximamente.';
-    download.hidden = true;
-    download.removeAttribute('href');
-    del.hidden = true;
-    delete del.dataset.id;
+
+
+    try {
+
+      const url =
+        API.archivos +
+        '?unidad=' +
+        encodeURIComponent(unidad) +
+        '&semana=' +
+        encodeURIComponent(semana);
+
+
+      const res =
+        await fetch(url);
+
+
+      const data =
+        await res.json();
+
+
+      if (
+        !res.ok ||
+        !data.ok
+      ) {
+
+        return;
+
+      }
+
+
+      const archivos =
+        Array.isArray(
+          data.archivos
+        )
+          ? data.archivos
+          : [];
+
+
+      const trabajos =
+        archivos.filter(
+          a =>
+            a.tipo === 'trabajo'
+        );
+
+
+      const infografias =
+        archivos.filter(
+          a =>
+            a.tipo === 'infografia'
+        );
+
+
+      /*
+       * Para trabajos mostramos el más reciente.
+       */
+
+      const trabajo =
+        trabajos.length
+          ? trabajos[0]
+          : null;
+
+
+      pintarTrabajo(
+        semanaItem,
+        trabajo
+      );
+
+
+      /*
+       * Las infografías se relacionan
+       * mediante su slot.
+       */
+
+      const porSlot =
+        new Map();
+
+
+      infografias.forEach(
+        (archivo) => {
+
+          if (
+            archivo.slot != null
+          ) {
+
+            porSlot.set(
+              Number(archivo.slot),
+              archivo
+            );
+
+          }
+
+        }
+      );
+
+
+      semanaItem
+        .querySelectorAll(
+          '.info-card'
+        )
+        .forEach(
+          (card) => {
+
+            const slot =
+              Number(
+                card.dataset.slot
+              );
+
+
+            pintarInfografia(
+              card,
+              porSlot.get(slot) ||
+              null
+            );
+
+          }
+        );
+
+
+    } catch (err) {
+
+      console.error(
+        `No se pudo cargar la Semana ${semana} de la Unidad ${unidad}:`,
+        err
+      );
+
+    }
+
   }
+)
+```
+
+);
+
 }
+
+/* ============================================================
+PINTAR TRABAJO
+============================================================ */
+
+function pintarTrabajo(
+semanaItem,
+archivo
+) {
+
+const status =
+semanaItem.querySelector(
+'[data-status]'
+);
+
+const view =
+semanaItem.querySelector(
+'[data-view]'
+);
+
+const download =
+semanaItem.querySelector(
+'[data-download]'
+);
+
+/*
+
+* Importante:
+*
+* En el trabajo también existe un botón
+* data-delete.
+*
+* No usamos querySelector('[data-delete]')
+* aquí porque las infografías también tienen
+* botones de eliminación.
+*
+* Buscamos solamente dentro de la
+* sección de trabajos.
+  */
+
+const trabajoSection =
+semanaItem.querySelector(
+'.trabajo-section'
+);
+
+const del =
+trabajoSection
+? trabajoSection.querySelector(
+'[data-delete]'
+)
+: null;
+
+if (archivo) {
+
+```
+if (status) {
+
+  status.textContent =
+    'Subido: ' +
+    truncar(
+      archivo.nombreOriginal,
+      40
+    );
+
+
+  status.classList.add(
+    'is-uploaded'
+  );
+
+}
+
+
+const url =
+  construirUrlArchivo(
+    archivo.id
+  );
+
+
+if (view) {
+
+  view.href = url;
+
+  view.hidden = false;
+
+}
+
+
+if (download) {
+
+  download.href = url;
+
+  download.download =
+    archivo.nombreOriginal ||
+    '';
+
+  download.hidden = false;
+
+}
+
+
+if (del) {
+
+  del.hidden =
+    !sesionActual.esAdmin;
+
+  del.dataset.id =
+    archivo.id;
+
+}
+```
+
+} else {
+
+```
+if (status) {
+
+  status.textContent =
+    'Sin trabajo';
+
+
+  status.classList.remove(
+    'is-uploaded'
+  );
+
+}
+
+
+if (view) {
+
+  view.hidden = true;
+
+  view.removeAttribute(
+    'href'
+  );
+
+}
+
+
+if (download) {
+
+  download.hidden = true;
+
+  download.removeAttribute(
+    'href'
+  );
+
+}
+
+
+if (del) {
+
+  del.hidden = true;
+
+  delete del.dataset.id;
+
+}
+```
+
+}
+
+}
+
+/* ============================================================
+CARGAR / PINTAR INFOGRAFÍA
+============================================================ */
+
+function pintarInfografia(
+card,
+archivo
+) {
+
+const img =
+card.querySelector(
+'[data-thumb-img]'
+);
+
+const emptyText =
+card.querySelector(
+'[data-empty-text]'
+);
+
+const view =
+card.querySelector(
+'[data-view]'
+);
+
+const download =
+card.querySelector(
+'[data-download]'
+);
+
+const del =
+card.querySelector(
+'[data-delete]'
+);
+
+if (archivo) {
+
+```
+const url =
+  construirUrlArchivo(
+    archivo.id
+  );
+
+
+if (
+  img &&
+  esImagen(
+    archivo.nombreOriginal
+  )
+) {
+
+  img.src = url;
+
+  img.alt =
+    archivo.nombreOriginal ||
+    'Infografía';
+
+  img.hidden = false;
+
+  /*
+   * Si la imagen no puede cargarse,
+   * mostramos nuevamente el estado vacío.
+   */
+
+  img.onerror = () => {
+
+    img.hidden = true;
+
+    img.removeAttribute(
+      'src'
+    );
+
+    if (emptyText) {
+
+      emptyText.textContent =
+        'No se pudo visualizar la imagen.';
+
+    }
+
+  };
+
+} else if (img) {
+
+  img.hidden = true;
+
+  img.removeAttribute(
+    'src'
+  );
+
+}
+
+
+if (emptyText) {
+
+  emptyText.textContent =
+    archivo.nombreOriginal ||
+    'Infografía';
+
+}
+
+
+if (view) {
+
+  view.href = url;
+
+  view.hidden = false;
+
+}
+
+
+if (download) {
+
+  download.href = url;
+
+  download.download =
+    archivo.nombreOriginal ||
+    '';
+
+  download.hidden = false;
+
+}
+
+
+if (del) {
+
+  del.hidden =
+    !sesionActual.esAdmin;
+
+  del.dataset.id =
+    archivo.id;
+
+}
+```
+
+} else {
+
+```
+if (img) {
+
+  img.hidden = true;
+
+  img.removeAttribute(
+    'src'
+  );
+
+}
+
+
+if (emptyText) {
+
+  emptyText.textContent =
+    'Sin infografía';
+
+}
+
+
+if (view) {
+
+  view.hidden = true;
+
+  view.removeAttribute(
+    'href'
+  );
+
+}
+
+
+if (download) {
+
+  download.hidden = true;
+
+  download.removeAttribute(
+    'href'
+  );
+
+}
+
+
+if (del) {
+
+  del.hidden = true;
+
+  delete del.dataset.id;
+
+}
+```
+
+}
+
+}
+
+/* ============================================================
+URL PARA VER / DESCARGAR
+============================================================ */
+
+function construirUrlArchivo(id) {
+
+return API.descargar +
+'?id=' +
+encodeURIComponent(id);
+
+}
+
+/* ============================================================
+VALIDACIÓN DE IMÁGENES
+============================================================ */
 
 function esImagen(nombre) {
-  return /\.(png|jpe?g|gif|webp|svg)$/i.test(nombre || '');
-}
 
-function truncar(texto, max) {
-  if (!texto) return '';
-  return texto.length > max ? texto.slice(0, max - 1) + '…' : texto;
+return /.(png|jpe?g)$/i.test(
+nombre || ''
+);
+
 }
 
 /* ============================================================
-   ACCIONES DE ADMIN — subir y eliminar (delegación de eventos,
-   funciona también para los elementos ya presentes en el HTML)
-   ============================================================ */
-function setupAdminHandlers() {
-  document.addEventListener('change', (e) => {
-    const input = e.target.closest('[data-upload-input]');
-    if (!input || !input.files || !input.files[0]) return;
-    manejarSubida(input);
-  });
+TRUNCAR TEXTO
+============================================================ */
 
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-delete]');
-    if (!btn || btn.hidden || !btn.dataset.id) return;
-    manejarEliminacion(btn);
-  });
+function truncar(
+texto,
+max
+) {
+
+if (!texto) return '';
+
+return texto.length > max
+? texto.slice(
+0,
+max - 1
+) + '…'
+: texto;
+
 }
+
+/* ============================================================
+ADMIN — SUBIR / ELIMINAR
+============================================================ */
+
+function setupAdminHandlers() {
+
+/*
+
+* SUBIDA
+  */
+
+document.addEventListener(
+'change',
+(e) => {
+
+```
+  const input =
+    e.target.closest(
+      '[data-upload-input]'
+    );
+
+
+  if (
+    !input ||
+    !input.files ||
+    !input.files[0]
+  ) {
+
+    return;
+
+  }
+
+
+  manejarSubida(input);
+
+}
+```
+
+);
+
+/*
+
+* ELIMINACIÓN
+  */
+
+document.addEventListener(
+'click',
+(e) => {
+
+```
+  const btn =
+    e.target.closest(
+      '[data-delete]'
+    );
+
+
+  if (
+    !btn ||
+    btn.hidden ||
+    !btn.dataset.id
+  ) {
+
+    return;
+
+  }
+
+
+  manejarEliminacion(btn);
+
+}
+```
+
+);
+
+}
+
+/* ============================================================
+SUBIR ARCHIVO
+============================================================ */
 
 async function manejarSubida(input) {
-  const semanaItem = input.closest('.semana-item');
-  const infoCard = input.closest('.info-card');
-  const file = input.files[0];
 
-  const formData = new FormData();
-  formData.append('archivo', file);
+const semanaItem =
+input.closest(
+'.semana-item'
+);
 
-  if (semanaItem) {
-    formData.append('tipo', 'trabajo');
-    formData.append('unidad', semanaItem.dataset.unidad);
-    formData.append('semana', semanaItem.dataset.semana);
-  } else if (infoCard) {
-    formData.append('tipo', 'infografia');
-    formData.append('slot', infoCard.dataset.slot);
-  } else {
-    return;
-  }
+const infoCard =
+input.closest(
+'.info-card'
+);
 
-  const label = input.closest('.semana-btn-upload');
-  if (label) label.classList.add('is-loading');
+const file =
+input.files[0];
 
-  try {
-    const res = await fetch(API.subir, { method: 'POST', body: formData });
-    const data = await res.json();
-    if (!data.ok) {
-      alert(data.error || 'No se pudo subir el archivo.');
-      return;
-    }
-    await cargarEstadoArchivos();
-  } catch (err) {
-    alert('No se pudo conectar con el servidor para subir el archivo.');
-  } finally {
-    input.value = '';
-    if (label) label.classList.remove('is-loading');
-  }
+if (!file) return;
+
+/*
+
+* Verificación de sesión.
+  */
+
+if (!sesionActual.esAdmin) {
+
+```
+alert(
+  'Debes iniciar sesión como administrador para subir archivos.'
+);
+
+input.value = '';
+
+return;
+```
+
 }
+
+/*
+
+* Validación según el tipo.
+  */
+
+let tipo = null;
+
+let unidad = null;
+
+let semana = null;
+
+let slot = null;
+
+if (infoCard) {
+
+```
+tipo = 'infografia';
+
+
+/*
+ * Como .info-card está dentro de .semana-item,
+ * obtenemos unidad y semana desde la semana.
+ */
+
+if (semanaItem) {
+
+  unidad =
+    semanaItem.dataset.unidad;
+
+  semana =
+    semanaItem.dataset.semana;
+
+} else {
+
+  unidad =
+    infoCard.dataset.unidad;
+
+  semana =
+    infoCard.dataset.semana;
+
+}
+
+
+slot =
+  infoCard.dataset.slot;
+
+
+if (
+  !unidad ||
+  !semana ||
+  !slot
+) {
+
+  alert(
+    'No se pudo determinar la unidad, semana o slot de la infografía.'
+  );
+
+  input.value = '';
+
+  return;
+
+}
+
+
+if (
+  !esImagen(
+    file.name
+  )
+) {
+
+  alert(
+    'Las infografías deben estar en formato JPG, JPEG o PNG.'
+  );
+
+  input.value = '';
+
+  return;
+
+}
+```
+
+} else if (semanaItem) {
+
+```
+tipo = 'trabajo';
+
+unidad =
+  semanaItem.dataset.unidad;
+
+semana =
+  semanaItem.dataset.semana;
+
+
+if (
+  !esPDF(
+    file.name
+  )
+) {
+
+  alert(
+    'El trabajo debe estar en formato PDF.'
+  );
+
+  input.value = '';
+
+  return;
+
+}
+```
+
+} else {
+
+```
+input.value = '';
+
+return;
+```
+
+}
+
+const formData =
+new FormData();
+
+formData.append(
+'archivo',
+file
+);
+
+formData.append(
+'tipo',
+tipo
+);
+
+formData.append(
+'unidad',
+unidad
+);
+
+formData.append(
+'semana',
+semana
+);
+
+/*
+
+* Slot solamente para infografías.
+  */
+
+if (tipo === 'infografia') {
+
+```
+formData.append(
+  'slot',
+  slot
+);
+```
+
+}
+
+/*
+
+* Indicador visual de carga.
+  */
+
+const label =
+input.closest(
+'label'
+);
+
+if (label) {
+
+```
+label.classList.add(
+  'is-loading'
+);
+```
+
+}
+
+try {
+
+```
+const res =
+  await fetch(
+    API.subir,
+    {
+      method: 'POST',
+
+      body: formData
+    }
+  );
+
+
+const data =
+  await res.json();
+
+
+if (
+  !res.ok ||
+  !data.ok
+) {
+
+  alert(
+    data.error ||
+    'No se pudo subir el archivo.'
+  );
+
+  return;
+
+}
+
+
+/*
+ * Actualizamos la semana después
+ * de una subida exitosa.
+ */
+
+await cargarEstadoArchivos();
+```
+
+} catch (err) {
+
+```
+console.error(
+  'Error subiendo archivo:',
+  err
+);
+
+
+alert(
+  'No se pudo conectar con el servidor para subir el archivo.'
+);
+```
+
+} finally {
+
+```
+input.value = '';
+
+
+if (label) {
+
+  label.classList.remove(
+    'is-loading'
+  );
+
+}
+```
+
+}
+
+}
+
+/* ============================================================
+VALIDAR PDF
+============================================================ */
+
+function esPDF(nombre) {
+
+return /.pdf$/i.test(
+nombre || ''
+);
+
+}
+
+/* ============================================================
+ELIMINAR ARCHIVO
+============================================================ */
 
 async function manejarEliminacion(btn) {
-  if (!confirm('¿Eliminar este archivo? Esta acción no se puede deshacer.')) return;
 
-  btn.disabled = true;
-  try {
-    const res = await fetch(API.eliminar + '?id=' + encodeURIComponent(btn.dataset.id), { method: 'POST' });
-    const data = await res.json();
-    if (!data.ok) {
-      alert(data.error || 'No se pudo eliminar el archivo.');
-      return;
-    }
-    await cargarEstadoArchivos();
-  } catch (err) {
-    alert('No se pudo conectar con el servidor para eliminar el archivo.');
-  } finally {
-    btn.disabled = false;
-  }
+if (
+!sesionActual.esAdmin
+) {
+
+```
+return;
+```
+
 }
- /* ============================================================
-   CARRUSEL HERO — 10 MOTOCICLETAS
-   ============================================================ */
-function setupHeroCarousel() {
-  const slides = document.querySelectorAll('.hero-slide');
-  const dots = document.querySelectorAll('.hero-dot');
-  const prev = document.getElementById('heroPrev');
-  const next = document.getElementById('heroNext');
 
-  if (!slides.length) return;
+if (
+!confirm(
+'¿Eliminar este archivo? Esta acción no se puede deshacer.'
+)
+) {
 
-  let current = 0;
-  let timer = null;
+```
+return;
+```
 
-  function mostrarSlide(index) {
-    current = (index + slides.length) % slides.length;
+}
 
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('is-active', i === current);
-    });
+btn.disabled = true;
 
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('is-active', i === current);
-      dot.setAttribute(
-        'aria-current',
-        i === current ? 'true' : 'false'
+try {
+
+```
+const res =
+  await fetch(
+    API.eliminar +
+    '?id=' +
+    encodeURIComponent(
+      btn.dataset.id
+    ),
+    {
+      method: 'POST'
+    }
+  );
+
+
+const data =
+  await res.json();
+
+
+if (
+  !res.ok ||
+  !data.ok
+) {
+
+  alert(
+    data.error ||
+    'No se pudo eliminar el archivo.'
+  );
+
+  return;
+
+}
+
+
+await cargarEstadoArchivos();
+```
+
+} catch (err) {
+
+```
+console.error(
+  'Error eliminando archivo:',
+  err
+);
+
+
+alert(
+  'No se pudo conectar con el servidor para eliminar el archivo.'
+);
+```
+
+} finally {
+
+```
+btn.disabled = false;
+```
+
+}
+
+}
+
+/* ============================================================
+VISOR DE ARCHIVOS
+============================================================ */
+
+function setupArchivoViewer() {
+
+const viewer =
+document.getElementById(
+'archivoViewer'
+);
+
+const content =
+document.getElementById(
+'archivoViewerContent'
+);
+
+const closeBtn =
+document.getElementById(
+'archivoViewerClose'
+);
+
+const overlay =
+viewer
+? viewer.querySelector(
+'.archivo-viewer-overlay'
+)
+: null;
+
+if (
+!viewer ||
+!content
+) {
+
+```
+/*
+ * Aunque el visor no exista en una página,
+ * los enlaces "Ver" seguirán funcionando
+ * porque tienen target="_blank".
+ */
+
+return;
+```
+
+}
+
+function cerrar() {
+
+```
+viewer.hidden = true;
+
+viewer.setAttribute(
+  'aria-hidden',
+  'true'
+);
+
+
+content.innerHTML = '';
+
+document.body.classList.remove(
+  'viewer-open'
+);
+```
+
+}
+
+function abrir(url, tipo, nombre) {
+
+```
+content.innerHTML = '';
+
+
+if (tipo === 'imagen') {
+
+  const img =
+    document.createElement(
+      'img'
+    );
+
+
+  img.src = url;
+
+  img.alt =
+    nombre ||
+    'Infografía';
+
+  img.className =
+    'archivo-viewer-image';
+
+
+  content.appendChild(
+    img
+  );
+
+} else {
+
+  const iframe =
+    document.createElement(
+      'iframe'
+    );
+
+
+  iframe.src = url;
+
+  iframe.title =
+    nombre ||
+    'Documento PDF';
+
+  iframe.className =
+    'archivo-viewer-pdf';
+
+
+  content.appendChild(
+    iframe
+  );
+
+}
+
+
+viewer.hidden = false;
+
+viewer.setAttribute(
+  'aria-hidden',
+  'false'
+);
+
+
+document.body.classList.add(
+  'viewer-open'
+);
+
+
+if (closeBtn) {
+
+  closeBtn.focus();
+
+}
+```
+
+}
+
+closeBtn?.addEventListener(
+'click',
+cerrar
+);
+
+overlay?.addEventListener(
+'click',
+cerrar
+);
+
+document.addEventListener(
+'keydown',
+(e) => {
+
+```
+  if (
+    e.key === 'Escape' &&
+    !viewer.hidden
+  ) {
+
+    cerrar();
+
+  }
+
+}
+```
+
+);
+
+/*
+
+* Botones "Ver".
+*
+* El archivo se abre dentro del visor
+* cuando es PDF o imagen.
+  */
+
+document.addEventListener(
+'click',
+(e) => {
+
+```
+  const btn =
+    e.target.closest(
+      '[data-view]'
+    );
+
+
+  if (
+    !btn ||
+    btn.hidden ||
+    !btn.href
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+   * Si el elemento tiene un data-type
+   * lo respetamos.
+   *
+   * Si no, intentamos determinarlo
+   * por el nombre del archivo.
+   */
+
+  e.preventDefault();
+
+
+  const card =
+    btn.closest(
+      '.info-card'
+    );
+
+
+  const semanaItem =
+    btn.closest(
+      '.semana-item'
+    );
+
+
+  let nombre = 'Archivo';
+
+  let tipo = 'pdf';
+
+
+  if (card) {
+
+    const img =
+      card.querySelector(
+        '[data-thumb-img]'
       );
-    });
+
+
+    if (
+      img &&
+      img.src
+    ) {
+
+      tipo = 'imagen';
+
+    }
+
+
+    const emptyText =
+      card.querySelector(
+        '[data-empty-text]'
+      );
+
+
+    if (emptyText) {
+
+      nombre =
+        emptyText.textContent ||
+        'Infografía';
+
+    }
+
   }
 
-  function iniciarAutoPlay() {
-    clearInterval(timer);
 
-    timer = setInterval(() => {
-      mostrarSlide(current + 1);
-    }, 5000);
+  if (
+    semanaItem &&
+    !card
+  ) {
+
+    const status =
+      semanaItem.querySelector(
+        '[data-status]'
+      );
+
+
+    if (status) {
+
+      nombre =
+        status.textContent
+          .replace(
+            'Subido: ',
+            ''
+          );
+
+    }
+
+    tipo = 'pdf';
+
   }
 
-  prev?.addEventListener('click', () => {
-    mostrarSlide(current - 1);
-    iniciarAutoPlay();
-  });
 
-  next?.addEventListener('click', () => {
-    mostrarSlide(current + 1);
-    iniciarAutoPlay();
-  });
+  abrir(
+    btn.href,
+    tipo,
+    nombre
+  );
 
-  dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
-      mostrarSlide(index);
-      iniciarAutoPlay();
-    });
-  });
+}
+```
 
-  mostrarSlide(0);
+);
+
+}
+
+/* ============================================================
+CARRUSEL HERO
+============================================================ */
+
+function setupHeroCarousel() {
+
+const slides =
+document.querySelectorAll(
+'.hero-slide'
+);
+
+const dots =
+document.querySelectorAll(
+'.hero-dot'
+);
+
+const prev =
+document.getElementById(
+'heroPrev'
+);
+
+const next =
+document.getElementById(
+'heroNext'
+);
+
+if (!slides.length) return;
+
+let current = 0;
+
+let timer = null;
+
+function mostrarSlide(index) {
+
+```
+current =
+  (index + slides.length) %
+  slides.length;
+
+
+slides.forEach(
+  (slide, i) => {
+
+    slide.classList.toggle(
+      'is-active',
+      i === current
+    );
+
+  }
+);
+
+
+dots.forEach(
+  (dot, i) => {
+
+    dot.classList.toggle(
+      'is-active',
+      i === current
+    );
+
+
+    dot.setAttribute(
+      'aria-current',
+      i === current
+        ? 'true'
+        : 'false'
+    );
+
+  }
+);
+```
+
+}
+
+function iniciarAutoPlay() {
+
+```
+clearInterval(timer);
+
+
+timer =
+  setInterval(
+    () => {
+
+      mostrarSlide(
+        current + 1
+      );
+
+    },
+    5000
+  );
+```
+
+}
+
+prev?.addEventListener(
+'click',
+() => {
+
+```
+  mostrarSlide(
+    current - 1
+  );
+
   iniciarAutoPlay();
+
+}
+```
+
+);
+
+next?.addEventListener(
+'click',
+() => {
+
+```
+  mostrarSlide(
+    current + 1
+  );
+
+  iniciarAutoPlay();
+
+}
+```
+
+);
+
+dots.forEach(
+(dot, index) => {
+
+```
+  dot.addEventListener(
+    'click',
+    () => {
+
+      mostrarSlide(
+        index
+      );
+
+      iniciarAutoPlay();
+
+    }
+  );
+
+}
+```
+
+);
+
+mostrarSlide(0);
+
+iniciarAutoPlay();
+
 }
