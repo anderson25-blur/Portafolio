@@ -102,7 +102,11 @@ let sesionActual = {
 
     autenticado: false,
 
-    esAdmin: false
+    esAdmin: false,
+
+    email: null,
+
+    rol: null
 
 };
 
@@ -693,18 +697,35 @@ function setupUserModal() {
                 }
 
 
+                /*
+                 * =================================================
+                 * SESIÓN CORRECTA
+                 * =================================================
+                 *
+                 * La condición de administrador se basa
+                 * exclusivamente en el rol enviado por el servidor.
+                 */
+
                 sesionActual = {
 
                     autenticado: true,
 
-                    email: data.email,
+                    email:
+                        data.email || email,
 
-                    rol: data.rol,
+                    rol:
+                        data.rol || null,
 
                     esAdmin:
                         data.rol === 'admin'
 
                 };
+
+
+                console.log(
+                    'Sesión iniciada:',
+                    sesionActual
+                );
 
 
                 aplicarEstadoSesion();
@@ -775,11 +796,21 @@ function setupUserModal() {
                 }
 
 
+                /*
+                 * =================================================
+                 * LIMPIAR SESIÓN
+                 * =================================================
+                 */
+
                 sesionActual = {
 
                     autenticado: false,
 
-                    esAdmin: false
+                    esAdmin: false,
+
+                    email: null,
+
+                    rol: null
 
                 };
 
@@ -826,13 +857,27 @@ async function iniciarSesionYEstado() {
                     !!data.autenticado,
 
                 email:
-                    data.email,
+                    data.email || null,
 
                 rol:
-                    data.rol,
+                    data.rol || null,
 
                 esAdmin:
                     !!data.esAdmin
+
+            };
+
+        } else {
+
+            sesionActual = {
+
+                autenticado: false,
+
+                esAdmin: false,
+
+                email: null,
+
+                rol: null
 
             };
 
@@ -850,7 +895,11 @@ async function iniciarSesionYEstado() {
 
             autenticado: false,
 
-            esAdmin: false
+            esAdmin: false,
+
+            email: null,
+
+            rol: null
 
         };
 
@@ -888,6 +937,15 @@ function aplicarEstadoSesion() {
 
 
     /* ========================================================
+       VERIFICAR ADMINISTRADOR
+       ======================================================== */
+
+    const esAdministrador =
+        sesionActual.autenticado === true &&
+        sesionActual.esAdmin === true;
+
+
+    /* ========================================================
        ESTADO GENERAL DEL SITIO
        ======================================================== */
 
@@ -895,7 +953,7 @@ function aplicarEstadoSesion() {
 
         site.classList.toggle(
             'is-admin',
-            sesionActual.esAdmin === true
+            esAdministrador
         );
 
     }
@@ -909,35 +967,53 @@ function aplicarEstadoSesion() {
         .querySelectorAll('.admin-only')
         .forEach((el) => {
 
-            if (sesionActual.esAdmin === true) {
+            if (esAdministrador) {
 
                 /*
-                 * ADMINISTRADOR:
-                 * mostramos el elemento.
+                 * =================================================
+                 * ADMINISTRADOR
+                 * =================================================
+                 *
+                 * Mostramos el elemento.
                  */
 
                 el.hidden = false;
 
+
                 /*
-                 * Quitamos cualquier display:none
-                 * colocado anteriormente por JavaScript.
+                 * Eliminamos cualquier display:none
+                 * aplicado anteriormente por JavaScript.
                  */
 
-                el.style.removeProperty('display');
+                el.style.removeProperty(
+                    'display'
+                );
 
             } else {
 
                 /*
-                 * VISITANTE / NO AUTENTICADO:
-                 * ocultamos completamente el elemento.
+                 * =================================================
+                 * INVITADO / USUARIO NORMAL
+                 * =================================================
+                 *
+                 * Ocultamos completamente el elemento.
                  */
 
                 el.hidden = true;
 
+
                 /*
-                 * !important evita que reglas CSS
-                 * como .btn { display:inline-flex }
-                 * puedan volver a mostrarlo.
+                 * IMPORTANTE:
+                 *
+                 * .btn utiliza:
+                 *
+                 * display: inline-flex;
+                 *
+                 * Por eso hidden por sí solo puede ser
+                 * sobrescrito por CSS.
+                 *
+                 * Usamos !important para garantizar
+                 * que el botón desaparezca.
                  */
 
                 el.style.setProperty(
@@ -955,7 +1031,7 @@ function aplicarEstadoSesion() {
        USUARIO AUTENTICADO
        ======================================================== */
 
-    if (sesionActual.autenticado) {
+    if (sesionActual.autenticado === true) {
 
         if (chip) {
 
@@ -963,9 +1039,9 @@ function aplicarEstadoSesion() {
 
 
             chip.textContent =
-                sesionActual.esAdmin
-                    ? `Admin · ${sesionActual.email}`
-                    : sesionActual.email;
+                esAdministrador
+                    ? `Admin · ${sesionActual.email || ''}`
+                    : (sesionActual.email || 'Usuario');
 
         }
 
@@ -1014,6 +1090,7 @@ function aplicarEstadoSesion() {
     }
 
 }
+
 
 /* ============================================================
    ESTADO DE ARCHIVOS
@@ -1335,14 +1412,38 @@ function pintarTrabajo(
         }
 
 
+        /* ====================================================
+           ELIMINAR — SOLO ADMIN
+           ==================================================== */
+
         if (del) {
-
-            del.hidden =
-                !sesionActual.esAdmin;
-
 
             del.dataset.id =
                 archivo.id;
+
+
+            if (
+                sesionActual.autenticado === true &&
+                sesionActual.esAdmin === true
+            ) {
+
+                del.hidden = false;
+
+                del.style.removeProperty(
+                    'display'
+                );
+
+            } else {
+
+                del.hidden = true;
+
+                del.style.setProperty(
+                    'display',
+                    'none',
+                    'important'
+                );
+
+            }
 
         }
 
@@ -1386,6 +1487,12 @@ function pintarTrabajo(
         if (del) {
 
             del.hidden = true;
+
+            del.style.setProperty(
+                'display',
+                'none',
+                'important'
+            );
 
             delete del.dataset.id;
 
@@ -1540,14 +1647,38 @@ function pintarInfografia(
         }
 
 
+        /* ====================================================
+           ELIMINAR — SOLO ADMIN
+           ==================================================== */
+
         if (del) {
-
-            del.hidden =
-                !sesionActual.esAdmin;
-
 
             del.dataset.id =
                 archivo.id;
+
+
+            if (
+                sesionActual.autenticado === true &&
+                sesionActual.esAdmin === true
+            ) {
+
+                del.hidden = false;
+
+                del.style.removeProperty(
+                    'display'
+                );
+
+            } else {
+
+                del.hidden = true;
+
+                del.style.setProperty(
+                    'display',
+                    'none',
+                    'important'
+                );
+
+            }
 
         }
 
@@ -1600,6 +1731,13 @@ function pintarInfografia(
         if (del) {
 
             del.hidden = true;
+
+
+            del.style.setProperty(
+                'display',
+                'none',
+                'important'
+            );
 
 
             delete del.dataset.id;
@@ -1692,7 +1830,9 @@ function truncar(
 function setupAdminHandlers() {
 
     /*
+     * ========================================================
      * SUBIDA
+     * ========================================================
      */
 
     document.addEventListener(
@@ -1723,7 +1863,9 @@ function setupAdminHandlers() {
 
 
     /*
+     * ========================================================
      * ELIMINACIÓN
+     * ========================================================
      */
 
     document.addEventListener(
@@ -1736,9 +1878,22 @@ function setupAdminHandlers() {
                 );
 
 
+            if (!btn) {
+
+                return;
+
+            }
+
+
+            /*
+             * Si está oculto, nunca procesamos
+             * el botón.
+             */
+
             if (
-                !btn ||
                 btn.hidden ||
+                sesionActual.autenticado !== true ||
+                sesionActual.esAdmin !== true ||
                 !btn.dataset.id
             ) {
 
@@ -1771,10 +1926,13 @@ async function manejarSubida(input) {
 
 
     /* ========================================================
-       VERIFICAR SESIÓN
+       VERIFICAR SESIÓN DE ADMINISTRADOR
        ======================================================== */
 
-    if (!sesionActual.esAdmin) {
+    if (
+        sesionActual.autenticado !== true ||
+        sesionActual.esAdmin !== true
+    ) {
 
         alert(
             'Debes iniciar sesión como administrador para subir archivos.'
@@ -2315,15 +2473,35 @@ async function manejarSubida(input) {
     }
 
 }
+
+
 /* ============================================================
    ELIMINAR ARCHIVO
    ============================================================ */
 
 async function manejarEliminacion(btn) {
 
+    /*
+     * ========================================================
+     * SEGURIDAD DEL FRONTEND
+     * ========================================================
+     */
+
     if (
-        !sesionActual.esAdmin
+        sesionActual.autenticado !== true ||
+        sesionActual.esAdmin !== true
     ) {
+
+        return;
+
+    }
+
+
+    const id =
+        btn.dataset.id;
+
+
+    if (!id) {
 
         return;
 
@@ -2351,7 +2529,7 @@ async function manejarEliminacion(btn) {
                 API.eliminar +
                 '?id=' +
                 encodeURIComponent(
-                    btn.dataset.id
+                    id
                 ),
                 {
                     method: 'POST'
@@ -2378,6 +2556,11 @@ async function manejarEliminacion(btn) {
 
         }
 
+
+        /*
+         * Volvemos a consultar todos los archivos
+         * para actualizar inmediatamente la interfaz.
+         */
 
         await cargarEstadoArchivos();
 
