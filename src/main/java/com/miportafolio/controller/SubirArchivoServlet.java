@@ -36,7 +36,10 @@ public class SubirArchivoServlet extends HttpServlet {
             HttpServletResponse resp
     ) throws ServletException, IOException {
 
-        // TIPO
+        // =========================================================
+        // 1. VALIDAR TIPO
+        // =========================================================
+
         String tipo = req.getParameter("tipo");
 
         if (!Archivo.TIPO_TRABAJO.equals(tipo)
@@ -50,10 +53,14 @@ public class SubirArchivoServlet extends HttpServlet {
             return;
         }
 
-        // ARCHIVO
+        // =========================================================
+        // 2. VALIDAR ARCHIVO
+        // =========================================================
+
         Part filePart = req.getPart("archivo");
 
         if (filePart == null || filePart.getSize() == 0) {
+
             JsonRespuesta.error(
                     resp,
                     HttpServletResponse.SC_BAD_REQUEST,
@@ -62,12 +69,16 @@ public class SubirArchivoServlet extends HttpServlet {
             return;
         }
 
-        // UNIDAD, SEMANA Y SLOT
+        // =========================================================
+        // 3. VALIDAR UNIDAD, SEMANA Y SLOT
+        // =========================================================
+
         Integer unidad;
         Integer semana;
         Integer slot = null;
 
         try {
+
             String unidadParam = req.getParameter("unidad");
             String semanaParam = req.getParameter("semana");
 
@@ -85,7 +96,12 @@ public class SubirArchivoServlet extends HttpServlet {
             unidad = Integer.parseInt(unidadParam);
             semana = Integer.parseInt(semanaParam);
 
+            // -------------------------
+            // UNIDAD
+            // -------------------------
+
             if (unidad < 1 || unidad > 4) {
+
                 JsonRespuesta.error(
                         resp,
                         HttpServletResponse.SC_BAD_REQUEST,
@@ -94,7 +110,12 @@ public class SubirArchivoServlet extends HttpServlet {
                 return;
             }
 
+            // -------------------------
+            // SEMANA
+            // -------------------------
+
             if (semana < 1 || semana > 16) {
+
                 JsonRespuesta.error(
                         resp,
                         HttpServletResponse.SC_BAD_REQUEST,
@@ -103,11 +124,16 @@ public class SubirArchivoServlet extends HttpServlet {
                 return;
             }
 
+            // -------------------------
+            // SLOT PARA INFOGRAFÍAS
+            // -------------------------
+
             if (Archivo.TIPO_INFOGRAFIA.equals(tipo)) {
 
                 String slotParam = req.getParameter("slot");
 
                 if (slotParam == null || slotParam.isBlank()) {
+
                     JsonRespuesta.error(
                             resp,
                             HttpServletResponse.SC_BAD_REQUEST,
@@ -118,17 +144,20 @@ public class SubirArchivoServlet extends HttpServlet {
 
                 slot = Integer.parseInt(slotParam);
 
-                if (slot < 1 || slot > 4) {
+                // Ahora se permiten hasta 7 infografías por semana
+                if (slot < 1 || slot > 7) {
+
                     JsonRespuesta.error(
                             resp,
                             HttpServletResponse.SC_BAD_REQUEST,
-                            "El slot debe estar entre 1 y 4."
+                            "El slot debe estar entre 1 y 7."
                     );
                     return;
                 }
             }
 
         } catch (NumberFormatException e) {
+
             JsonRespuesta.error(
                     resp,
                     HttpServletResponse.SC_BAD_REQUEST,
@@ -137,16 +166,26 @@ public class SubirArchivoServlet extends HttpServlet {
             return;
         }
 
-        // NOMBRE Y EXTENSIÓN
+        // =========================================================
+        // 4. LIMPIAR NOMBRE Y OBTENER EXTENSIÓN
+        // =========================================================
+
         String nombreOriginal = filePart.getSubmittedFileName();
+
         nombreOriginal = limpiarNombreArchivo(nombreOriginal);
 
         String extension = obtenerExtension(nombreOriginal);
 
-        // VALIDAR FORMATO
+        // =========================================================
+        // 5. VALIDAR FORMATO
+        // =========================================================
+
         if (Archivo.TIPO_TRABAJO.equals(tipo)) {
 
+            // Los trabajos son solamente PDF
+
             if (!"pdf".equals(extension)) {
+
                 JsonRespuesta.error(
                         resp,
                         HttpServletResponse.SC_BAD_REQUEST,
@@ -156,6 +195,8 @@ public class SubirArchivoServlet extends HttpServlet {
             }
 
         } else {
+
+            // Las infografías pueden ser JPG, JPEG o PNG
 
             if (!"jpg".equals(extension)
                     && !"jpeg".equals(extension)
@@ -170,14 +211,20 @@ public class SubirArchivoServlet extends HttpServlet {
             }
         }
 
-        // LEER ARCHIVO
+        // =========================================================
+        // 6. LEER ARCHIVO
+        // =========================================================
+
         byte[] contenido;
 
         try (InputStream in = filePart.getInputStream()) {
+
             contenido = in.readAllBytes();
+
         }
 
         if (contenido.length == 0) {
+
             JsonRespuesta.error(
                     resp,
                     HttpServletResponse.SC_BAD_REQUEST,
@@ -186,10 +233,14 @@ public class SubirArchivoServlet extends HttpServlet {
             return;
         }
 
-        // SESIÓN
+        // =========================================================
+        // 7. VALIDAR SESIÓN
+        // =========================================================
+
         HttpSession session = req.getSession(false);
 
         if (session == null) {
+
             JsonRespuesta.error(
                     resp,
                     HttpServletResponse.SC_UNAUTHORIZED,
@@ -198,19 +249,26 @@ public class SubirArchivoServlet extends HttpServlet {
             return;
         }
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        Usuario usuario =
+                (Usuario) session.getAttribute("usuario");
 
-                if (usuario == null) {
-                    JsonRespuesta.error(
-                            resp,
-                            HttpServletResponse.SC_UNAUTHORIZED,
-                            "No hay un usuario autenticado."
-                    );
+        if (usuario == null) {
+
+            JsonRespuesta.error(
+                    resp,
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "No hay un usuario autenticado."
+            );
             return;
         }
 
+        // =========================================================
+        // 8. VALIDAR ADMINISTRADOR
+        // =========================================================
+
         if (!usuario.esAdmin()) {
-                JsonRespuesta.error(
+
+            JsonRespuesta.error(
                     resp,
                     HttpServletResponse.SC_FORBIDDEN,
                     "No tienes permisos de administrador para subir archivos."
@@ -218,12 +276,18 @@ public class SubirArchivoServlet extends HttpServlet {
             return;
         }
 
-        // CARPETA
+        // =========================================================
+        // 9. DEFINIR CARPETA EN SUPABASE STORAGE
+        // =========================================================
+
         String carpeta =
                 "unidad-" + unidad +
                 "/semana-" + String.format("%02d", semana);
 
-        // SUBIR Y REGISTRAR
+        // =========================================================
+        // 10. SUBIR A STORAGE Y REGISTRAR EN BASE DE DATOS
+        // =========================================================
+
         try {
 
             String path = storageService.subir(
@@ -233,6 +297,7 @@ public class SubirArchivoServlet extends HttpServlet {
                     carpeta
             );
 
+            // Crear registro del archivo
             Archivo archivo = new Archivo();
 
             archivo.setUnidad(unidad);
@@ -244,6 +309,7 @@ public class SubirArchivoServlet extends HttpServlet {
             archivo.setTamanoBytes(contenido.length);
             archivo.setSubidoPor(usuario.getEmail());
 
+            // Guardar registro en Supabase
             Archivo guardado = archivoDAO.insertar(archivo);
 
             JsonRespuesta.ok(
@@ -251,7 +317,10 @@ public class SubirArchivoServlet extends HttpServlet {
                     wrap(guardado)
             );
 
-        } catch (StorageService.StorageException | ArchivoDAO.DAOException e) {
+        } catch (
+                StorageService.StorageException
+                        | ArchivoDAO.DAOException e
+        ) {
 
             JsonRespuesta.error(
                     resp,
@@ -261,15 +330,24 @@ public class SubirArchivoServlet extends HttpServlet {
         }
     }
 
+    // =============================================================
+    // ENVOLVER RESPUESTA JSON
+    // =============================================================
+
     private org.json.JSONObject wrap(Archivo archivo) {
 
-        org.json.JSONObject json = new org.json.JSONObject();
+        org.json.JSONObject json =
+                new org.json.JSONObject();
 
         json.put("ok", true);
         json.put("archivo", archivo.aJsonPublico());
 
         return json;
     }
+
+    // =============================================================
+    // LIMPIAR NOMBRE DEL ARCHIVO
+    // =============================================================
 
     private String limpiarNombreArchivo(String nombre) {
 
@@ -279,16 +357,29 @@ public class SubirArchivoServlet extends HttpServlet {
 
         nombre = nombre.replace("\\", "/");
 
-        int ultimaBarra = nombre.lastIndexOf('/');
+        int ultimaBarra =
+                nombre.lastIndexOf('/');
 
         if (ultimaBarra >= 0) {
-            nombre = nombre.substring(ultimaBarra + 1);
+
+            nombre =
+                    nombre.substring(ultimaBarra + 1);
         }
 
-        nombre = nombre.replaceAll("[\\r\\n\\t]", "_");
+        nombre =
+                nombre.replaceAll(
+                        "[\\r\\n\\t]",
+                        "_"
+                );
 
-        return nombre.isBlank() ? "archivo" : nombre;
+        return nombre.isBlank()
+                ? "archivo"
+                : nombre;
     }
+
+    // =============================================================
+    // OBTENER EXTENSIÓN
+    // =============================================================
 
     private String obtenerExtension(String nombre) {
 
@@ -296,9 +387,12 @@ public class SubirArchivoServlet extends HttpServlet {
             return "";
         }
 
-        int punto = nombre.lastIndexOf('.');
+        int punto =
+                nombre.lastIndexOf('.');
 
-        if (punto < 0 || punto == nombre.length() - 1) {
+        if (punto < 0
+                || punto == nombre.length() - 1) {
+
             return "";
         }
 
