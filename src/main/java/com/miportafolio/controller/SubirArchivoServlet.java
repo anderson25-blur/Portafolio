@@ -200,11 +200,20 @@ public class SubirArchivoServlet extends HttpServlet {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        if (usuario == null) {
-            JsonRespuesta.error(
+                if (usuario == null) {
+                    JsonRespuesta.error(
+                            resp,
+                            HttpServletResponse.SC_UNAUTHORIZED,
+                            "No hay un usuario autenticado."
+                    );
+            return;
+        }
+
+        if (!usuario.esAdmin()) {
+                JsonRespuesta.error(
                     resp,
-                    HttpServletResponse.SC_UNAUTHORIZED,
-                    "No hay un usuario autenticado."
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "No tienes permisos de administrador para subir archivos."
             );
             return;
         }
