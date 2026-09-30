@@ -74,15 +74,18 @@ public class ArchivoDAO {
         }
     }
 
-    /** Busca por unidad + semana (trabajos de una semana puntual). Puede devolver más de uno. */
-    public List<Archivo> buscarPorSemana(int unidad, int semana) throws DAOException {
+    /**
+ * Busca todos los archivos de una unidad y semana,
+ * incluyendo trabajos e infografías.
+ */
+    public List<Archivo> buscarPorUnidadSemana(int unidad, int semana) throws DAOException {
         HttpUrl url = HttpUrl.parse(config.restEndpoint(TABLA)).newBuilder()
                 .addQueryParameter("select", "*")
-                .addQueryParameter("tipo", "eq." + Archivo.TIPO_TRABAJO)
                 .addQueryParameter("unidad", "eq." + unidad)
                 .addQueryParameter("semana", "eq." + semana)
-                .addQueryParameter("order", "creado_en.desc")
+                .addQueryParameter("order", "tipo.asc,slot.asc,creado_en.desc")
                 .build();
+
         return listar(url);
     }
 
