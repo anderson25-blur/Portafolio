@@ -887,29 +887,75 @@ function aplicarEstadoSesion() {
         document.getElementById('logoutBtn');
 
 
+    /* ========================================================
+       ESTADO GENERAL DEL SITIO
+       ======================================================== */
+
     if (site) {
 
         site.classList.toggle(
             'is-admin',
-            sesionActual.esAdmin
+            sesionActual.esAdmin === true
         );
 
     }
 
 
+    /* ========================================================
+       ELEMENTOS SOLO PARA ADMINISTRADOR
+       ======================================================== */
+
     document
         .querySelectorAll('.admin-only')
         .forEach((el) => {
 
-            el.hidden =
-                !sesionActual.esAdmin;
+            if (sesionActual.esAdmin === true) {
+
+                /*
+                 * ADMINISTRADOR:
+                 * mostramos el elemento.
+                 */
+
+                el.hidden = false;
+
+                /*
+                 * Quitamos cualquier display:none
+                 * colocado anteriormente por JavaScript.
+                 */
+
+                el.style.removeProperty('display');
+
+            } else {
+
+                /*
+                 * VISITANTE / NO AUTENTICADO:
+                 * ocultamos completamente el elemento.
+                 */
+
+                el.hidden = true;
+
+                /*
+                 * !important evita que reglas CSS
+                 * como .btn { display:inline-flex }
+                 * puedan volver a mostrarlo.
+                 */
+
+                el.style.setProperty(
+                    'display',
+                    'none',
+                    'important'
+                );
+
+            }
 
         });
 
 
-    if (
-        sesionActual.autenticado
-    ) {
+    /* ========================================================
+       USUARIO AUTENTICADO
+       ======================================================== */
+
+    if (sesionActual.autenticado) {
 
         if (chip) {
 
@@ -937,7 +983,13 @@ function aplicarEstadoSesion() {
 
         }
 
-    } else {
+    }
+
+    /* ========================================================
+       USUARIO NO AUTENTICADO
+       ======================================================== */
+
+    else {
 
         if (chip) {
 
@@ -962,7 +1014,6 @@ function aplicarEstadoSesion() {
     }
 
 }
-
 
 /* ============================================================
    ESTADO DE ARCHIVOS
