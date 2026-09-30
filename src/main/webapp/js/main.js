@@ -1710,28 +1710,16 @@ function setupAdminHandlers() {
 
 async function manejarSubida(input) {
 
-    const semanaItem =
-        input.closest(
-            '.semana-item'
-        );
+    const file = input.files && input.files[0];
+
+    if (!file) {
+        return;
+    }
 
 
-    const infoCard =
-        input.closest(
-            '.info-card'
-        );
-
-
-    const file =
-        input.files[0];
-
-
-    if (!file) return;
-
-
-    /*
-     * Verificación de sesión.
-     */
+    /* ========================================================
+       VERIFICAR SESIÓN
+       ======================================================== */
 
     if (!sesionActual.esAdmin) {
 
@@ -1739,75 +1727,69 @@ async function manejarSubida(input) {
             'Debes iniciar sesión como administrador para subir archivos.'
         );
 
-
         input.value = '';
 
-
         return;
-
     }
 
 
+    /* ========================================================
+       LOCALIZAR ELEMENTOS
+       ======================================================== */
+
+    const infoCard =
+        input.closest('.info-card');
+
+    const semanaItem =
+        input.closest('.semana-item');
+
+
     let tipo = null;
-
     let unidad = null;
-
     let semana = null;
-
     let slot = null;
 
 
-    /*
-     * ========================================================
-     * INFOGRAFÍA
-     * ========================================================
-     */
+    /* ========================================================
+       INFOGRAFÍA
+       ======================================================== */
 
     if (infoCard) {
 
-        tipo =
-            'infografia';
+        tipo = 'infografia';
 
 
         /*
-         * La tarjeta está dentro de una semana.
-         *
-         * Por eso obtenemos:
-         *
-         * Unidad
-         * Semana
-         * Slot
+         * Los datos principales están directamente
+         * en .info-card.
          */
 
-        if (semanaItem) {
-
-            unidad =
-                semanaItem.dataset.unidad;
-
-
-            semana =
-                semanaItem.dataset.semana;
-
-        } else {
-
-            /*
-             * Compatibilidad por si alguna página
-             * coloca los datos directamente en
-             * .info-card.
-             */
-
-            unidad =
-                infoCard.dataset.unidad;
+        unidad =
+            infoCard.dataset.unidad ||
+            semanaItem?.dataset.unidad ||
+            null;
 
 
-            semana =
-                infoCard.dataset.semana;
-
-        }
+        semana =
+            infoCard.dataset.semana ||
+            semanaItem?.dataset.semana ||
+            null;
 
 
         slot =
-            infoCard.dataset.slot;
+            infoCard.dataset.slot ||
+            null;
+
+
+        console.log(
+            'INFOGRAFÍA:',
+            {
+                unidad,
+                semana,
+                slot,
+                archivo: file.name
+            }
+        );
 
 
         if (
@@ -1816,6 +1798,18 @@ async function manejarSubida(input) {
             !slot
         ) {
 
+            console.error(
+                'Datos incompletos de la infografía:',
+                {
+                    infoCard,
+                    semanaItem,
+                    unidad,
+                    semana,
+                    slot
+                }
+            );
+
+
             alert(
                 'No se pudo determinar la unidad, semana o slot de la infografía.'
             );
@@ -1823,61 +1817,71 @@ async function manejarSubida(input) {
 
             input.value = '';
 
-
             return;
-
         }
 
 
-        /*
-         * Solamente JPG, JPEG y PNG.
-         */
+        /* ====================================================
+           VALIDAR EXTENSIÓN
+           ==================================================== */
 
-        if (
-            !esImagen(
-                file.name
-            )
-        ) {
+        if (!esImagen(file.name)) {
 
             alert(
                 'Las infografías deben estar en formato JPG, JPEG o PNG.'
             );
 
-
             input.value = '';
 
-
             return;
-
         }
 
     }
 
 
-    /*
-     * ========================================================
-     * TRABAJO
-     * ========================================================
-     */
+    /* ========================================================
+       TRABAJO
+       ======================================================== */
 
     else if (semanaItem) {
 
-        tipo =
-            'trabajo';
+        tipo = 'trabajo';
 
 
         unidad =
-            semanaItem.dataset.unidad;
+            semanaItem.dataset.unidad ||
+            null;
 
 
         semana =
-            semanaItem.dataset.semana;
+            semanaItem.dataset.semana ||
+            null;
+
+
+        console.log(
+            'TRABAJO:',
+            {
+                unidad,
+                semana,
+                archivo: file.name
+            }
+        );
 
 
         if (
             !unidad ||
             !semana
         ) {
+
+            console.error(
+                'Datos incompletos del trabajo:',
+                {
+                    semanaItem,
+                    unidad,
+                    semana
+                }
+            );
+
 
             alert(
                 'No se pudo determinar la unidad o semana del trabajo.'
@@ -1886,57 +1890,48 @@ async function manejarSubida(input) {
 
             input.value = '';
 
-
             return;
-
         }
 
 
-        /*
-         * Los trabajos solamente son PDF.
-         */
+        /* ====================================================
+           VALIDAR PDF
+           ==================================================== */
 
-        if (
-            !esPDF(
-                file.name
-            )
-        ) {
+        if (!esPDF(file.name)) {
 
             alert(
                 'El trabajo debe estar en formato PDF.'
             );
 
-
             input.value = '';
 
-
             return;
-
         }
 
     }
 
 
-    /*
-     * Si el input no pertenece a una
-     * semana o infografía válida,
-     * no hacemos nada.
-     */
+    /* ========================================================
+       INPUT NO VÁLIDO
+       ======================================================== */
 
     else {
+
+        console.error(
+            'El input de archivo no pertenece a una semana válida:',
+            input
+        );
 
         input.value = '';
 
         return;
-
     }
 
 
-    /*
-     * ========================================================
-     * FORM DATA
-     * ========================================================
-     */
+    /* ========================================================
+       FORM DATA
+       ======================================================== */
 
     const formData =
         new FormData();
@@ -1954,47 +1949,34 @@ async function manejarSubida(input) {
     );
 
 
-    /*
-     * Tanto trabajos como infografías
-     * llevan unidad y semana.
-     */
-
     formData.append(
         'unidad',
-        unidad
+        String(unidad)
     );
 
 
     formData.append(
         'semana',
-        semana
+        String(semana)
     );
 
 
-    /*
-     * Slot solamente para infografías.
-     */
-
-    if (
-        tipo === 'infografia'
-    ) {
+    if (tipo === 'infografia') {
 
         formData.append(
             'slot',
-            slot
+            String(slot)
         );
 
     }
 
 
-    /*
-     * Indicador visual de carga.
-     */
+    /* ========================================================
+       INDICADOR DE CARGA
+       ======================================================== */
 
     const label =
-        input.closest(
-            'label'
-        );
+        input.closest('label');
 
 
     if (label) {
@@ -2008,12 +1990,24 @@ async function manejarSubida(input) {
 
     try {
 
+        console.log(
+            'Enviando archivo:',
+            {
+                tipo,
+                unidad,
+                semana,
+                slot,
+                nombre: file.name,
+                tamano: file.size
+            }
+        );
+
+
         const res =
             await fetch(
                 API.subir,
                 {
                     method: 'POST',
-
                     body: formData
                 }
             );
@@ -2021,6 +2015,15 @@ async function manejarSubida(input) {
 
         const data =
             await res.json();
+
+
+        console.log(
+            'Respuesta del servidor:',
+            {
+                status: res.status,
+                data
+            }
+        );
 
 
         if (
@@ -2033,15 +2036,33 @@ async function manejarSubida(input) {
                 'No se pudo subir el archivo.'
             );
 
-
             return;
-
         }
 
 
+        /* ====================================================
+           SUBIDA CORRECTA
+           ==================================================== */
+
+        alert(
+            tipo === 'infografia'
+                ? 'Infografía subida correctamente.'
+                : 'Trabajo subido correctamente.'
+        );
+
+
         /*
-         * Recargamos los archivos
-         * después de una subida exitosa.
+         * Volvemos a consultar Supabase.
+         *
+         * Esto hace que aparezcan:
+         *
+         * VER
+         * DESCARGAR
+         * ELIMINAR
+         *
+         * y, para imágenes:
+         *
+         * la miniatura.
          */
 
         await cargarEstadoArchivos();
@@ -2074,7 +2095,6 @@ async function manejarSubida(input) {
     }
 
 }
-
 
 /* ============================================================
    ELIMINAR ARCHIVO
