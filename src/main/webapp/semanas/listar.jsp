@@ -85,7 +85,7 @@ if (unidad < 1 || unidad > 4) {
 
     <div class="semanas-lista">
 
-        <% for (int semana = 1; semana <= 16; semana++) { %>
+        <% for (int semana = 1; semana <= 4; semana++) { %>
 
             <article
                 class="semana-item"
