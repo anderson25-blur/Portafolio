@@ -2053,7 +2053,7 @@ async function manejarSubida(input) {
         if (
             !Number.isInteger(unidadNumero) ||
             unidadNumero < 1 ||
-            unidadNumero > 4
+            unidadNumero > 7
         ) {
 
             console.error(
