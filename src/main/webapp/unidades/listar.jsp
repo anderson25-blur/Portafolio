@@ -587,6 +587,46 @@
     </section>
 
 </main>
+<script>
+    const CONTEXTO = '<%= request.getContextPath() %>';
 
+    async function verificarSesion() {
+        try {
+            const respuesta = await fetch(CONTEXTO + '/api/sesion', {
+                method: 'GET',
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+
+            if (!respuesta.ok) {
+                return;
+            }
+
+            const data = await respuesta.json();
+
+            console.log('Sesión actual:', data);
+
+            // Guardamos el estado para que otras páginas puedan utilizarlo
+            window.sesionActual = {
+                autenticado: data.autenticado === true,
+                esAdmin: data.rol === 'admin',
+                email: data.email || null,
+                rol: data.rol || null
+            };
+
+        } catch (error) {
+            console.error('Error al consultar la sesión:', error);
+
+            window.sesionActual = {
+                autenticado: false,
+                esAdmin: false,
+                email: null,
+                rol: null
+            };
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', verificarSesion);
+</script>
 </body>
 </html>
