@@ -849,39 +849,57 @@ async function iniciarSesionYEstado() {
             await res.json();
 
 
-        if (data.ok) {
+        /*
+         * =====================================================
+         * LA API /api/sesion NO ENVÍA "ok"
+         * =====================================================
+         *
+         * La respuesta real es:
+         *
+         * {
+         *     "autenticado": true,
+         *     "esAdmin": true,
+         *     "email": "...",
+         *     "rol": "admin"
+         * }
+         *
+         * Por eso NO debemos comprobar data.ok.
+         */
 
-            sesionActual = {
 
-                autenticado:
-                    !!data.autenticado,
+        if (!res.ok) {
 
-                email:
-                    data.email || null,
-
-                rol:
-                    data.rol || null,
-
-                esAdmin:
-                    !!data.esAdmin
-
-            };
-
-        } else {
-
-            sesionActual = {
-
-                autenticado: false,
-
-                esAdmin: false,
-
-                email: null,
-
-                rol: null
-
-            };
+            throw new Error(
+                data.error ||
+                'No se pudo consultar la sesión.'
+            );
 
         }
+
+
+        sesionActual = {
+
+            autenticado:
+                data.autenticado === true,
+
+            email:
+                data.email || null,
+
+            rol:
+                data.rol || null,
+
+            esAdmin:
+                data.esAdmin === true ||
+                data.rol === 'admin'
+
+        };
+
+
+        console.log(
+            'Estado de sesión:',
+            sesionActual
+        );
+
 
     } catch (err) {
 
@@ -912,8 +930,6 @@ async function iniciarSesionYEstado() {
     await cargarEstadoArchivos();
 
 }
-
-
 /* ============================================================
    APLICAR ESTADO DE SESIÓN
    ============================================================ */
