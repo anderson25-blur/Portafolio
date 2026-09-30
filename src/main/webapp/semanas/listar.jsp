@@ -39,7 +39,6 @@ switch (unidad) {
 
         descripcionUnidad =
             "Conceptos fundamentales, principios, atributos de calidad, estilos, patrones y documentación de la arquitectura de software.";
-
         break;
 
     case 2:
@@ -48,7 +47,6 @@ switch (unidad) {
 
         descripcionUnidad =
             "Principios de POO, modelado UML, diseño de componentes, capas y validación del modelo arquitectónico.";
-
         break;
 
     case 3:
@@ -57,7 +55,6 @@ switch (unidad) {
 
         descripcionUnidad =
             "Comunicación entre componentes, integración de sistemas, APIs, servicios web, interfaces y transmisión de datos.";
-
         break;
 
     case 4:
@@ -66,10 +63,8 @@ switch (unidad) {
 
         descripcionUnidad =
             "Frameworks, estándares, buenas prácticas, implementación, evaluación y optimización de arquitecturas de software.";
-
         break;
 }
-
 %>
 
 <!DOCTYPE html>
@@ -339,7 +334,7 @@ switch (unidad) {
     }
 
     /* =====================================================
-       DESCRIPCIÓN DE SEMANA
+       DESCRIPCIÓN
        ===================================================== */
 
     .semana-descripcion {
@@ -461,6 +456,11 @@ switch (unidad) {
         line-height: 1.5;
     }
 
+    .archivo-status.is-uploaded {
+        color: #93d500;
+        font-weight: 700;
+    }
+
     .archivo-actions,
     .info-actions {
         display: flex;
@@ -536,6 +536,22 @@ switch (unidad) {
 
     .admin-only {
         margin-left: auto;
+    }
+
+    /*
+     * IMPORTANTE:
+     *
+     * .btn utiliza display:inline-flex.
+     * Eso puede sobrescribir el comportamiento
+     * visual del atributo hidden.
+     *
+     * Esta regla garantiza que los elementos
+     * de administrador permanezcan ocultos
+     * mientras no exista una sesión admin.
+     */
+
+    .admin-only[hidden] {
+        display: none !important;
     }
 
     .admin-only input[type="file"] {
@@ -657,20 +673,115 @@ switch (unidad) {
             rgba(0, 0, 0, .88);
     }
 
-    #archivoViewer.open {
+    #archivoViewer[aria-hidden="false"] {
         display: flex;
     }
 
-    #archivoViewer iframe,
-    #archivoViewer img {
-        max-width: 95vw;
-        max-height: 90vh;
+    .archivo-viewer-overlay {
+        position: absolute;
+
+        inset: 0;
+    }
+
+    .archivo-viewer-panel {
+        position: relative;
+
+        z-index: 2;
+
+        width: min(1200px, 95vw);
+        height: min(90vh, 900px);
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 50px 20px 20px;
 
         border: 1px solid #263127;
 
-        border-radius: 10px;
+        border-radius: 14px;
 
-        background: #0a0f0c;
+        background: #0d120e;
+
+        box-shadow:
+            0 25px 80px
+            rgba(0, 0, 0, .60);
+    }
+
+    .archivo-viewer-content {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+    }
+
+    .archivo-viewer-image {
+        max-width: 100%;
+        max-height: 100%;
+
+        object-fit: contain;
+
+        border-radius: 8px;
+    }
+
+    .archivo-viewer-pdf {
+        width: 100%;
+        height: 100%;
+
+        border: none;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+    }
+
+    .archivo-viewer-close {
+        position: absolute;
+
+        top: 12px;
+        right: 15px;
+
+        z-index: 3;
+
+        width: 38px;
+        height: 38px;
+
+        border: 1px solid #263127;
+
+        border-radius: 8px;
+
+        color: #b9c4bc;
+
+        background: #121812;
+
+        cursor: pointer;
+
+        font-size: 25px;
+
+        line-height: 1;
+
+        transition:
+            color .2s ease,
+            border-color .2s ease,
+            background .2s ease;
+    }
+
+    .archivo-viewer-close:hover {
+        color: #ff4630;
+
+        border-color: #ff4630;
+
+        background: #171f18;
+    }
+
+    body.viewer-open {
+        overflow: hidden;
     }
 
     /* =====================================================
@@ -772,8 +883,6 @@ switch (unidad) {
         <%= descripcionUnidad %>
     </p>
 
-    <!-- VOLVER A UNIDADES -->
-
     <a
         class="btn-back"
         href="../unidades/listar.jsp">
@@ -792,253 +901,478 @@ switch (unidad) {
 <div class="semanas-lista">
 
 
-    <% for (int semana = semanaInicio; semana <= semanaFin; semana++) { %>
+<% for (int semana = semanaInicio; semana <= semanaFin; semana++) { %>
+
+<%
+
+String tituloSemana = "";
+String descripcionSemana = "";
+
+switch (semana) {
+
+    case 1:
+
+        tituloSemana =
+            "Introducción a la Arquitectura de Software";
+
+        descripcionSemana =
+            "Conceptos, objetivos e importancia de la arquitectura de software.";
+
+        break;
+
+    case 2:
+
+        tituloSemana =
+            "Principios, Atributos de Calidad y Estándares Internacionales";
+
+        descripcionSemana =
+            "Calidad y sostenibilidad del proyecto según estándares internacionales.";
+
+        break;
+
+    case 3:
+
+        tituloSemana =
+            "Estilos y Patrones Arquitectónicos";
+
+        descripcionSemana =
+            "Comparación de estilos y selección del patrón más adecuado.";
+
+        break;
+
+    case 4:
+
+        tituloSemana =
+            "Documentación y Representación Arquitectónica";
+
+        descripcionSemana =
+            "Modelos, diagramas y buenas prácticas de documentación.";
+
+        break;
+
+    case 5:
+
+        tituloSemana =
+            "Principios de POO aplicados a la Arquitectura";
+
+        descripcionSemana =
+            "Abstracción, encapsulamiento, herencia y polimorfismo.";
+
+        break;
+
+    case 6:
+
+        tituloSemana =
+            "Modelado Arquitectónico con UML";
+
+        descripcionSemana =
+            "Diagramas de casos de uso, clases y paquetes.";
+
+        break;
+
+    case 7:
+
+        tituloSemana =
+            "Diseño de Componentes y Capas de la Arquitectura";
+
+        descripcionSemana =
+            "Responsabilidades, cohesión y bajo acoplamiento.";
+
+        break;
+
+    case 8:
+
+        tituloSemana =
+            "Elaboración y Validación del Modelo Arquitectónico";
+
+        descripcionSemana =
+            "Artefactos de modelado y sustento técnico de las decisiones.";
+
+        break;
+
+    case 9:
+
+        tituloSemana =
+            "Fundamentos de la Comunicación entre Arquitecturas";
+
+        descripcionSemana =
+            "Mecanismos, protocolos y flujos de información entre componentes.";
+
+        break;
+
+    case 10:
+
+        tituloSemana =
+            "Métodos y Tecnologías para la Integración de Sistemas";
+
+        descripcionSemana =
+            "Servicios web, APIs y mensajería para integrar aplicaciones.";
+
+        break;
+
+    case 11:
+
+        tituloSemana =
+            "Diseño de Interfaces y Transmisión de Datos";
+
+        descripcionSemana =
+            "Interoperabilidad y modelado de servicios entre componentes.";
+
+        break;
+
+    case 12:
+
+        tituloSemana =
+            "Implementación y Validación de la Comunicación Arquitectónica";
+
+        descripcionSemana =
+            "Pruebas de integridad, disponibilidad y eficiencia de la integración.";
+
+        break;
+
+    case 13:
+
+        tituloSemana =
+            "Fundamentos de Frameworks de Arquitectura de Software";
+
+        descripcionSemana =
+            "Características, ventajas y ámbitos de aplicación de los principales frameworks.";
+
+        break;
+
+    case 14:
+
+        tituloSemana =
+            "Normas y Buenas Prácticas en Arquitectura de Software";
+
+        descripcionSemana =
+            "Calidad, interoperabilidad, seguridad y rendimiento del proyecto.";
+
+        break;
+
+    case 15:
+
+        tituloSemana =
+            "Implementación de la Arquitectura utilizando Frameworks";
+
+        descripcionSemana =
+            "Componentes, patrones de diseño y mecanismos de comunicación.";
+
+        break;
+
+    case 16:
+
+        tituloSemana =
+            "Evaluación y Optimización de la Arquitectura de Software";
+
+        descripcionSemana =
+            "Métricas de calidad y mejoras finales sobre lo implementado.";
+
+        break;
+}
 
 
-    <%
-        String tituloSemana = "";
-        String descripcionSemana = "";
+/*
+ * =========================================================
+ * CANTIDAD DE INFOGRAFÍAS POR SEMANA
+ * =========================================================
+ *
+ * Semana 1 -> 7
+ * Semana 2 -> 4
+ * Semana 3 -> 1
+ * Semana 4 -> 5
+ *
+ * Desde semana 5:
+ * 4 espacios por semana.
+ */
 
-        switch (semana) {
+int cantidadInfografias = 4;
 
-            case 1:
-                tituloSemana =
-                    "Introducción a la Arquitectura de Software";
+switch (semana) {
 
-                descripcionSemana =
-                    "Conceptos, objetivos e importancia de la arquitectura de software.";
-                break;
+    case 1:
+        cantidadInfografias = 7;
+        break;
 
-            case 2:
-                tituloSemana =
-                    "Principios, Atributos de Calidad y Estándares Internacionales";
+    case 2:
+        cantidadInfografias = 4;
+        break;
 
-                descripcionSemana =
-                    "Calidad y sostenibilidad del proyecto según estándares internacionales.";
-                break;
+    case 3:
+        cantidadInfografias = 1;
+        break;
 
-            case 3:
-                tituloSemana =
-                    "Estilos y Patrones Arquitectónicos";
+    case 4:
+        cantidadInfografias = 5;
+        break;
 
-                descripcionSemana =
-                    "Comparación de estilos y selección del patrón más adecuado.";
-                break;
+    default:
+        cantidadInfografias = 4;
+        break;
+}
 
-            case 4:
-                tituloSemana =
-                    "Documentación y Representación Arquitectónica";
-
-                descripcionSemana =
-                    "Modelos, diagramas y buenas prácticas de documentación.";
-                break;
-
-            case 5:
-                tituloSemana =
-                    "Principios de POO aplicados a la Arquitectura";
-
-                descripcionSemana =
-                    "Abstracción, encapsulamiento, herencia y polimorfismo.";
-                break;
-
-            case 6:
-                tituloSemana =
-                    "Modelado Arquitectónico con UML";
-
-                descripcionSemana =
-                    "Diagramas de casos de uso, clases y paquetes.";
-                break;
-
-            case 7:
-                tituloSemana =
-                    "Diseño de Componentes y Capas de la Arquitectura";
-
-                descripcionSemana =
-                    "Responsabilidades, cohesión y bajo acoplamiento.";
-                break;
-
-            case 8:
-                tituloSemana =
-                    "Elaboración y Validación del Modelo Arquitectónico";
-
-                descripcionSemana =
-                    "Artefactos de modelado y sustento técnico de las decisiones.";
-                break;
-
-            case 9:
-                tituloSemana =
-                    "Fundamentos de la Comunicación entre Arquitecturas";
-
-                descripcionSemana =
-                    "Mecanismos, protocolos y flujos de información entre componentes.";
-                break;
-
-            case 10:
-                tituloSemana =
-                    "Métodos y Tecnologías para la Integración de Sistemas";
-
-                descripcionSemana =
-                    "Servicios web, APIs y mensajería para integrar aplicaciones.";
-                break;
-
-            case 11:
-                tituloSemana =
-                    "Diseño de Interfaces y Transmisión de Datos";
-
-                descripcionSemana =
-                    "Interoperabilidad y modelado de servicios entre componentes.";
-                break;
-
-            case 12:
-                tituloSemana =
-                    "Implementación y Validación de la Comunicación Arquitectónica";
-
-                descripcionSemana =
-                    "Pruebas de integridad, disponibilidad y eficiencia de la integración.";
-                break;
-
-            case 13:
-                tituloSemana =
-                    "Fundamentos de Frameworks de Arquitectura de Software";
-
-                descripcionSemana =
-                    "Características, ventajas y ámbitos de aplicación de los principales frameworks.";
-                break;
-
-            case 14:
-                tituloSemana =
-                    "Normas y Buenas Prácticas en Arquitectura de Software";
-
-                descripcionSemana =
-                    "Calidad, interoperabilidad, seguridad y rendimiento del proyecto.";
-                break;
-
-            case 15:
-                tituloSemana =
-                    "Implementación de la Arquitectura utilizando Frameworks";
-
-                descripcionSemana =
-                    "Componentes, patrones de diseño y mecanismos de comunicación.";
-                break;
-
-            case 16:
-                tituloSemana =
-                    "Evaluación y Optimización de la Arquitectura de Software";
-
-                descripcionSemana =
-                    "Métricas de calidad y mejoras finales sobre lo implementado.";
-                break;
-        }
-    %>
+%>
 
 
-    <article
-        class="semana-item"
-        data-unidad="<%= unidad %>"
-        data-semana="<%= semana %>">
+<article
+    class="semana-item"
+    data-unidad="<%= unidad %>"
+    data-semana="<%= semana %>">
 
 
-        <!-- =================================================
-             CABECERA
-             ================================================= -->
+<!-- =====================================================
+     CABECERA
+     ===================================================== -->
 
-        <div class="semana-header">
+<div class="semana-header">
 
-            <div class="semana-header-info">
+    <div class="semana-header-info">
 
-                <span class="semana-numero">
-                    SEMANA <%= String.format("%02d", semana) %>
-                </span>
+        <span class="semana-numero">
 
-                <h2>
-                    <%= tituloSemana %>
-                </h2>
+            SEMANA <%= String.format("%02d", semana) %>
+
+        </span>
+
+        <h2>
+
+            <%= tituloSemana %>
+
+        </h2>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DESCRIPCIÓN
+     ===================================================== -->
+
+<div class="semana-descripcion">
+
+    <%= descripcionSemana %>
+
+</div>
+
+
+<!-- =====================================================
+     TRABAJOS
+     ===================================================== -->
+
+<section
+    class="material-section trabajo-section">
+
+
+    <div class="material-header">
+
+        <div>
+
+            <span class="material-icon">
+                📚
+            </span>
+
+            <div>
+
+                <h3>
+                    Trabajos
+                </h3>
+
+                <p>
+                    Documento PDF de la semana.
+                </p>
 
             </div>
 
         </div>
 
 
-        <!-- =================================================
-             DESCRIPCIÓN
-             ================================================= -->
+        <!-- SUBIR TRABAJO -->
 
-        <div class="semana-descripcion">
+        <label
+            class="btn btn-small admin-only"
+            hidden>
 
-            <%= descripcionSemana %>
+            + Subir PDF
+
+            <input
+                type="file"
+                hidden
+                accept=".pdf,application/pdf"
+                data-upload-input>
+
+        </label>
+
+    </div>
+
+
+    <!-- ESTADO DEL TRABAJO -->
+
+    <div class="archivo-item">
+
+        <div class="archivo-info">
+
+            <span
+                class="archivo-status"
+                data-status>
+
+                Sin trabajo
+
+            </span>
 
         </div>
 
 
-        <!-- =================================================
-             TRABAJOS
-             ================================================= -->
-
-        <section
-            class="material-section trabajo-section">
+        <div class="archivo-actions">
 
 
-            <div class="material-header">
+            <!-- VER -->
 
-                <div>
+            <a
+                class="btn btn-small"
+                data-view
+                target="_blank"
+                rel="noopener"
+                hidden>
 
-                    <span class="material-icon">
-                        📚
-                    </span>
+                👁 Ver
 
-                    <div>
-
-                        <h3>
-                            Trabajos
-                        </h3>
-
-                        <p>
-                            Documento PDF de la semana.
-                        </p>
-
-                    </div>
-
-                </div>
+            </a>
 
 
-                <!-- SUBIR TRABAJO -->
+            <!-- DESCARGAR -->
 
-                <label
-                    class="btn btn-small admin-only"
+            <a
+                class="btn btn-small"
+                data-download
+                hidden>
+
+                ↓ Descargar
+
+            </a>
+
+
+            <!-- ELIMINAR -->
+
+            <button
+                type="button"
+                class="btn btn-small btn-danger admin-only"
+                data-delete
+                hidden>
+
+                Eliminar
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     INFOGRAFÍAS
+     ===================================================== -->
+
+<section
+    class="material-section infografias-section">
+
+
+    <div class="material-header">
+
+        <div>
+
+            <span class="material-icon">
+                🖼️
+            </span>
+
+            <div>
+
+                <h3>
+                    Infografías
+                </h3>
+
+                <p>
+                    Imágenes JPG, JPEG o PNG de la semana.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         GRID DE INFOGRAFÍAS
+         ================================================= -->
+
+    <div
+        class="info-grid"
+        data-info-grid>
+
+
+<%
+for (
+    int slot = 1;
+    slot <= cantidadInfografias;
+    slot++
+) {
+%>
+
+
+        <article
+            class="info-card"
+            data-unidad="<%= unidad %>"
+            data-semana="<%= semana %>"
+            data-slot="<%= slot %>">
+
+
+            <div class="info-preview">
+
+                <img
+                    data-thumb-img
+                    alt="Infografía <%= slot %>"
                     hidden>
 
-                    + Subir PDF
+                <span data-empty-text>
 
-                    <input
-                        type="file"
-                        hidden
-                        accept=".pdf,application/pdf"
-                        data-upload-input>
+                    Sin infografía
 
-                </label>
+                </span>
 
             </div>
 
 
-            <!-- ESTADO DEL TRABAJO -->
+            <div class="info-card-footer">
 
-            <div class="archivo-item">
+                <span>
 
+                    Infografía <%= slot %>
 
-                <div class="archivo-info">
-
-                    <span
-                        class="archivo-status"
-                        data-status>
-
-                        Sin trabajo
-
-                    </span>
-
-                </div>
+                </span>
 
 
-                <div class="archivo-actions">
+                <div class="info-actions">
+
+
+                    <!-- SUBIR -->
+
+                    <label
+                        class="btn btn-small admin-only"
+                        hidden>
+
+                        + Subir
+
+                        <input
+                            type="file"
+                            hidden
+                            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                            data-upload-input>
+
+                    </label>
 
 
                     <!-- VER -->
@@ -1062,7 +1396,7 @@ switch (unidad) {
                         data-download
                         hidden>
 
-                        ↓ Descargar
+                        ↓
 
                     </a>
 
@@ -1075,7 +1409,7 @@ switch (unidad) {
                         data-delete
                         hidden>
 
-                        Eliminar
+                        ×
 
                     </button>
 
@@ -1084,408 +1418,25 @@ switch (unidad) {
 
             </div>
 
-        </section>
+        </article>
 
 
-        <!-- =================================================
-             INFOGRAFÍAS
-             ================================================= -->
+<%
+}
+%>
 
-        <section
-            class="material-section infografias-section">
 
+    </div>
 
-            <div class="material-header">
+</section>
 
-                <div>
 
-                    <span class="material-icon">
-                        🖼️
-                    </span>
+</article>
 
-                    <div>
 
-                        <h3>
-                            Infografías
-                        </h3>
-
-                        <p>
-                            Imágenes JPG, JPEG o PNG de la semana.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 GRID DE INFOGRAFÍAS
-                 ================================================= -->
-
-            <div
-                class="info-grid"
-                data-info-grid>
-
-
-                <!-- INFOGRAFÍA 1 -->
-
-                <article
-                    class="info-card"
-                    data-unidad="<%= unidad %>"
-                    data-semana="<%= semana %>"
-                    data-slot="1">
-
-
-                    <div class="info-preview">
-
-                        <img
-                            data-thumb-img
-                            alt="Infografía 1"
-                            hidden>
-
-                        <span data-empty-text>
-                            Sin infografía
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-card-footer">
-
-                        <span>
-                            Infografía 1
-                        </span>
-
-
-                        <div class="info-actions">
-
-
-                            <label
-                                class="btn btn-small admin-only"
-                                hidden>
-
-                                + Subir
-
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                                    data-upload-input>
-
-                            </label>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-view
-                                target="_blank"
-                                rel="noopener"
-                                hidden>
-
-                                👁 Ver
-
-                            </a>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-download
-                                hidden>
-
-                                ↓
-
-                            </a>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-small btn-danger admin-only"
-                                data-delete
-                                hidden>
-
-                                ×
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- INFOGRAFÍA 2 -->
-
-                <article
-                    class="info-card"
-                    data-unidad="<%= unidad %>"
-                    data-semana="<%= semana %>"
-                    data-slot="2">
-
-
-                    <div class="info-preview">
-
-                        <img
-                            data-thumb-img
-                            alt="Infografía 2"
-                            hidden>
-
-                        <span data-empty-text>
-                            Sin infografía
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-card-footer">
-
-                        <span>
-                            Infografía 2
-                        </span>
-
-
-                        <div class="info-actions">
-
-
-                            <label
-                                class="btn btn-small admin-only"
-                                hidden>
-
-                                + Subir
-
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                                    data-upload-input>
-
-                            </label>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-view
-                                target="_blank"
-                                rel="noopener"
-                                hidden>
-
-                                👁 Ver
-
-                            </a>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-download
-                                hidden>
-
-                                ↓
-
-                            </a>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-small btn-danger admin-only"
-                                data-delete
-                                hidden>
-
-                                ×
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- INFOGRAFÍA 3 -->
-
-                <article
-                    class="info-card"
-                    data-unidad="<%= unidad %>"
-                    data-semana="<%= semana %>"
-                    data-slot="3">
-
-
-                    <div class="info-preview">
-
-                        <img
-                            data-thumb-img
-                            alt="Infografía 3"
-                            hidden>
-
-                        <span data-empty-text>
-                            Sin infografía
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-card-footer">
-
-                        <span>
-                            Infografía 3
-                        </span>
-
-
-                        <div class="info-actions">
-
-
-                            <label
-                                class="btn btn-small admin-only"
-                                hidden>
-
-                                + Subir
-
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                                    data-upload-input>
-
-                            </label>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-view
-                                target="_blank"
-                                rel="noopener"
-                                hidden>
-
-                                👁 Ver
-
-                            </a>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-download
-                                hidden>
-
-                                ↓
-
-                            </a>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-small btn-danger admin-only"
-                                data-delete
-                                hidden>
-
-                                ×
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-                <!-- INFOGRAFÍA 4 -->
-
-                <article
-                    class="info-card"
-                    data-unidad="<%= unidad %>"
-                    data-semana="<%= semana %>"
-                    data-slot="4">
-
-
-                    <div class="info-preview">
-
-                        <img
-                            data-thumb-img
-                            alt="Infografía 4"
-                            hidden>
-
-                        <span data-empty-text>
-                            Sin infografía
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-card-footer">
-
-                        <span>
-                            Infografía 4
-                        </span>
-
-
-                        <div class="info-actions">
-
-
-                            <label
-                                class="btn btn-small admin-only"
-                                hidden>
-
-                                + Subir
-
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                                    data-upload-input>
-
-                            </label>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-view
-                                target="_blank"
-                                rel="noopener"
-                                hidden>
-
-                                👁 Ver
-
-                            </a>
-
-
-                            <a
-                                class="btn btn-small"
-                                data-download
-                                hidden>
-
-                                ↓
-
-                            </a>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-small btn-danger admin-only"
-                                data-delete
-                                hidden>
-
-                                ×
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-
-            </div>
-
-        </section>
-
-
-    </article>
-
-
-    <% } %>
+<%
+}
+%>
 
 
 </div>
@@ -1494,9 +1445,10 @@ switch (unidad) {
 
 </main>
 
-<!-- =============================================================
+
+<!-- =====================================================
      VISOR DE ARCHIVOS
-     ============================================================= -->
+     ===================================================== -->
 
 <div
     id="archivoViewer"
@@ -1504,35 +1456,40 @@ switch (unidad) {
     hidden
     aria-hidden="true">
 
-<div class="archivo-viewer-overlay"></div>
-
-
-<div
-    class="archivo-viewer-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Visualizador de archivo">
-
-
-    <button
-        type="button"
-        id="archivoViewerClose"
-        class="archivo-viewer-close">
-
-        ×
-
-    </button>
-
 
     <div
-        id="archivoViewerContent"
-        class="archivo-viewer-content">
+        class="archivo-viewer-overlay">
     </div>
 
 
-</div>
+    <div
+        class="archivo-viewer-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Visualizador de archivo">
+
+
+        <button
+            type="button"
+            id="archivoViewerClose"
+            class="archivo-viewer-close">
+
+            ×
+
+        </button>
+
+
+        <div
+            id="archivoViewerContent"
+            class="archivo-viewer-content">
+
+        </div>
+
+
+    </div>
 
 </div>
+
 
 <script src="../js/main.js"></script>
 
