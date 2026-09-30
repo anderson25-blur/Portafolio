@@ -39,7 +39,10 @@ public class ListarArchivosServlet extends HttpServlet {
             if (Archivo.TIPO_INFOGRAFIA.equals(tipo)) {
                 resultado = archivoDAO.listarInfografias();
             } else if (unidadParam != null && semanaParam != null) {
-                resultado = archivoDAO.buscarPorSemana(Integer.parseInt(unidadParam), Integer.parseInt(semanaParam));
+                resultado = archivoDAO.buscarPorUnidadSemana(
+                Integer.parseInt(unidadParam),
+                Integer.parseInt(semanaParam)
+                );
             } else {
                 resultado = archivoDAO.listarTodosLosTrabajos();
             }
