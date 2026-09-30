@@ -1747,4 +1747,294 @@ a:focus-visible, button:focus-visible {
   }
 
 }
+   /* =========================================================
+   SOBRE MÍ
+   ========================================================= */
+
+.about-section {
+    width: min(1200px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 90px 0 110px;
+}
+
+.about-section .section-head {
+    margin-bottom: 45px;
+}
+
+.about-section .section-head h2 {
+    margin: 0 0 10px;
+    font-family: "Rajdhani", sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.about-section .section-head p {
+    margin: 0;
+    color: #9da4ad;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1rem;
+}
+
+
+/* GRID */
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+
+/* TARJETAS */
+
+.about-card {
+    position: relative;
+    display: flex;
+    gap: 24px;
+
+    min-height: 220px;
+    padding: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.055),
+            rgba(255, 255, 255, 0.015)
+        );
+
+    border: 1px solid rgba(147, 213, 0, 0.16);
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.22);
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Línea superior */
+
+.about-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #93d500,
+        transparent
+    );
+
+    opacity: 0.7;
+}
+
+
+/* Efecto hover */
+
+.about-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(147, 213, 0, 0.42);
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.32),
+        0 0 25px rgba(147, 213, 0, 0.06);
+}
+
+
+/* TARJETA PRINCIPAL */
+
+.about-main {
+    grid-column: span 2;
+    min-height: 260px;
+}
+
+
+/* NÚMERO */
+
+.about-number {
+    flex: 0 0 auto;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(147, 213, 0, 0.45);
+    border-radius: 8px;
+
+    color: #93d500;
+
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    background: rgba(147, 213, 0, 0.035);
+}
+
+
+/* CONTENIDO */
+
+.about-content {
+    flex: 1;
+}
+
+.about-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #93d500;
+
+    font-family: "Rajdhani", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+
+.about-content h3 {
+    margin: 0 0 15px;
+
+    color: #ffffff;
+
+    font-family: "Rajdhani", sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+}
+
+
+.about-content p {
+    margin: 0 0 14px;
+
+    color: #b8bec7;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.96rem;
+    line-height: 1.75;
+}
+
+
+.about-content p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ETIQUETAS */
+
+.about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-top: 18px;
+}
+
+
+.about-tags span {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 30px;
+    padding: 5px 12px;
+
+    border: 1px solid rgba(147, 213, 0, 0.2);
+    border-radius: 5px;
+
+    background: rgba(147, 213, 0, 0.045);
+
+    color: #cbd1d8;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.78rem;
+
+    transition: all 0.2s ease;
+}
+
+
+.about-tags span:hover {
+    border-color: rgba(147, 213, 0, 0.5);
+    color: #93d500;
+    background: rgba(147, 213, 0, 0.08);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .about-section {
+        width: min(100% - 30px, 700px);
+        padding: 70px 0 80px;
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-main {
+        grid-column: span 1;
+    }
+
+    .about-card {
+        padding: 24px;
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    .about-section {
+        width: calc(100% - 24px);
+        padding: 55px 0 65px;
+    }
+
+    .about-section .section-head {
+        margin-bottom: 30px;
+    }
+
+    .about-card,
+    .about-main {
+        flex-direction: column;
+        gap: 18px;
+
+        min-height: auto;
+        padding: 22px;
+    }
+
+    .about-number {
+        width: 42px;
+        height: 42px;
+    }
+
+    .about-content h3 {
+        font-size: 1.45rem;
+    }
+
+    .about-content p {
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+}
 }
