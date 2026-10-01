@@ -1899,7 +1899,6 @@ a:focus-visible, button:focus-visible {
 
 .about-card:hover {
     transform: translateY(-5px);
-
     border-color: rgba(147, 213, 0, 0.42);
 
     box-shadow:
@@ -1951,7 +1950,6 @@ a:focus-visible, button:focus-visible {
 
 .about-label {
     display: block;
-
     margin-bottom: 8px;
 
     color: #93d500;
@@ -1962,7 +1960,6 @@ a:focus-visible, button:focus-visible {
 
     letter-spacing: 2px;
 }
-
 
 .about-content h3 {
     margin: 0 0 15px;
@@ -1976,7 +1973,6 @@ a:focus-visible, button:focus-visible {
     letter-spacing: 0.5px;
 }
 
-
 .about-content p {
     margin: 0 0 14px;
 
@@ -1986,7 +1982,6 @@ a:focus-visible, button:focus-visible {
     font-size: 0.96rem;
     line-height: 1.75;
 }
-
 
 .about-content p:last-child {
     margin-bottom: 0;
@@ -1999,10 +1994,8 @@ a:focus-visible, button:focus-visible {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-
     margin-top: 18px;
 }
-
 
 .about-tags span {
     display: inline-flex;
@@ -2024,7 +2017,6 @@ a:focus-visible, button:focus-visible {
     transition: all 0.2s ease;
 }
 
-
 .about-tags span:hover {
     border-color: rgba(147, 213, 0, 0.5);
     color: #93d500;
@@ -2033,13 +2025,13 @@ a:focus-visible, button:focus-visible {
 
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE — SOBRE MÍ
    ========================================================= */
 
 @media (max-width: 850px) {
 
     .about-section {
-        width: min(100% - 30px, 700px);
+        width: calc(100% - 30px);
         padding: 70px 0 80px;
     }
 
@@ -2049,6 +2041,7 @@ a:focus-visible, button:focus-visible {
 
     .about-main {
         grid-column: span 1;
+        min-height: auto;
     }
 
     .about-card {
@@ -2066,6 +2059,16 @@ a:focus-visible, button:focus-visible {
 
     .about-section .section-head {
         margin-bottom: 30px;
+    }
+
+    .about-section .section-head h2 {
+        font-size: 2rem;
+        letter-spacing: 1.5px;
+    }
+
+    .about-section .section-head p {
+        font-size: 0.88rem;
+        line-height: 1.5;
     }
 
     .about-card,
@@ -2090,5 +2093,13 @@ a:focus-visible, button:focus-visible {
         font-size: 0.9rem;
         line-height: 1.65;
     }
-}
+
+    .about-tags {
+        gap: 7px;
+    }
+
+    .about-tags span {
+        font-size: 0.72rem;
+        padding: 5px 10px;
+    }
 }
