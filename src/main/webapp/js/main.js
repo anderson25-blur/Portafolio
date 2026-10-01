@@ -2115,7 +2115,7 @@ async function manejarSubida(input) {
         if (
             !Number.isInteger(slotNumero) ||
             slotNumero < 1 ||
-            slotNumero > 4
+            slotNumero > 7
         ) {
 
             console.error(
