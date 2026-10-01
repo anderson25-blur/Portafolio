@@ -70,7 +70,7 @@
       <!-- ===================== NAVEGACIÓN ===================== -->
       <nav class="hud-nav">
 
-        <a href="#unidades">
+        <a href="#sobre-mi">
           Sobre mí
         </a>
 
@@ -191,7 +191,7 @@
           </p>
 
           <a
-            href="#unidades"
+            href="#sobre-mi"
             class="hero-cta">
             Conóceme
           </a>
