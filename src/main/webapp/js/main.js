@@ -2125,7 +2125,7 @@ async function manejarSubida(input) {
 
 
             alert(
-                'El número de infografía debe estar entre 1 y 4.'
+                'El número de infografía debe estar entre 1 y 7.'
             );
 
 
