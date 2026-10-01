@@ -684,10 +684,63 @@ a:focus-visible, button:focus-visible {
 }
 
 @media (max-width: 860px) {
-  .hud-nav { display: none; }
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-media { max-width: 340px; margin: 0 auto; }
-  .info-grid { grid-template-columns: 1fr; }
+
+  .hud {
+    position: sticky;
+  }
+
+  .hud-nav {
+    display: flex;
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+
+    flex-direction: column;
+    gap: 0;
+
+    padding: 10px 20px;
+
+    background: rgba(10, 15, 12, .97);
+    border-bottom: 1px solid var(--line);
+
+    backdrop-filter: blur(12px);
+  }
+
+  .hud-nav a {
+    display: block;
+    padding: 15px 8px;
+
+    border-bottom: 1px solid var(--line);
+
+    color: var(--ink);
+    font-size: 15px;
+  }
+
+  .hud-nav a:last-child {
+    border-bottom: none;
+  }
+
+  .hud-nav a::after {
+    display: none;
+  }
+
+  .hud-nav a:hover {
+    color: var(--lime);
+  }
+
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-media {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -895,6 +948,7 @@ a:focus-visible, button:focus-visible {
   .hero-dot.is-active {
     width: 18px;
   }
+}
    /* ============================================================
    PÁGINAS INTERNAS — UNIDADES / SEMANAS
    Extensión del sistema visual principal
