@@ -784,6 +784,88 @@ switch (unidad) {
         overflow: hidden;
     }
 
+    /* Trabajos oculto cuando no hay PDF */
+.trabajo-section[hidden] {
+    display: none !important;
+}
+
+/* Si un botón "Ver" o "Descargar" está oculto, que realmente se oculte */
+.btn[hidden] {
+    display: none !important;
+}
+
+/* ===== VISOR CON ZOOM ===== */
+.zoom-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+    cursor: zoom-in;
+}
+
+.zoom-stage.is-zoomed {
+    cursor: grab;
+}
+
+.zoom-stage.is-dragging {
+    cursor: grabbing;
+}
+
+.zoom-stage img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+.zoom-toolbar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+    border: 1px solid #263127;
+    border-radius: 10px;
+    background: rgba(18, 24, 18, .92);
+}
+
+.zoom-toolbar button {
+    min-width: 36px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid #263127;
+    border-radius: 7px;
+    color: #b9c4bc;
+    background: #0a0f0c;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.zoom-toolbar button:hover {
+    color: #93d500;
+    border-color: #93d500;
+}
+
+.zoom-toolbar .zoom-level {
+    display: flex;
+    align-items: center;
+    min-width: 48px;
+    justify-content: center;
+    color: #8b978e;
+    font-size: 12px;
+    font-weight: 800;
+}
+
     /* =====================================================
        RESPONSIVE
        ===================================================== */
@@ -1161,7 +1243,7 @@ switch (semana) {
      ===================================================== -->
 
 <section
-    class="material-section trabajo-section">
+    class="material-section trabajo-section" hidden>
 
 
     <div class="material-header">
@@ -1396,7 +1478,7 @@ for (
                         data-download
                         hidden>
 
-                        ↓
+                        ↓ Descargar
 
                     </a>
 
@@ -1421,23 +1503,11 @@ for (
         </article>
 
 
-<%
-}
-%>
-
-
     </div>
 
 </section>
 
-
 </article>
-
-
-<%
-}
-%>
-
 
 </div>
 
