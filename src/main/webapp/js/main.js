@@ -1328,104 +1328,91 @@ async function cargarArchivosPorSemana() {
 }
 
 
-/* ============================================================
-   PINTAR TRABAJO
-   ============================================================ */
-
 function pintarTrabajo(
     semanaItem,
     archivo
 ) {
 
-    const status =
-        semanaItem.querySelector(
-            '[data-status]'
-        );
+    const trabajoSection =
+        semanaItem.querySelector('.trabajo-section');
 
+    if (!trabajoSection) return;
+
+    const status =
+        trabajoSection.querySelector('[data-status]');
 
     const view =
-        semanaItem.querySelector(
-            '[data-view]'
-        );
-
+        trabajoSection.querySelector('[data-view]');
 
     const download =
-        semanaItem.querySelector(
-            '[data-download]'
-        );
-
-
-    const trabajoSection =
-        semanaItem.querySelector(
-            '.trabajo-section'
-        );
-
+        trabajoSection.querySelector('[data-download]');
 
     const del =
-        trabajoSection
-            ? trabajoSection.querySelector(
-                '[data-delete]'
-            )
-            : null;
+        trabajoSection.querySelector('[data-delete]');
 
+    const esAdmin =
+        sesionActual.autenticado === true &&
+        sesionActual.esAdmin === true;
+
+    /*
+     * Visible solo si hay trabajo, o si es admin.
+     */
+    trabajoSection.hidden = !(archivo || esAdmin);
 
     if (archivo) {
 
         if (status) {
-
             status.textContent =
-                'Subido: ' +
-                truncar(
-                    archivo.nombreOriginal,
-                    40
-                );
-
-
-            status.classList.add(
-                'is-uploaded'
-            );
-
+                'Subido: ' + truncar(archivo.nombreOriginal, 40);
+            status.classList.add('is-uploaded');
         }
-
-
-        /*
-         * VER utiliza /ver
-         */
-
-        const viewUrl =
-            construirUrlVer(
-                archivo.id
-            );
-
-
-        /*
-         * DESCARGAR utiliza /descargar
-         */
-
-        const downloadUrl =
-            construirUrlDescargar(
-                archivo.id
-            );
-
 
         if (view) {
-
-            view.href =
-                viewUrl;
-
+            view.href = construirUrlVer(archivo.id);
             view.hidden = false;
-
         }
-
 
         if (download) {
-
-            download.href =
-                downloadUrl;
-
+            download.href = construirUrlDescargar(archivo.id);
             download.hidden = false;
-
         }
+
+        if (del) {
+            del.dataset.id = archivo.id;
+
+            if (esAdmin) {
+                del.hidden = false;
+                del.style.removeProperty('display');
+            } else {
+                del.hidden = true;
+                del.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+    } else {
+
+        if (status) {
+            status.textContent = 'Sin trabajo';
+            status.classList.remove('is-uploaded');
+        }
+
+        if (view) {
+            view.hidden = true;
+            view.removeAttribute('href');
+        }
+
+        if (download) {
+            download.hidden = true;
+            download.removeAttribute('href');
+        }
+
+        if (del) {
+            del.hidden = true;
+            del.style.setProperty('display', 'none', 'important');
+            delete del.dataset.id;
+        }
+    }
+}
 
 
         /* ====================================================
@@ -2556,7 +2543,6 @@ async function manejarEliminacion(btn) {
         const data =
             await res.json();
 
-
         if (
             !res.ok ||
             !data.ok
@@ -2566,8 +2552,6 @@ async function manejarEliminacion(btn) {
                 data.error ||
                 'No se pudo eliminar el archivo.'
             );
-
-
             return;
 
         }
@@ -2586,8 +2570,6 @@ async function manejarEliminacion(btn) {
             'Error eliminando archivo:',
             err
         );
-
-
         alert(
             'No se pudo conectar con el servidor para eliminar el archivo.'
         );
@@ -2601,351 +2583,314 @@ async function manejarEliminacion(btn) {
 }
 
 
-/* ============================================================
-   VISOR DE ARCHIVOS
-   ============================================================ */
-
 function setupArchivoViewer() {
 
     const viewer =
-        document.getElementById(
-            'archivoViewer'
-        );
-
+        document.getElementById('archivoViewer');
 
     const content =
-        document.getElementById(
-            'archivoViewerContent'
-        );
-
+        document.getElementById('archivoViewerContent');
 
     const closeBtn =
-        document.getElementById(
-            'archivoViewerClose'
-        );
-
+        document.getElementById('archivoViewerClose');
 
     const overlay =
         viewer
-            ? viewer.querySelector(
-                '.archivo-viewer-overlay'
-            )
+            ? viewer.querySelector('.archivo-viewer-overlay')
             : null;
 
-
-    /*
-     * Si la página no tiene visor,
-     * los enlaces VER siguen funcionando
-     * normalmente.
-     */
-
-    if (
-        !viewer ||
-        !content
-    ) {
-
-        return;
-
-    }
-
+    if (!viewer || !content) return;
 
     function cerrar() {
-
         viewer.hidden = true;
-
-
-        viewer.setAttribute(
-            'aria-hidden',
-            'true'
-        );
-
-
+        viewer.setAttribute('aria-hidden', 'true');
         content.innerHTML = '';
-
-
-        document.body.classList.remove(
-            'viewer-open'
-        );
-
+        document.body.classList.remove('viewer-open');
     }
 
+    /* ========================================================
+       IMAGEN CON ZOOM
+       ======================================================== */
 
-    function abrir(
-        url,
-        tipo,
-        nombre
-    ) {
+    function crearVisorImagen(url, nombre) {
+
+        const MIN = 1;
+        const MAX = 8;
+
+        let scale = 1;
+        let x = 0;
+        let y = 0;
+
+        const stage = document.createElement('div');
+        stage.className = 'zoom-stage';
+
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = nombre || 'Infografía';
+        img.draggable = false;
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'zoom-toolbar';
+        toolbar.innerHTML =
+            '<button type="button" data-z="out" aria-label="Alejar">−</button>' +
+            '<span class="zoom-level">100%</span>' +
+            '<button type="button" data-z="in" aria-label="Acercar">+</button>' +
+            '<button type="button" data-z="reset">100%</button>';
+
+        const levelEl = toolbar.querySelector('.zoom-level');
+
+        stage.appendChild(img);
+        stage.appendChild(toolbar);
+
+        function aplicar() {
+            if (scale <= MIN) {
+                scale = MIN;
+                x = 0;
+                y = 0;
+            }
+
+            img.style.transform =
+                `translate(${x}px, ${y}px) scale(${scale})`;
+
+            levelEl.textContent =
+                Math.round(scale * 100) + '%';
+
+            stage.classList.toggle('is-zoomed', scale > MIN);
+        }
+
+        /*
+         * Cambia el zoom manteniendo fijo el punto (cx, cy),
+         * medido desde el centro del stage.
+         */
+        function zoomEn(nuevaEscala, cx, cy) {
+            const ns = Math.min(MAX, Math.max(MIN, nuevaEscala));
+            const ratio = ns / scale;
+
+            x = cx - (cx - x) * ratio;
+            y = cy - (cy - y) * ratio;
+            scale = ns;
+
+            aplicar();
+        }
+
+        function centroRelativo(clientX, clientY) {
+            const r = stage.getBoundingClientRect();
+            return {
+                x: clientX - (r.left + r.width / 2),
+                y: clientY - (r.top + r.height / 2)
+            };
+        }
+
+        /* Botones */
+        toolbar.addEventListener('click', (e) => {
+            const b = e.target.closest('[data-z]');
+            if (!b) return;
+
+            e.stopPropagation();
+
+            if (b.dataset.z === 'in') zoomEn(scale * 1.4, 0, 0);
+            if (b.dataset.z === 'out') zoomEn(scale / 1.4, 0, 0);
+            if (b.dataset.z === 'reset') {
+                scale = 1;
+                aplicar();
+            }
+        });
+
+        toolbar.addEventListener('pointerdown', (e) => {
+            e.stopPropagation();
+        });
+
+        /* Rueda del mouse */
+        stage.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const p = centroRelativo(e.clientX, e.clientY);
+            const factor = e.deltaY < 0 ? 1.2 : 1 / 1.2;
+            zoomEn(scale * factor, p.x, p.y);
+        }, { passive: false });
+
+        /* Doble clic: acercar / restablecer */
+        stage.addEventListener('dblclick', (e) => {
+            const p = centroRelativo(e.clientX, e.clientY);
+            if (scale > MIN) {
+                scale = 1;
+                aplicar();
+            } else {
+                zoomEn(2.5, p.x, p.y);
+            }
+        });
+
+        /* Arrastre (mouse y dedo) + pellizco */
+        const punteros = new Map();
+        let distanciaInicial = 0;
+        let escalaInicial = 1;
+
+        stage.addEventListener('pointerdown', (e) => {
+            stage.setPointerCapture(e.pointerId);
+            punteros.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+            if (punteros.size === 2) {
+                const [a, b] = [...punteros.values()];
+                distanciaInicial = Math.hypot(a.x - b.x, a.y - b.y);
+                escalaInicial = scale;
+            }
+
+            if (scale > MIN) stage.classList.add('is-dragging');
+        });
+
+        stage.addEventListener('pointermove', (e) => {
+            const prev = punteros.get(e.pointerId);
+            if (!prev) return;
+
+            const actual = { x: e.clientX, y: e.clientY };
+
+            if (punteros.size === 2) {
+                punteros.set(e.pointerId, actual);
+
+                const [a, b] = [...punteros.values()];
+                const dist = Math.hypot(a.x - b.x, a.y - b.y);
+
+                if (distanciaInicial > 0) {
+                    const mid = centroRelativo(
+                        (a.x + b.x) / 2,
+                        (a.y + b.y) / 2
+                    );
+                    zoomEn(
+                        escalaInicial * (dist / distanciaInicial),
+                        mid.x,
+                        mid.y
+                    );
+                }
+                return;
+            }
+
+            if (scale > MIN) {
+                x += actual.x - prev.x;
+                y += actual.y - prev.y;
+                aplicar();
+            }
+
+            punteros.set(e.pointerId, actual);
+        });
+
+        function soltar(e) {
+            punteros.delete(e.pointerId);
+            stage.classList.remove('is-dragging');
+            distanciaInicial = 0;
+        }
+
+        stage.addEventListener('pointerup', soltar);
+        stage.addEventListener('pointercancel', soltar);
+
+        aplicar();
+
+        return stage;
+    }
+
+    /* ========================================================
+       ABRIR
+       ======================================================== */
+
+    function abrir(url, tipo, nombre) {
 
         content.innerHTML = '';
 
-
-        /*
-         * ====================================================
-         * IMAGEN
-         * ====================================================
-         */
-
-        if (
-            tipo === 'imagen'
-        ) {
-
-            const img =
-                document.createElement(
-                    'img'
-                );
-
-
-            img.src =
-                url;
-
-
-            img.alt =
-                nombre ||
-                'Infografía';
-
-
-            img.className =
-                'archivo-viewer-image';
-
+        if (tipo === 'imagen') {
 
             content.appendChild(
-                img
+                crearVisorImagen(url, nombre)
             );
 
+        } else {
+
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.title = nombre || 'Documento PDF';
+            iframe.className = 'archivo-viewer-pdf';
+            content.appendChild(iframe);
         }
-
-
-        /*
-         * ====================================================
-         * PDF
-         * ====================================================
-         */
-
-        else {
-
-            const iframe =
-                document.createElement(
-                    'iframe'
-                );
-
-
-            iframe.src =
-                url;
-
-
-            iframe.title =
-                nombre ||
-                'Documento PDF';
-
-
-            iframe.className =
-                'archivo-viewer-pdf';
-
-
-            content.appendChild(
-                iframe
-            );
-
-        }
-
 
         viewer.hidden = false;
+        viewer.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('viewer-open');
 
-
-        viewer.setAttribute(
-            'aria-hidden',
-            'false'
-        );
-
-
-        document.body.classList.add(
-            'viewer-open'
-        );
-
-
-        if (closeBtn) {
-
-            closeBtn.focus();
-
-        }
-
+        if (closeBtn) closeBtn.focus();
     }
 
+    closeBtn?.addEventListener('click', cerrar);
+    overlay?.addEventListener('click', cerrar);
 
-    closeBtn?.addEventListener(
-        'click',
-        cerrar
-    );
+    document.addEventListener('keydown', (e) => {
 
+        if (viewer.hidden) return;
 
-    overlay?.addEventListener(
-        'click',
-        cerrar
-    );
-
-
-    document.addEventListener(
-        'keydown',
-        (e) => {
-
-            if (
-                e.key === 'Escape' &&
-                !viewer.hidden
-            ) {
-
-                cerrar();
-
-            }
-
+        if (e.key === 'Escape') {
+            cerrar();
+            return;
         }
-    );
 
+        const stage = content.querySelector('.zoom-stage');
+        if (!stage) return;
 
-    /*
-     * ========================================================
-     * BOTONES "VER"
-     * ========================================================
-     */
-
-    document.addEventListener(
-        'click',
-        (e) => {
-
-            const btn =
-                e.target.closest(
-                    '[data-view]'
-                );
-
-
-            if (
-                !btn ||
-                btn.hidden ||
-                !btn.href
-            ) {
-
-                return;
-
-            }
-
-
-            /*
-             * Evitamos que el enlace
-             * abra otra página.
-             */
-
-            e.preventDefault();
-
-
-            const card =
-                btn.closest(
-                    '.info-card'
-                );
-
-
-            const semanaItem =
-                btn.closest(
-                    '.semana-item'
-                );
-
-
-            let nombre =
-                'Archivo';
-
-
-            let tipo =
-                'pdf';
-
-
-            /*
-             * =================================================
-             * INFOGRAFÍA
-             * =================================================
-             */
-
-            if (card) {
-
-                const img =
-                    card.querySelector(
-                        '[data-thumb-img]'
-                    );
-
-
-                if (
-                    img &&
-                    !img.hidden &&
-                    img.src
-                ) {
-
-                    tipo =
-                        'imagen';
-
-                }
-
-
-                const emptyText =
-                    card.querySelector(
-                        '[data-empty-text]'
-                    );
-
-
-                if (emptyText) {
-
-                    nombre =
-                        emptyText.textContent ||
-                        'Infografía';
-
-                }
-
-            }
-
-
-            /*
-             * =================================================
-             * TRABAJO
-             * =================================================
-             */
-
-            if (
-                semanaItem &&
-                !card
-            ) {
-
-                const status =
-                    semanaItem.querySelector(
-                        '[data-status]'
-                    );
-
-
-                if (status) {
-
-                    nombre =
-                        status.textContent
-                            .replace(
-                                'Subido: ',
-                                ''
-                            );
-
-                }
-
-
-                tipo =
-                    'pdf';
-
-            }
-
-
-            abrir(
-                btn.href,
-                tipo,
-                nombre
-            );
-
+        if (e.key === '+' || e.key === '=') {
+            stage.querySelector('[data-z="in"]')?.click();
         }
-    );
 
+        if (e.key === '-') {
+            stage.querySelector('[data-z="out"]')?.click();
+        }
+
+        if (e.key === '0') {
+            stage.querySelector('[data-z="reset"]')?.click();
+        }
+    });
+
+    /* ========================================================
+       BOTONES "VER"
+       ======================================================== */
+
+    document.addEventListener('click', (e) => {
+
+        const btn = e.target.closest('[data-view]');
+
+        if (!btn || btn.hidden || !btn.href) return;
+
+        e.preventDefault();
+
+        const card = btn.closest('.info-card');
+
+        let nombre = 'Archivo';
+        let tipo = 'pdf';
+
+        if (card) {
+
+            const img = card.querySelector('[data-thumb-img]');
+
+            if (img && !img.hidden && img.src) {
+                tipo = 'imagen';
+            }
+
+            const emptyText = card.querySelector('[data-empty-text]');
+
+            if (emptyText) {
+                nombre = emptyText.textContent || 'Infografía';
+            }
+
+        } else {
+
+            const semanaItem = btn.closest('.semana-item');
+
+            const status = semanaItem
+                ? semanaItem.querySelector('[data-status]')
+                : null;
+
+            if (status) {
+                nombre = status.textContent.replace('Subido: ', '');
+            }
+        }
+
+        abrir(btn.href, tipo, nombre);
+    });
 }
-
-
 /* ============================================================
    CARRUSEL HERO
    ============================================================ */
@@ -2957,18 +2902,15 @@ function setupHeroCarousel() {
             '.hero-slide'
         );
 
-
     const dots =
         document.querySelectorAll(
             '.hero-dot'
         );
 
-
     const prev =
         document.getElementById(
             'heroPrev'
         );
-
 
     const next =
         document.getElementById(
@@ -2977,14 +2919,8 @@ function setupHeroCarousel() {
 
 
     if (!slides.length) return;
-
-
     let current = 0;
-
-
     let timer = null;
-
-
     function mostrarSlide(index) {
 
         current =
