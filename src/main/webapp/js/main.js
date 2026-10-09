@@ -11,7 +11,7 @@
    - Infografías por unidad + semana + slot
    - Subida de archivos
    - Eliminación de archivos
-   - Visualización de PDF e imágenes
+   - Visualización de PDF e imágenes (con zoom en imágenes)
    - Descarga de archivos
    ============================================================ */
 
@@ -22,31 +22,18 @@
 
 function obtenerContextPath() {
 
-    const script = document.querySelector(
-        'script[src*="/js/main.js"]'
-    );
+    const script = document.querySelector('script[src*="/js/main.js"]');
 
     if (script) {
 
-        const src = new URL(
-            script.getAttribute('src'),
-            window.location.href
-        );
+        const src = new URL(script.getAttribute('src'), window.location.href);
 
         const partes = src.pathname.split('/');
 
         /*
          * main.js normalmente estará en:
-         *
-         * /MiPortafolio/js/main.js
-         *
-         * Quitamos:
-         *
-         * /js/main.js
-         *
-         * y conservamos:
-         *
-         * /MiPortafolio
+         *   /MiPortafolio/js/main.js
+         * Quitamos /js/main.js y conservamos /MiPortafolio
          */
 
         if (partes.length >= 3) {
@@ -67,29 +54,21 @@ const CONTEXT_PATH = obtenerContextPath();
 
 const API = {
 
-    sesion:
-        CONTEXT_PATH + '/api/sesion',
+    sesion: CONTEXT_PATH + '/api/sesion',
 
-    login:
-        CONTEXT_PATH + '/api/login',
+    login: CONTEXT_PATH + '/api/login',
 
-    logout:
-        CONTEXT_PATH + '/api/logout',
+    logout: CONTEXT_PATH + '/api/logout',
 
-    archivos:
-        CONTEXT_PATH + '/api/archivos',
+    archivos: CONTEXT_PATH + '/api/archivos',
 
-    subir:
-        CONTEXT_PATH + '/api/archivos/subir',
+    subir: CONTEXT_PATH + '/api/archivos/subir',
 
-    ver:
-        CONTEXT_PATH + '/api/archivos/ver',
+    ver: CONTEXT_PATH + '/api/archivos/ver',
 
-    descargar:
-        CONTEXT_PATH + '/api/archivos/descargar',
+    descargar: CONTEXT_PATH + '/api/archivos/descargar',
 
-    eliminar:
-        CONTEXT_PATH + '/api/archivos/eliminar'
+    eliminar: CONTEXT_PATH + '/api/archivos/eliminar'
 
 };
 
@@ -115,28 +94,25 @@ let sesionActual = {
    INICIALIZACIÓN
    ============================================================ */
 
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
+document.addEventListener('DOMContentLoaded', () => {
 
-        runLoadingSequence();
+    runLoadingSequence();
 
-        setupHeroParallax();
+    setupHeroParallax();
 
-        setupUserModal();
+    setupUserModal();
 
-        setupUnidadAccordion();
+    setupUnidadAccordion();
 
-        setupAdminHandlers();
+    setupAdminHandlers();
 
-        setupArchivoViewer();
+    setupArchivoViewer();
 
-        iniciarSesionYEstado();
+    iniciarSesionYEstado();
 
-        setupHeroCarousel();
+    setupHeroCarousel();
 
-    }
-);
+});
 
 
 /* ============================================================
@@ -145,8 +121,7 @@ document.addEventListener(
 
 function runLoadingSequence() {
 
-    const loader =
-        document.getElementById('loader');
+    const loader = document.getElementById('loader');
 
     /*
      * No todas las páginas tienen loader.
@@ -155,52 +130,33 @@ function runLoadingSequence() {
     if (!loader) return;
 
 
-    const gaugeFill =
-        document.getElementById('gaugeFill');
+    const gaugeFill = document.getElementById('gaugeFill');
 
-    const percentEl =
-        document.getElementById('loaderPercent');
+    const percentEl = document.getElementById('loaderPercent');
 
-    const statusEl =
-        document.getElementById('loaderStatus');
+    const statusEl = document.getElementById('loaderStatus');
 
-    const barFill =
-        document.getElementById('loaderBarFill');
+    const barFill = document.getElementById('loaderBarFill');
 
-    const site =
-        document.getElementById('site');
+    const site = document.getElementById('site');
 
 
     const CIRCUMFERENCE = 552.9;
 
 
     const reduceMotion =
-        window.matchMedia(
-            '(prefers-reduced-motion: reduce)'
-        ).matches;
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 
     const stages = [
 
-        {
-            at: 0,
-            text: 'Encendiendo motor…'
-        },
+        { at: 0, text: 'Encendiendo motor…' },
 
-        {
-            at: 28,
-            text: 'Compilando arquitectura…'
-        },
+        { at: 28, text: 'Compilando arquitectura…' },
 
-        {
-            at: 60,
-            text: 'Cargando unidades…'
-        },
+        { at: 60, text: 'Cargando unidades…' },
 
-        {
-            at: 90,
-            text: 'Listo.'
-        }
+        { at: 90, text: 'Listo.' }
 
     ];
 
@@ -208,72 +164,54 @@ function runLoadingSequence() {
     let progress = 0;
 
 
-    const duration =
-        reduceMotion
-            ? 200
-            : 2200;
+    const duration = reduceMotion ? 200 : 2200;
 
 
-    const start =
-        performance.now();
+    const start = performance.now();
 
 
     function frame(now) {
 
-        const elapsed =
-            now - start;
+        const elapsed = now - start;
 
 
-        progress =
-            Math.min(
-                100,
-                Math.round(
-                    (elapsed / duration) * 100
-                )
-            );
+        progress = Math.min(
+            100,
+            Math.round((elapsed / duration) * 100)
+        );
 
 
         if (gaugeFill) {
 
             gaugeFill.style.strokeDashoffset =
-                String(
-                    CIRCUMFERENCE *
-                    (1 - progress / 100)
-                );
+                String(CIRCUMFERENCE * (1 - progress / 100));
 
         }
 
 
         if (percentEl) {
 
-            percentEl.textContent =
-                String(progress);
+            percentEl.textContent = String(progress);
 
         }
 
 
         if (barFill) {
 
-            barFill.style.width =
-                progress + '%';
+            barFill.style.width = progress + '%';
 
         }
 
 
         if (statusEl) {
 
-            const stage =
-                [...stages]
-                    .reverse()
-                    .find(
-                        s => progress >= s.at
-                    );
-
+            const stage = [...stages]
+                .reverse()
+                .find(s => progress >= s.at);
 
             if (stage) {
 
-                statusEl.textContent =
-                    stage.text;
+                statusEl.textContent = stage.text;
 
             }
 
@@ -297,42 +235,26 @@ function runLoadingSequence() {
 
         setTimeout(() => {
 
-            loader.classList.add(
-                'is-done'
-            );
+            loader.classList.add('is-done');
 
 
             if (site) {
 
-                site.removeAttribute(
-                    'aria-hidden'
-                );
+                site.removeAttribute('aria-hidden');
 
-
-                site.classList.add(
-                    'is-revealed'
-                );
+                site.classList.add('is-revealed');
 
             }
 
 
-            const heading =
-                document.querySelector(
-                    '.hero h1'
-                );
+            const heading = document.querySelector('.hero h1');
 
 
             if (heading) {
 
-                heading.setAttribute(
-                    'tabindex',
-                    '-1'
-                );
+                heading.setAttribute('tabindex', '-1');
 
-
-                heading.focus({
-                    preventScroll: true
-                });
+                heading.focus({ preventScroll: true });
 
             }
 
@@ -359,76 +281,51 @@ function runLoadingSequence() {
 
 function setupHeroParallax() {
 
-    const frame =
-        document.querySelector(
-            '.hero-media-frame'
-        );
+    const frame = document.querySelector('.hero-media-frame');
 
 
-    const img =
-        frame
-            ? frame.querySelector('img')
-            : null;
+    const img = frame ? frame.querySelector('img') : null;
 
 
     if (!frame || !img) return;
 
 
-    if (
-        window.matchMedia(
-            '(prefers-reduced-motion: reduce)'
-        ).matches
-    ) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
         return;
 
     }
 
 
-    if (
-        window.matchMedia(
-            '(hover: none)'
-        ).matches
-    ) {
+    if (window.matchMedia('(hover: none)').matches) {
 
         return;
 
     }
 
 
-    frame.addEventListener(
-        'mousemove',
-        (e) => {
+    frame.addEventListener('mousemove', (e) => {
 
-            const rect =
-                frame.getBoundingClientRect();
+        const rect = frame.getBoundingClientRect();
 
 
-            const x =
-                (e.clientX - rect.left) /
-                rect.width - 0.5;
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
 
 
-            const y =
-                (e.clientY - rect.top) /
-                rect.height - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
 
 
-            img.style.transform =
-                `scale(1.12) translate(${x * -14}px, ${y * -10}px)`;
+        img.style.transform =
+            `scale(1.12) translate(${x * -14}px, ${y * -10}px)`;
 
-        }
-    );
+    });
 
 
-    frame.addEventListener(
-        'mouseleave',
-        () => {
+    frame.addEventListener('mouseleave', () => {
 
-            img.style.transform = '';
+        img.style.transform = '';
 
-        }
-    );
+    });
 
 }
 
@@ -443,32 +340,20 @@ function setupUnidadAccordion() {
         .querySelectorAll('.unidad-toggle')
         .forEach((btn) => {
 
-            btn.addEventListener(
-                'click',
-                () => {
+            btn.addEventListener('click', () => {
 
-                    const card =
-                        btn.closest(
-                            '.unidad-card'
-                        );
+                const card = btn.closest('.unidad-card');
 
 
-                    if (!card) return;
+                if (!card) return;
 
 
-                    const isOpen =
-                        card.classList.toggle(
-                            'is-open'
-                        );
+                const isOpen = card.classList.toggle('is-open');
 
 
-                    btn.setAttribute(
-                        'aria-expanded',
-                        String(isOpen)
-                    );
+                btn.setAttribute('aria-expanded', String(isOpen));
 
-                }
-            );
+            });
 
         });
 
@@ -481,39 +366,22 @@ function setupUnidadAccordion() {
 
 function setupUserModal() {
 
-    const userBtn =
-        document.getElementById('userBtn');
+    const userBtn = document.getElementById('userBtn');
+
+    const overlay = document.getElementById('loginModal');
+
+    const closeBtn = document.getElementById('loginClose');
+
+    const form = document.getElementById('loginForm');
+
+    const submitBtn = document.getElementById('loginSubmit');
+
+    const errorEl = document.getElementById('loginError');
+
+    const logoutBtn = document.getElementById('logoutBtn');
 
 
-    const overlay =
-        document.getElementById('loginModal');
-
-
-    const closeBtn =
-        document.getElementById('loginClose');
-
-
-    const form =
-        document.getElementById('loginForm');
-
-
-    const submitBtn =
-        document.getElementById('loginSubmit');
-
-
-    const errorEl =
-        document.getElementById('loginError');
-
-
-    const logoutBtn =
-        document.getElementById('logoutBtn');
-
-
-    if (
-        !userBtn ||
-        !overlay ||
-        !form
-    ) {
+    if (!userBtn || !overlay || !form) {
 
         return;
 
@@ -524,17 +392,9 @@ function setupUserModal() {
 
         hideError();
 
+        overlay.classList.add('is-open');
 
-        overlay.classList.add(
-            'is-open'
-        );
-
-
-        const firstField =
-            overlay.querySelector(
-                'input'
-            );
-
+        const firstField = overlay.querySelector('input');
 
         if (firstField) {
 
@@ -547,9 +407,7 @@ function setupUserModal() {
 
     const close = () => {
 
-        overlay.classList.remove(
-            'is-open'
-        );
+        overlay.classList.remove('is-open');
 
     };
 
@@ -558,10 +416,7 @@ function setupUserModal() {
 
         if (!errorEl) return;
 
-
-        errorEl.textContent =
-            msg;
-
+        errorEl.textContent = msg;
 
         errorEl.hidden = false;
 
@@ -572,259 +427,194 @@ function setupUserModal() {
 
         if (!errorEl) return;
 
-
         errorEl.hidden = true;
-
 
         errorEl.textContent = '';
 
     };
 
 
-    userBtn.addEventListener(
-        'click',
-        open
-    );
+    userBtn.addEventListener('click', open);
 
 
-    closeBtn?.addEventListener(
-        'click',
-        close
-    );
+    closeBtn?.addEventListener('click', close);
 
 
-    overlay.addEventListener(
-        'click',
-        (e) => {
+    overlay.addEventListener('click', (e) => {
 
-            if (
-                e.target === overlay
-            ) {
+        if (e.target === overlay) {
 
-                close();
+            close();
+
+        }
+
+    });
+
+
+    document.addEventListener('keydown', (e) => {
+
+        if (e.key === 'Escape') {
+
+            close();
+
+        }
+
+    });
+
+
+    form.addEventListener('submit', async (e) => {
+
+        e.preventDefault();
+
+
+        hideError();
+
+
+        if (submitBtn) {
+
+            submitBtn.disabled = true;
+
+            submitBtn.textContent = 'Ingresando…';
+
+        }
+
+
+        const email =
+            document.getElementById('email')?.value.trim() || '';
+
+
+        const password =
+            document.getElementById('password')?.value || '';
+
+
+        try {
+
+            const res = await fetch(API.login, {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({ email, password })
+
+            });
+
+
+            const data = await res.json();
+
+
+            if (!res.ok || !data.ok) {
+
+                showError(
+                    data.error || 'No se pudo iniciar sesión.'
+                );
+
+                return;
 
             }
 
-        }
-    );
+
+            /*
+             * SESIÓN CORRECTA
+             * La condición de administrador se basa
+             * exclusivamente en el rol enviado por el servidor.
+             */
+
+            sesionActual = {
+
+                autenticado: true,
+
+                email: data.email || email,
+
+                rol: data.rol || null,
+
+                esAdmin: data.rol === 'admin'
+
+            };
 
 
-    document.addEventListener(
-        'keydown',
-        (e) => {
-
-            if (e.key === 'Escape') {
-
-                close();
-
-            }
-
-        }
-    );
+            console.log('Sesión iniciada:', sesionActual);
 
 
-    form.addEventListener(
-        'submit',
-        async (e) => {
-
-            e.preventDefault();
+            aplicarEstadoSesion();
 
 
-            hideError();
+            close();
 
+
+            form.reset();
+
+
+            await cargarEstadoArchivos();
+
+        } catch (err) {
+
+            console.error('Error de login:', err);
+
+
+            showError('No se pudo conectar con el servidor.');
+
+        } finally {
 
             if (submitBtn) {
 
-                submitBtn.disabled = true;
+                submitBtn.disabled = false;
 
-                submitBtn.textContent =
-                    'Ingresando…';
-
-            }
-
-
-            const email =
-                document
-                    .getElementById('email')
-                    ?.value
-                    .trim() || '';
-
-
-            const password =
-                document
-                    .getElementById('password')
-                    ?.value || '';
-
-
-            try {
-
-                const res =
-                    await fetch(
-                        API.login,
-                        {
-                            method: 'POST',
-
-                            headers: {
-                                'Content-Type':
-                                    'application/json'
-                            },
-
-                            body:
-                                JSON.stringify({
-                                    email,
-                                    password
-                                })
-                        }
-                    );
-
-
-                const data =
-                    await res.json();
-
-
-                if (
-                    !res.ok ||
-                    !data.ok
-                ) {
-
-                    showError(
-                        data.error ||
-                        'No se pudo iniciar sesión.'
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                 * =================================================
-                 * SESIÓN CORRECTA
-                 * =================================================
-                 *
-                 * La condición de administrador se basa
-                 * exclusivamente en el rol enviado por el servidor.
-                 */
-
-                sesionActual = {
-
-                    autenticado: true,
-
-                    email:
-                        data.email || email,
-
-                    rol:
-                        data.rol || null,
-
-                    esAdmin:
-                        data.rol === 'admin'
-
-                };
-
-
-                console.log(
-                    'Sesión iniciada:',
-                    sesionActual
-                );
-
-
-                aplicarEstadoSesion();
-
-
-                close();
-
-
-                form.reset();
-
-
-                await cargarEstadoArchivos();
-
-            } catch (err) {
-
-                console.error(
-                    'Error de login:',
-                    err
-                );
-
-
-                showError(
-                    'No se pudo conectar con el servidor.'
-                );
-
-            } finally {
-
-                if (submitBtn) {
-
-                    submitBtn.disabled = false;
-
-                    submitBtn.textContent =
-                        'Ingresar';
-
-                }
+                submitBtn.textContent = 'Ingresar';
 
             }
 
         }
-    );
+
+    });
 
 
     if (logoutBtn) {
 
-        logoutBtn.addEventListener(
-            'click',
-            async () => {
+        logoutBtn.addEventListener('click', async () => {
 
-                logoutBtn.disabled = true;
+            logoutBtn.disabled = true;
 
 
-                try {
+            try {
 
-                    await fetch(
-                        API.logout,
-                        {
-                            method: 'POST'
-                        }
-                    );
+                await fetch(API.logout, { method: 'POST' });
 
-                } catch (err) {
+            } catch (err) {
 
-                    console.error(
-                        'Error cerrando sesión:',
-                        err
-                    );
-
-                }
-
-
-                /*
-                 * =================================================
-                 * LIMPIAR SESIÓN
-                 * =================================================
-                 */
-
-                sesionActual = {
-
-                    autenticado: false,
-
-                    esAdmin: false,
-
-                    email: null,
-
-                    rol: null
-
-                };
-
-
-                aplicarEstadoSesion();
-
-
-                await cargarEstadoArchivos();
-
-
-                logoutBtn.disabled = false;
+                console.error('Error cerrando sesión:', err);
 
             }
-        );
+
+
+            /*
+             * LIMPIAR SESIÓN
+             */
+
+            sesionActual = {
+
+                autenticado: false,
+
+                esAdmin: false,
+
+                email: null,
+
+                rol: null
+
+            };
+
+
+            aplicarEstadoSesion();
+
+
+            await cargarEstadoArchivos();
+
+
+            logoutBtn.disabled = false;
+
+        });
 
     }
 
@@ -839,39 +629,26 @@ async function iniciarSesionYEstado() {
 
     try {
 
-        const res =
-            await fetch(
-                API.sesion
-            );
+        const res = await fetch(API.sesion);
 
 
-        const data =
-            await res.json();
+        const data = await res.json();
 
 
         /*
-         * =====================================================
          * LA API /api/sesion NO ENVÍA "ok"
-         * =====================================================
          *
          * La respuesta real es:
-         *
-         * {
-         *     "autenticado": true,
-         *     "esAdmin": true,
-         *     "email": "...",
-         *     "rol": "admin"
-         * }
+         * { "autenticado": true, "esAdmin": true,
+         *   "email": "...", "rol": "admin" }
          *
          * Por eso NO debemos comprobar data.ok.
          */
 
-
         if (!res.ok) {
 
             throw new Error(
-                data.error ||
-                'No se pudo consultar la sesión.'
+                data.error || 'No se pudo consultar la sesión.'
             );
 
         }
@@ -879,14 +656,11 @@ async function iniciarSesionYEstado() {
 
         sesionActual = {
 
-            autenticado:
-                data.autenticado === true,
+            autenticado: data.autenticado === true,
 
-            email:
-                data.email || null,
+            email: data.email || null,
 
-            rol:
-                data.rol || null,
+            rol: data.rol || null,
 
             esAdmin:
                 data.esAdmin === true ||
@@ -895,18 +669,12 @@ async function iniciarSesionYEstado() {
         };
 
 
-        console.log(
-            'Estado de sesión:',
-            sesionActual
-        );
+        console.log('Estado de sesión:', sesionActual);
 
 
     } catch (err) {
 
-        console.error(
-            'No se pudo consultar la sesión:',
-            err
-        );
+        console.error('No se pudo consultar la sesión:', err);
 
 
         sesionActual = {
@@ -930,54 +698,40 @@ async function iniciarSesionYEstado() {
     await cargarEstadoArchivos();
 
 }
+
+
 /* ============================================================
    APLICAR ESTADO DE SESIÓN
    ============================================================ */
 
 function aplicarEstadoSesion() {
 
-    const site =
-        document.getElementById('site');
+    const site = document.getElementById('site');
+
+    const chip = document.getElementById('hudChip');
+
+    const userBtn = document.getElementById('userBtn');
+
+    const logoutBtn = document.getElementById('logoutBtn');
 
 
-    const chip =
-        document.getElementById('hudChip');
-
-
-    const userBtn =
-        document.getElementById('userBtn');
-
-
-    const logoutBtn =
-        document.getElementById('logoutBtn');
-
-
-    /* ========================================================
-       VERIFICAR ADMINISTRADOR
-       ======================================================== */
+    /* VERIFICAR ADMINISTRADOR */
 
     const esAdministrador =
         sesionActual.autenticado === true &&
         sesionActual.esAdmin === true;
 
 
-    /* ========================================================
-       ESTADO GENERAL DEL SITIO
-       ======================================================== */
+    /* ESTADO GENERAL DEL SITIO */
 
     if (site) {
 
-        site.classList.toggle(
-            'is-admin',
-            esAdministrador
-        );
+        site.classList.toggle('is-admin', esAdministrador);
 
     }
 
 
-    /* ========================================================
-       ELEMENTOS SOLO PARA ADMINISTRADOR
-       ======================================================== */
+    /* ELEMENTOS SOLO PARA ADMINISTRADOR */
 
     document
         .querySelectorAll('.admin-only')
@@ -985,74 +739,40 @@ function aplicarEstadoSesion() {
 
             if (esAdministrador) {
 
-                /*
-                 * =================================================
-                 * ADMINISTRADOR
-                 * =================================================
-                 *
-                 * Mostramos el elemento.
-                 */
-
                 el.hidden = false;
-
 
                 /*
                  * Eliminamos cualquier display:none
                  * aplicado anteriormente por JavaScript.
                  */
 
-                el.style.removeProperty(
-                    'display'
-                );
+                el.style.removeProperty('display');
 
             } else {
 
-                /*
-                 * =================================================
-                 * INVITADO / USUARIO NORMAL
-                 * =================================================
-                 *
-                 * Ocultamos completamente el elemento.
-                 */
-
                 el.hidden = true;
 
-
                 /*
-                 * IMPORTANTE:
-                 *
-                 * .btn utiliza:
-                 *
-                 * display: inline-flex;
-                 *
-                 * Por eso hidden por sí solo puede ser
-                 * sobrescrito por CSS.
-                 *
+                 * .btn utiliza display:inline-flex, por eso
+                 * hidden por sí solo puede ser sobrescrito.
                  * Usamos !important para garantizar
                  * que el botón desaparezca.
                  */
 
-                el.style.setProperty(
-                    'display',
-                    'none',
-                    'important'
-                );
+                el.style.setProperty('display', 'none', 'important');
 
             }
 
         });
 
 
-    /* ========================================================
-       USUARIO AUTENTICADO
-       ======================================================== */
+    /* USUARIO AUTENTICADO */
 
     if (sesionActual.autenticado === true) {
 
         if (chip) {
 
             chip.hidden = false;
-
 
             chip.textContent =
                 esAdministrador
@@ -1077,9 +797,7 @@ function aplicarEstadoSesion() {
 
     }
 
-    /* ========================================================
-       USUARIO NO AUTENTICADO
-       ======================================================== */
+    /* USUARIO NO AUTENTICADO */
 
     else {
 
@@ -1119,10 +837,7 @@ async function cargarEstadoArchivos() {
      * contiene semanas.
      */
 
-    const semanas =
-        document.querySelectorAll(
-            '.semana-item'
-        );
+    const semanas = document.querySelectorAll('.semana-item');
 
 
     if (!semanas.length) {
@@ -1143,291 +858,208 @@ async function cargarEstadoArchivos() {
 
 async function cargarArchivosPorSemana() {
 
-    const semanas =
-        document.querySelectorAll(
-            '.semana-item'
-        );
+    const semanas = document.querySelectorAll('.semana-item');
 
 
     /*
      * Cada semana realiza una consulta:
-     *
-     * /api/archivos?unidad=1&semana=1
-     *
+     *   /api/archivos?unidad=1&semana=1
      * Esto devuelve trabajos e infografías
      * pertenecientes exclusivamente a esa semana.
      */
 
     await Promise.all(
 
-        [...semanas].map(
-            async (semanaItem) => {
+        [...semanas].map(async (semanaItem) => {
 
-                const unidad =
-                    semanaItem.dataset.unidad;
+            const unidad = semanaItem.dataset.unidad;
 
-
-                const semana =
-                    semanaItem.dataset.semana;
+            const semana = semanaItem.dataset.semana;
 
 
-                if (
-                    !unidad ||
-                    !semana
-                ) {
+            if (!unidad || !semana) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const url =
+                    API.archivos +
+                    '?unidad=' + encodeURIComponent(unidad) +
+                    '&semana=' + encodeURIComponent(semana);
+
+
+                const res = await fetch(url);
+
+
+                const data = await res.json();
+
+
+                if (!res.ok || !data.ok) {
+
+                    console.error(
+                        `Error cargando Unidad ${unidad}, Semana ${semana}:`,
+                        data.error
+                    );
 
                     return;
 
                 }
 
 
-                try {
-
-                    const url =
-                        API.archivos +
-                        '?unidad=' +
-                        encodeURIComponent(
-                            unidad
-                        ) +
-                        '&semana=' +
-                        encodeURIComponent(
-                            semana
-                        );
+                const archivos =
+                    Array.isArray(data.archivos) ? data.archivos : [];
 
 
-                    const res =
-                        await fetch(url);
+                const trabajos =
+                    archivos.filter(a => a.tipo === 'trabajo');
 
 
-                    const data =
-                        await res.json();
+                const infografias =
+                    archivos.filter(a => a.tipo === 'infografia');
 
 
-                    if (
-                        !res.ok ||
-                        !data.ok
-                    ) {
+                /*
+                 * Para trabajos mostramos el más reciente.
+                 * El DAO ya los devuelve ordenados por creado_en desc.
+                 */
 
-                        console.error(
-                            `Error cargando Unidad ${unidad}, Semana ${semana}:`,
-                            data.error
-                        );
+                const trabajo = trabajos.length ? trabajos[0] : null;
 
-                        return;
+
+                pintarTrabajo(semanaItem, trabajo);
+
+
+                /*
+                 * Las infografías se relacionan mediante su slot.
+                 */
+
+                const porSlot = new Map();
+
+
+                infografias.forEach((archivo) => {
+
+                    if (archivo.slot != null) {
+
+                        porSlot.set(Number(archivo.slot), archivo);
 
                     }
 
-
-                    const archivos =
-                        Array.isArray(
-                            data.archivos
-                        )
-                            ? data.archivos
-                            : [];
+                });
 
 
-                    const trabajos =
-                        archivos.filter(
-                            a =>
-                                a.tipo === 'trabajo'
-                        );
+                semanaItem
+                    .querySelectorAll('.info-card')
+                    .forEach((card) => {
 
+                        const slot = Number(card.dataset.slot);
 
-                    const infografias =
-                        archivos.filter(
-                            a =>
-                                a.tipo === 'infografia'
-                        );
+                        pintarInfografia(card, porSlot.get(slot) || null);
 
+                    });
 
-                    /*
-                     * Para trabajos mostramos
-                     * el más reciente.
-                     *
-                     * El DAO ya los devuelve
-                     * ordenados por creado_en desc.
-                     */
+            } catch (err) {
 
-                    const trabajo =
-                        trabajos.length
-                            ? trabajos[0]
-                            : null;
-
-
-                    pintarTrabajo(
-                        semanaItem,
-                        trabajo
-                    );
-
-
-                    /*
-                     * Las infografías se relacionan
-                     * mediante su slot.
-                     */
-
-                    const porSlot =
-                        new Map();
-
-
-                    infografias.forEach(
-                        (archivo) => {
-
-                            if (
-                                archivo.slot != null
-                            ) {
-
-                                porSlot.set(
-                                    Number(
-                                        archivo.slot
-                                    ),
-                                    archivo
-                                );
-
-                            }
-
-                        }
-                    );
-
-
-                    semanaItem
-                        .querySelectorAll(
-                            '.info-card'
-                        )
-                        .forEach(
-                            (card) => {
-
-                                const slot =
-                                    Number(
-                                        card.dataset.slot
-                                    );
-
-
-                                pintarInfografia(
-                                    card,
-                                    porSlot.get(slot) ||
-                                    null
-                                );
-
-                            }
-                        );
-
-                } catch (err) {
-
-                    console.error(
-                        `No se pudo cargar la Semana ${semana} de la Unidad ${unidad}:`,
-                        err
-                    );
-
-                }
+                console.error(
+                    `No se pudo cargar la Semana ${semana} de la Unidad ${unidad}:`,
+                    err
+                );
 
             }
-        )
+
+        })
 
     );
 
 }
 
 
+/* ============================================================
+   PINTAR TRABAJO
+   (NUEVO: oculta la sección si no hay trabajo,
+    excepto para el admin, que necesita subirlo)
+   ============================================================ */
 
 function pintarTrabajo(semanaItem, archivo) {
-    const trabajoSection = semanaItem.querySelector('.trabajo-section');
+
+    const trabajoSection =
+        semanaItem.querySelector('.trabajo-section');
+
     if (!trabajoSection) return;
 
+
     const status = trabajoSection.querySelector('[data-status]');
+
     const view = trabajoSection.querySelector('[data-view]');
+
     const download = trabajoSection.querySelector('[data-download]');
+
     const del = trabajoSection.querySelector('[data-delete]');
+
 
     const esAdmin =
         sesionActual.autenticado === true &&
         sesionActual.esAdmin === true;
 
-    // Mostrar la sección solo si hay PDF o el usuario es administrador.
+
+    /*
+     * La sección solo se ve si hay trabajo
+     * o si es administrador.
+     */
+
     trabajoSection.hidden = !(archivo || esAdmin);
 
+
     if (archivo) {
+
         if (status) {
+
             status.textContent =
-                'Subido: ' + truncar(archivo.nombreOriginal || 'Trabajo.pdf', 40);
+                'Subido: ' + truncar(archivo.nombreOriginal, 40);
+
             status.classList.add('is-uploaded');
+
         }
+
 
         if (view) {
+
             view.href = construirUrlVer(archivo.id);
+
             view.hidden = false;
+
         }
+
 
         if (download) {
+
             download.href = construirUrlDescargar(archivo.id);
+
             download.hidden = false;
+
         }
 
+
+        /* ELIMINAR — SOLO ADMIN */
+
         if (del) {
+
             del.dataset.id = archivo.id;
-            del.hidden = !esAdmin;
 
             if (esAdmin) {
-                del.style.removeProperty('display');
-            } else {
-                del.style.setProperty('display', 'none', 'important');
-            }
-        }
-    } else {
-        if (status) {
-            status.textContent = 'Sin trabajo';
-            status.classList.remove('is-uploaded');
-        }
-
-        if (view) {
-            view.hidden = true;
-            view.removeAttribute('href');
-        }
-
-        if (download) {
-            download.hidden = true;
-            download.removeAttribute('href');
-        }
-
-        if (del) {
-            del.hidden = true;
-            del.style.setProperty('display', 'none', 'important');
-            delete del.dataset.id;
-        }
-    }
-}
-
-
-
-        /* ====================================================
-           ELIMINAR — SOLO ADMIN
-           ==================================================== */
-
-        if (del) {
-
-            del.dataset.id =
-                archivo.id;
-
-
-            if (
-                sesionActual.autenticado === true &&
-                sesionActual.esAdmin === true
-            ) {
 
                 del.hidden = false;
 
-                del.style.removeProperty(
-                    'display'
-                );
+                del.style.removeProperty('display');
 
             } else {
 
                 del.hidden = true;
 
-                del.style.setProperty(
-                    'display',
-                    'none',
-                    'important'
-                );
+                del.style.setProperty('display', 'none', 'important');
 
             }
 
@@ -1437,13 +1069,9 @@ function pintarTrabajo(semanaItem, archivo) {
 
         if (status) {
 
-            status.textContent =
-                'Sin trabajo';
+            status.textContent = 'Sin trabajo';
 
-
-            status.classList.remove(
-                'is-uploaded'
-            );
+            status.classList.remove('is-uploaded');
 
         }
 
@@ -1452,9 +1080,7 @@ function pintarTrabajo(semanaItem, archivo) {
 
             view.hidden = true;
 
-            view.removeAttribute(
-                'href'
-            );
+            view.removeAttribute('href');
 
         }
 
@@ -1463,9 +1089,7 @@ function pintarTrabajo(semanaItem, archivo) {
 
             download.hidden = true;
 
-            download.removeAttribute(
-                'href'
-            );
+            download.removeAttribute('href');
 
         }
 
@@ -1474,11 +1098,7 @@ function pintarTrabajo(semanaItem, archivo) {
 
             del.hidden = true;
 
-            del.style.setProperty(
-                'display',
-                'none',
-                'important'
-            );
+            del.style.setProperty('display', 'none', 'important');
 
             delete del.dataset.id;
 
@@ -1493,53 +1113,24 @@ function pintarTrabajo(semanaItem, archivo) {
    CARGAR / PINTAR INFOGRAFÍA
    ============================================================ */
 
-function pintarInfografia(
-    card,
-    archivo
-) {
+function pintarInfografia(card, archivo) {
 
-    const img =
-        card.querySelector(
-            '[data-thumb-img]'
-        );
+    const img = card.querySelector('[data-thumb-img]');
 
+    const emptyText = card.querySelector('[data-empty-text]');
 
-    const emptyText =
-        card.querySelector(
-            '[data-empty-text]'
-        );
+    const view = card.querySelector('[data-view]');
 
+    const download = card.querySelector('[data-download]');
 
-    const view =
-        card.querySelector(
-            '[data-view]'
-        );
-
-
-    const download =
-        card.querySelector(
-            '[data-download]'
-        );
-
-
-    const del =
-        card.querySelector(
-            '[data-delete]'
-        );
+    const del = card.querySelector('[data-delete]');
 
 
     if (archivo) {
 
-        const viewUrl =
-            construirUrlVer(
-                archivo.id
-            );
+        const viewUrl = construirUrlVer(archivo.id);
 
-
-        const downloadUrl =
-            construirUrlDescargar(
-                archivo.id
-            );
+        const downloadUrl = construirUrlDescargar(archivo.id);
 
 
         /*
@@ -1547,21 +1138,11 @@ function pintarInfografia(
          * directamente como miniatura.
          */
 
-        if (
-            img &&
-            esImagen(
-                archivo.nombreOriginal
-            )
-        ) {
+        if (img && esImagen(archivo.nombreOriginal)) {
 
-            img.src =
-                viewUrl;
+            img.src = viewUrl;
 
-
-            img.alt =
-                archivo.nombreOriginal ||
-                'Infografía';
-
+            img.alt = archivo.nombreOriginal || 'Infografía';
 
             img.hidden = false;
 
@@ -1575,11 +1156,7 @@ function pintarInfografia(
 
                 img.hidden = true;
 
-
-                img.removeAttribute(
-                    'src'
-                );
-
+                img.removeAttribute('src');
 
                 if (emptyText) {
 
@@ -1594,10 +1171,7 @@ function pintarInfografia(
 
             img.hidden = true;
 
-
-            img.removeAttribute(
-                'src'
-            );
+            img.removeAttribute('src');
 
         }
 
@@ -1605,17 +1179,14 @@ function pintarInfografia(
         if (emptyText) {
 
             emptyText.textContent =
-                archivo.nombreOriginal ||
-                'Infografía';
+                archivo.nombreOriginal || 'Infografía';
 
         }
 
 
         if (view) {
 
-            view.href =
-                viewUrl;
-
+            view.href = viewUrl;
 
             view.hidden = false;
 
@@ -1624,24 +1195,18 @@ function pintarInfografia(
 
         if (download) {
 
-            download.href =
-                downloadUrl;
-
+            download.href = downloadUrl;
 
             download.hidden = false;
 
         }
 
 
-        /* ====================================================
-           ELIMINAR — SOLO ADMIN
-           ==================================================== */
+        /* ELIMINAR — SOLO ADMIN */
 
         if (del) {
 
-            del.dataset.id =
-                archivo.id;
-
+            del.dataset.id = archivo.id;
 
             if (
                 sesionActual.autenticado === true &&
@@ -1650,19 +1215,13 @@ function pintarInfografia(
 
                 del.hidden = false;
 
-                del.style.removeProperty(
-                    'display'
-                );
+                del.style.removeProperty('display');
 
             } else {
 
                 del.hidden = true;
 
-                del.style.setProperty(
-                    'display',
-                    'none',
-                    'important'
-                );
+                del.style.setProperty('display', 'none', 'important');
 
             }
 
@@ -1674,18 +1233,14 @@ function pintarInfografia(
 
             img.hidden = true;
 
-
-            img.removeAttribute(
-                'src'
-            );
+            img.removeAttribute('src');
 
         }
 
 
         if (emptyText) {
 
-            emptyText.textContent =
-                'Sin infografía';
+            emptyText.textContent = 'Sin infografía';
 
         }
 
@@ -1694,10 +1249,7 @@ function pintarInfografia(
 
             view.hidden = true;
 
-
-            view.removeAttribute(
-                'href'
-            );
+            view.removeAttribute('href');
 
         }
 
@@ -1706,10 +1258,7 @@ function pintarInfografia(
 
             download.hidden = true;
 
-
-            download.removeAttribute(
-                'href'
-            );
+            download.removeAttribute('href');
 
         }
 
@@ -1718,13 +1267,7 @@ function pintarInfografia(
 
             del.hidden = true;
 
-
-            del.style.setProperty(
-                'display',
-                'none',
-                'important'
-            );
-
+            del.style.setProperty('display', 'none', 'important');
 
             delete del.dataset.id;
 
@@ -1741,9 +1284,7 @@ function pintarInfografia(
 
 function construirUrlVer(id) {
 
-    return API.ver +
-        '?id=' +
-        encodeURIComponent(id);
+    return API.ver + '?id=' + encodeURIComponent(id);
 
 }
 
@@ -1754,9 +1295,7 @@ function construirUrlVer(id) {
 
 function construirUrlDescargar(id) {
 
-    return API.descargar +
-        '?id=' +
-        encodeURIComponent(id);
+    return API.descargar + '?id=' + encodeURIComponent(id);
 
 }
 
@@ -1767,9 +1306,7 @@ function construirUrlDescargar(id) {
 
 function esImagen(nombre) {
 
-    return /\.(png|jpe?g)$/i.test(
-        nombre || ''
-    );
+    return /\.(png|jpe?g)$/i.test(nombre || '');
 
 }
 
@@ -1780,9 +1317,7 @@ function esImagen(nombre) {
 
 function esPDF(nombre) {
 
-    return /\.pdf$/i.test(
-        nombre || ''
-    );
+    return /\.pdf$/i.test(nombre || '');
 
 }
 
@@ -1791,19 +1326,12 @@ function esPDF(nombre) {
    TRUNCAR TEXTO
    ============================================================ */
 
-function truncar(
-    texto,
-    max
-) {
+function truncar(texto, max) {
 
     if (!texto) return '';
 
-
     return texto.length > max
-        ? texto.slice(
-            0,
-            max - 1
-        ) + '…'
+        ? texto.slice(0, max - 1) + '…'
         : texto;
 
 }
@@ -1815,83 +1343,58 @@ function truncar(
 
 function setupAdminHandlers() {
 
-    /*
-     * ========================================================
-     * SUBIDA
-     * ========================================================
-     */
+    /* SUBIDA */
 
-    document.addEventListener(
-        'change',
-        (e) => {
+    document.addEventListener('change', (e) => {
 
-            const input =
-                e.target.closest(
-                    '[data-upload-input]'
-                );
+        const input = e.target.closest('[data-upload-input]');
 
 
-            if (
-                !input ||
-                !input.files ||
-                !input.files[0]
-            ) {
+        if (!input || !input.files || !input.files[0]) {
 
-                return;
-
-            }
-
-
-            manejarSubida(input);
+            return;
 
         }
-    );
 
 
-    /*
-     * ========================================================
-     * ELIMINACIÓN
-     * ========================================================
-     */
+        manejarSubida(input);
 
-    document.addEventListener(
-        'click',
-        (e) => {
-
-            const btn =
-                e.target.closest(
-                    '[data-delete]'
-                );
+    });
 
 
-            if (!btn) {
+    /* ELIMINACIÓN */
 
-                return;
+    document.addEventListener('click', (e) => {
 
-            }
-
-
-            /*
-             * Si está oculto, nunca procesamos
-             * el botón.
-             */
-
-            if (
-                btn.hidden ||
-                sesionActual.autenticado !== true ||
-                sesionActual.esAdmin !== true ||
-                !btn.dataset.id
-            ) {
-
-                return;
-
-            }
+        const btn = e.target.closest('[data-delete]');
 
 
-            manejarEliminacion(btn);
+        if (!btn) {
+
+            return;
 
         }
-    );
+
+
+        /*
+         * Si está oculto, nunca procesamos el botón.
+         */
+
+        if (
+            btn.hidden ||
+            sesionActual.autenticado !== true ||
+            sesionActual.esAdmin !== true ||
+            !btn.dataset.id
+        ) {
+
+            return;
+
+        }
+
+
+        manejarEliminacion(btn);
+
+    });
 
 }
 
@@ -1902,8 +1405,7 @@ function setupAdminHandlers() {
 
 async function manejarSubida(input) {
 
-    const file =
-        input.files && input.files[0];
+    const file = input.files && input.files[0];
 
 
     if (!file) {
@@ -1911,9 +1413,7 @@ async function manejarSubida(input) {
     }
 
 
-    /* ========================================================
-       VERIFICAR SESIÓN DE ADMINISTRADOR
-       ======================================================== */
+    /* VERIFICAR SESIÓN DE ADMINISTRADOR */
 
     if (
         sesionActual.autenticado !== true ||
@@ -1930,16 +1430,11 @@ async function manejarSubida(input) {
     }
 
 
-    /* ========================================================
-       LOCALIZAR ELEMENTOS
-       ======================================================== */
+    /* LOCALIZAR ELEMENTOS */
 
-    const infoCard =
-        input.closest('.info-card');
+    const infoCard = input.closest('.info-card');
 
-
-    const semanaItem =
-        input.closest('.semana-item');
+    const semanaItem = input.closest('.semana-item');
 
 
     let tipo = null;
@@ -1959,81 +1454,46 @@ async function manejarSubida(input) {
 
         /*
          * La información principal debe estar
-         * directamente en .info-card.
-         *
-         * Ejemplo:
-         *
-         * data-unidad="1"
-         * data-semana="1"
-         * data-slot="1"
+         * directamente en .info-card
+         * (data-unidad, data-semana, data-slot).
          */
 
-        unidad =
-            infoCard.dataset.unidad ||
-            null;
+        unidad = infoCard.dataset.unidad || null;
 
+        semana = infoCard.dataset.semana || null;
 
-        semana =
-            infoCard.dataset.semana ||
-            null;
-
-
-        slot =
-            infoCard.dataset.slot ||
-            null;
+        slot = infoCard.dataset.slot || null;
 
 
         /*
-         * Respaldo:
-         *
-         * Si .info-card no tiene unidad o semana,
+         * Respaldo: si .info-card no tiene unidad o semana,
          * buscamos los datos en .semana-item.
          */
 
-        if (
-            (!unidad || !semana) &&
-            semanaItem
-        ) {
+        if ((!unidad || !semana) && semanaItem) {
 
-            unidad =
-                unidad ||
-                semanaItem.dataset.unidad ||
-                null;
+            unidad = unidad || semanaItem.dataset.unidad || null;
 
-
-            semana =
-                semana ||
-                semanaItem.dataset.semana ||
-                null;
+            semana = semana || semanaItem.dataset.semana || null;
 
         }
 
 
-        console.log(
-            'INFOGRAFÍA:',
-            {
-                unidad,
-                semana,
-                slot,
-                archivo: file.name
-            }
-        );
+        console.log('INFOGRAFÍA:', {
+            unidad,
+            semana,
+            slot,
+            archivo: file.name
+        });
 
 
-        /* ====================================================
-           VALIDAR DATOS
-           ==================================================== */
+        /* VALIDAR DATOS */
 
-        const unidadNumero =
-            Number(unidad);
+        const unidadNumero = Number(unidad);
 
+        const semanaNumero = Number(semana);
 
-        const semanaNumero =
-            Number(semana);
-
-
-        const slotNumero =
-            Number(slot);
+        const slotNumero = Number(slot);
 
 
         if (
@@ -2042,16 +1502,9 @@ async function manejarSubida(input) {
             unidadNumero > 4
         ) {
 
-            console.error(
-                'Unidad inválida:',
-                unidad
-            );
+            console.error('Unidad inválida:', unidad);
 
-
-            alert(
-                'La unidad de la infografía no es válida.'
-            );
-
+            alert('La unidad de la infografía no es válida.');
 
             input.value = '';
 
@@ -2065,16 +1518,9 @@ async function manejarSubida(input) {
             semanaNumero > 16
         ) {
 
-            console.error(
-                'Semana inválida:',
-                semana
-            );
+            console.error('Semana inválida:', semana);
 
-
-            alert(
-                'La semana de la infografía no es válida.'
-            );
-
+            alert('La semana de la infografía no es válida.');
 
             input.value = '';
 
@@ -2088,16 +1534,9 @@ async function manejarSubida(input) {
             slotNumero > 7
         ) {
 
-            console.error(
-                'Slot inválido:',
-                slot
-            );
+            console.error('Slot inválido:', slot);
 
-
-            alert(
-                'El número de infografía debe estar entre 1 y 7.'
-            );
-
+            alert('El número de infografía debe estar entre 1 y 7.');
 
             input.value = '';
 
@@ -2105,32 +1544,22 @@ async function manejarSubida(input) {
         }
 
 
-        /*
-         * Normalizamos los valores.
-         */
+        /* Normalizamos los valores. */
 
-        unidad =
-            unidadNumero;
+        unidad = unidadNumero;
 
+        semana = semanaNumero;
 
-        semana =
-            semanaNumero;
+        slot = slotNumero;
 
 
-        slot =
-            slotNumero;
-
-
-        /* ====================================================
-           VALIDAR EXTENSIÓN
-           ==================================================== */
+        /* VALIDAR EXTENSIÓN */
 
         if (!esImagen(file.name)) {
 
             alert(
                 'Las infografías deben estar en formato JPG, JPEG o PNG.'
             );
-
 
             input.value = '';
 
@@ -2149,36 +1578,23 @@ async function manejarSubida(input) {
         tipo = 'trabajo';
 
 
-        unidad =
-            semanaItem.dataset.unidad ||
-            null;
+        unidad = semanaItem.dataset.unidad || null;
+
+        semana = semanaItem.dataset.semana || null;
 
 
-        semana =
-            semanaItem.dataset.semana ||
-            null;
+        console.log('TRABAJO:', {
+            unidad,
+            semana,
+            archivo: file.name
+        });
 
 
-        console.log(
-            'TRABAJO:',
-            {
-                unidad,
-                semana,
-                archivo: file.name
-            }
-        );
+        /* VALIDAR DATOS */
 
+        const unidadNumero = Number(unidad);
 
-        /* ====================================================
-           VALIDAR DATOS
-           ==================================================== */
-
-        const unidadNumero =
-            Number(unidad);
-
-
-        const semanaNumero =
-            Number(semana);
+        const semanaNumero = Number(semana);
 
 
         if (
@@ -2187,16 +1603,9 @@ async function manejarSubida(input) {
             unidadNumero > 4
         ) {
 
-            console.error(
-                'Unidad inválida:',
-                unidad
-            );
+            console.error('Unidad inválida:', unidad);
 
-
-            alert(
-                'La unidad del trabajo no es válida.'
-            );
-
+            alert('La unidad del trabajo no es válida.');
 
             input.value = '';
 
@@ -2210,16 +1619,9 @@ async function manejarSubida(input) {
             semanaNumero > 16
         ) {
 
-            console.error(
-                'Semana inválida:',
-                semana
-            );
+            console.error('Semana inválida:', semana);
 
-
-            alert(
-                'La semana del trabajo no es válida.'
-            );
-
+            alert('La semana del trabajo no es válida.');
 
             input.value = '';
 
@@ -2227,28 +1629,18 @@ async function manejarSubida(input) {
         }
 
 
-        /*
-         * Normalizamos los valores.
-         */
+        /* Normalizamos los valores. */
 
-        unidad =
-            unidadNumero;
+        unidad = unidadNumero;
 
-
-        semana =
-            semanaNumero;
+        semana = semanaNumero;
 
 
-        /* ====================================================
-           VALIDAR PDF
-           ==================================================== */
+        /* VALIDAR PDF */
 
         if (!esPDF(file.name)) {
 
-            alert(
-                'El trabajo debe estar en formato PDF.'
-            );
-
+            alert('El trabajo debe estar en formato PDF.');
 
             input.value = '';
 
@@ -2269,141 +1661,90 @@ async function manejarSubida(input) {
             input
         );
 
-
         input.value = '';
 
         return;
     }
 
 
-    /* ========================================================
-       FORM DATA
-       ======================================================== */
+    /* FORM DATA */
 
-    const formData =
-        new FormData();
+    const formData = new FormData();
 
 
-    formData.append(
-        'archivo',
-        file
-    );
+    formData.append('archivo', file);
+
+    formData.append('tipo', tipo);
+
+    formData.append('unidad', String(unidad));
+
+    formData.append('semana', String(semana));
 
 
-    formData.append(
-        'tipo',
-        tipo
-    );
+    if (tipo === 'infografia') {
 
-
-    formData.append(
-        'unidad',
-        String(unidad)
-    );
-
-
-    formData.append(
-        'semana',
-        String(semana)
-    );
-
-
-    if (
-        tipo === 'infografia'
-    ) {
-
-        formData.append(
-            'slot',
-            String(slot)
-        );
+        formData.append('slot', String(slot));
 
     }
 
 
-    /* ========================================================
-       INDICADOR DE CARGA
-       ======================================================== */
+    /* INDICADOR DE CARGA */
 
-    const label =
-        input.closest('label');
+    const label = input.closest('label');
 
 
     if (label) {
 
-        label.classList.add(
-            'is-loading'
-        );
+        label.classList.add('is-loading');
 
     }
 
 
     try {
 
-        console.log(
-            'Enviando archivo:',
-            {
-                tipo,
-                unidad,
-                semana,
-                slot,
-                nombre: file.name,
-                tamano: file.size
-            }
-        );
+        console.log('Enviando archivo:', {
+            tipo,
+            unidad,
+            semana,
+            slot,
+            nombre: file.name,
+            tamano: file.size
+        });
 
 
-        /* ====================================================
-           ENVIAR AL SERVIDOR
-           ==================================================== */
+        /* ENVIAR AL SERVIDOR */
 
-        const res =
-            await fetch(
-                API.subir,
-                {
-                    method: 'POST',
-                    body: formData
-                }
-            );
+        const res = await fetch(API.subir, {
+
+            method: 'POST',
+
+            body: formData
+
+        });
 
 
-        /* ====================================================
-           LEER RESPUESTA
-           ==================================================== */
+        /* LEER RESPUESTA */
 
-        const data =
-            await res.json();
+        const data = await res.json();
 
 
-        console.log(
-            'Respuesta del servidor:',
-            {
-                status: res.status,
-                data
-            }
-        );
+        console.log('Respuesta del servidor:', {
+            status: res.status,
+            data
+        });
 
 
-        /* ====================================================
-           ERROR
-           ==================================================== */
+        /* ERROR */
 
-        if (
-            !res.ok ||
-            !data.ok
-        ) {
+        if (!res.ok || !data.ok) {
 
-            alert(
-                data.error ||
-                'No se pudo subir el archivo.'
-            );
+            alert(data.error || 'No se pudo subir el archivo.');
 
             return;
         }
 
 
-        /* ====================================================
-           SUBIDA CORRECTA
-           ==================================================== */
+        /* SUBIDA CORRECTA */
 
         alert(
             tipo === 'infografia'
@@ -2414,25 +1755,15 @@ async function manejarSubida(input) {
 
         /*
          * Volvemos a consultar los archivos.
-         *
-         * Esto actualiza:
-         *
-         * - nombre del archivo
-         * - miniatura
-         * - VER
-         * - DESCARGAR
-         * - ELIMINAR
+         * Esto actualiza: nombre, miniatura,
+         * VER, DESCARGAR y ELIMINAR.
          */
 
         await cargarEstadoArchivos();
 
     } catch (err) {
 
-        console.error(
-            'Error subiendo archivo:',
-            err
-        );
-
+        console.error('Error subiendo archivo:', err);
 
         alert(
             'No se pudo conectar con el servidor para subir el archivo.'
@@ -2447,12 +1778,9 @@ async function manejarSubida(input) {
 
         input.value = '';
 
-
         if (label) {
 
-            label.classList.remove(
-                'is-loading'
-            );
+            label.classList.remove('is-loading');
 
         }
 
@@ -2467,11 +1795,7 @@ async function manejarSubida(input) {
 
 async function manejarEliminacion(btn) {
 
-    /*
-     * ========================================================
-     * SEGURIDAD DEL FRONTEND
-     * ========================================================
-     */
+    /* SEGURIDAD DEL FRONTEND */
 
     if (
         sesionActual.autenticado !== true ||
@@ -2483,8 +1807,7 @@ async function manejarEliminacion(btn) {
     }
 
 
-    const id =
-        btn.dataset.id;
+    const id = btn.dataset.id;
 
 
     if (!id) {
@@ -2510,31 +1833,19 @@ async function manejarEliminacion(btn) {
 
     try {
 
-        const res =
-            await fetch(
-                API.eliminar +
-                '?id=' +
-                encodeURIComponent(
-                    id
-                ),
-                {
-                    method: 'POST'
-                }
-            );
+        const res = await fetch(
+            API.eliminar + '?id=' + encodeURIComponent(id),
+            { method: 'POST' }
+        );
 
 
-        const data =
-            await res.json();
+        const data = await res.json();
 
-        if (
-            !res.ok ||
-            !data.ok
-        ) {
 
-            alert(
-                data.error ||
-                'No se pudo eliminar el archivo.'
-            );
+        if (!res.ok || !data.ok) {
+
+            alert(data.error || 'No se pudo eliminar el archivo.');
+
             return;
 
         }
@@ -2549,10 +1860,8 @@ async function manejarEliminacion(btn) {
 
     } catch (err) {
 
-        console.error(
-            'Error eliminando archivo:',
-            err
-        );
+        console.error('Error eliminando archivo:', err);
+
         alert(
             'No se pudo conectar con el servidor para eliminar el archivo.'
         );
@@ -2566,30 +1875,49 @@ async function manejarEliminacion(btn) {
 }
 
 
+/* ============================================================
+   VISOR DE ARCHIVOS
+   (NUEVO: imágenes con zoom; PDF sigue igual en iframe)
+   ============================================================ */
+
 function setupArchivoViewer() {
 
-    const viewer =
-        document.getElementById('archivoViewer');
+    const viewer = document.getElementById('archivoViewer');
 
-    const content =
-        document.getElementById('archivoViewerContent');
+    const content = document.getElementById('archivoViewerContent');
 
-    const closeBtn =
-        document.getElementById('archivoViewerClose');
+    const closeBtn = document.getElementById('archivoViewerClose');
 
     const overlay =
         viewer
             ? viewer.querySelector('.archivo-viewer-overlay')
             : null;
 
-    if (!viewer || !content) return;
+
+    /*
+     * Si la página no tiene visor,
+     * los enlaces VER siguen funcionando normalmente.
+     */
+
+    if (!viewer || !content) {
+
+        return;
+
+    }
+
 
     function cerrar() {
+
         viewer.hidden = true;
+
         viewer.setAttribute('aria-hidden', 'true');
+
         content.innerHTML = '';
+
         document.body.classList.remove('viewer-open');
+
     }
+
 
     /* ========================================================
        IMAGEN CON ZOOM
@@ -2604,170 +1932,280 @@ function setupArchivoViewer() {
         let x = 0;
         let y = 0;
 
+
         const stage = document.createElement('div');
+
         stage.className = 'zoom-stage';
 
+
         const img = document.createElement('img');
+
         img.src = url;
+
         img.alt = nombre || 'Infografía';
+
         img.draggable = false;
 
+
         const toolbar = document.createElement('div');
+
         toolbar.className = 'zoom-toolbar';
+
         toolbar.innerHTML =
             '<button type="button" data-z="out" aria-label="Alejar">−</button>' +
             '<span class="zoom-level">100%</span>' +
             '<button type="button" data-z="in" aria-label="Acercar">+</button>' +
             '<button type="button" data-z="reset">100%</button>';
 
+
         const levelEl = toolbar.querySelector('.zoom-level');
 
+
         stage.appendChild(img);
+
         stage.appendChild(toolbar);
 
+
         function aplicar() {
+
             if (scale <= MIN) {
+
                 scale = MIN;
+
                 x = 0;
+
                 y = 0;
+
             }
+
 
             img.style.transform =
                 `translate(${x}px, ${y}px) scale(${scale})`;
 
-            levelEl.textContent =
-                Math.round(scale * 100) + '%';
+
+            levelEl.textContent = Math.round(scale * 100) + '%';
+
 
             stage.classList.toggle('is-zoomed', scale > MIN);
+
         }
+
 
         /*
          * Cambia el zoom manteniendo fijo el punto (cx, cy),
          * medido desde el centro del stage.
          */
+
         function zoomEn(nuevaEscala, cx, cy) {
+
             const ns = Math.min(MAX, Math.max(MIN, nuevaEscala));
+
             const ratio = ns / scale;
 
+
             x = cx - (cx - x) * ratio;
+
             y = cy - (cy - y) * ratio;
+
             scale = ns;
 
+
             aplicar();
+
         }
 
+
         function centroRelativo(clientX, clientY) {
+
             const r = stage.getBoundingClientRect();
+
             return {
                 x: clientX - (r.left + r.width / 2),
                 y: clientY - (r.top + r.height / 2)
             };
+
         }
 
+
         /* Botones */
+
         toolbar.addEventListener('click', (e) => {
+
             const b = e.target.closest('[data-z]');
+
             if (!b) return;
 
             e.stopPropagation();
 
+
             if (b.dataset.z === 'in') zoomEn(scale * 1.4, 0, 0);
+
             if (b.dataset.z === 'out') zoomEn(scale / 1.4, 0, 0);
+
             if (b.dataset.z === 'reset') {
+
                 scale = 1;
+
                 aplicar();
+
             }
+
         });
+
 
         toolbar.addEventListener('pointerdown', (e) => {
+
             e.stopPropagation();
+
         });
+
 
         /* Rueda del mouse */
+
         stage.addEventListener('wheel', (e) => {
+
             e.preventDefault();
+
             const p = centroRelativo(e.clientX, e.clientY);
+
             const factor = e.deltaY < 0 ? 1.2 : 1 / 1.2;
+
             zoomEn(scale * factor, p.x, p.y);
+
         }, { passive: false });
 
+
         /* Doble clic: acercar / restablecer */
+
         stage.addEventListener('dblclick', (e) => {
+
             const p = centroRelativo(e.clientX, e.clientY);
+
             if (scale > MIN) {
+
                 scale = 1;
+
                 aplicar();
+
             } else {
+
                 zoomEn(2.5, p.x, p.y);
+
             }
+
         });
+
 
         /* Arrastre (mouse y dedo) + pellizco */
+
         const punteros = new Map();
+
         let distanciaInicial = 0;
+
         let escalaInicial = 1;
 
+
         stage.addEventListener('pointerdown', (e) => {
+
             stage.setPointerCapture(e.pointerId);
+
             punteros.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
+
             if (punteros.size === 2) {
+
                 const [a, b] = [...punteros.values()];
+
                 distanciaInicial = Math.hypot(a.x - b.x, a.y - b.y);
+
                 escalaInicial = scale;
+
             }
 
+
             if (scale > MIN) stage.classList.add('is-dragging');
+
         });
 
+
         stage.addEventListener('pointermove', (e) => {
+
             const prev = punteros.get(e.pointerId);
+
             if (!prev) return;
+
 
             const actual = { x: e.clientX, y: e.clientY };
 
+
             if (punteros.size === 2) {
+
                 punteros.set(e.pointerId, actual);
 
                 const [a, b] = [...punteros.values()];
+
                 const dist = Math.hypot(a.x - b.x, a.y - b.y);
 
+
                 if (distanciaInicial > 0) {
+
                     const mid = centroRelativo(
                         (a.x + b.x) / 2,
                         (a.y + b.y) / 2
                     );
+
                     zoomEn(
                         escalaInicial * (dist / distanciaInicial),
                         mid.x,
                         mid.y
                     );
+
                 }
+
                 return;
+
             }
+
 
             if (scale > MIN) {
+
                 x += actual.x - prev.x;
+
                 y += actual.y - prev.y;
+
                 aplicar();
+
             }
 
+
             punteros.set(e.pointerId, actual);
+
         });
 
+
         function soltar(e) {
+
             punteros.delete(e.pointerId);
+
             stage.classList.remove('is-dragging');
+
             distanciaInicial = 0;
+
         }
 
+
         stage.addEventListener('pointerup', soltar);
+
         stage.addEventListener('pointercancel', soltar);
+
 
         aplicar();
 
+
         return stage;
+
     }
+
 
     /* ========================================================
        ABRIR
@@ -2777,55 +2215,92 @@ function setupArchivoViewer() {
 
         content.innerHTML = '';
 
+
+        /* IMAGEN (con zoom) */
+
         if (tipo === 'imagen') {
 
-            content.appendChild(
-                crearVisorImagen(url, nombre)
-            );
+            content.appendChild(crearVisorImagen(url, nombre));
 
-        } else {
-
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.title = nombre || 'Documento PDF';
-            iframe.className = 'archivo-viewer-pdf';
-            content.appendChild(iframe);
         }
 
+        /* PDF (igual que antes) */
+
+        else {
+
+            const iframe = document.createElement('iframe');
+
+            iframe.src = url;
+
+            iframe.title = nombre || 'Documento PDF';
+
+            iframe.className = 'archivo-viewer-pdf';
+
+            content.appendChild(iframe);
+
+        }
+
+
         viewer.hidden = false;
+
         viewer.setAttribute('aria-hidden', 'false');
+
         document.body.classList.add('viewer-open');
 
-        if (closeBtn) closeBtn.focus();
+
+        if (closeBtn) {
+
+            closeBtn.focus();
+
+        }
+
     }
 
+
     closeBtn?.addEventListener('click', cerrar);
+
     overlay?.addEventListener('click', cerrar);
+
 
     document.addEventListener('keydown', (e) => {
 
         if (viewer.hidden) return;
 
+
         if (e.key === 'Escape') {
+
             cerrar();
+
             return;
+
         }
 
+
         const stage = content.querySelector('.zoom-stage');
+
         if (!stage) return;
 
+
         if (e.key === '+' || e.key === '=') {
+
             stage.querySelector('[data-z="in"]')?.click();
+
         }
 
         if (e.key === '-') {
+
             stage.querySelector('[data-z="out"]')?.click();
+
         }
 
         if (e.key === '0') {
+
             stage.querySelector('[data-z="reset"]')?.click();
+
         }
+
     });
+
 
     /* ========================================================
        BOTONES "VER"
@@ -2835,112 +2310,129 @@ function setupArchivoViewer() {
 
         const btn = e.target.closest('[data-view]');
 
-        if (!btn || btn.hidden || !btn.href) return;
+
+        if (!btn || btn.hidden || !btn.href) {
+
+            return;
+
+        }
+
+
+        /*
+         * Evitamos que el enlace abra otra página.
+         */
 
         e.preventDefault();
 
+
         const card = btn.closest('.info-card');
 
+
         let nombre = 'Archivo';
+
         let tipo = 'pdf';
+
+
+        /* INFOGRAFÍA */
 
         if (card) {
 
             const img = card.querySelector('[data-thumb-img]');
 
+
             if (img && !img.hidden && img.src) {
+
                 tipo = 'imagen';
+
             }
+
 
             const emptyText = card.querySelector('[data-empty-text]');
 
+
             if (emptyText) {
+
                 nombre = emptyText.textContent || 'Infografía';
+
             }
 
-        } else {
+        }
+
+        /* TRABAJO */
+
+        else {
 
             const semanaItem = btn.closest('.semana-item');
 
-            const status = semanaItem
-                ? semanaItem.querySelector('[data-status]')
-                : null;
+            const status =
+                semanaItem
+                    ? semanaItem.querySelector('[data-status]')
+                    : null;
+
 
             if (status) {
+
                 nombre = status.textContent.replace('Subido: ', '');
+
             }
+
+            tipo = 'pdf';
+
         }
 
+
         abrir(btn.href, tipo, nombre);
+
     });
+
 }
+
+
 /* ============================================================
    CARRUSEL HERO
    ============================================================ */
 
 function setupHeroCarousel() {
 
-    const slides =
-        document.querySelectorAll(
-            '.hero-slide'
-        );
+    const slides = document.querySelectorAll('.hero-slide');
 
-    const dots =
-        document.querySelectorAll(
-            '.hero-dot'
-        );
+    const dots = document.querySelectorAll('.hero-dot');
 
-    const prev =
-        document.getElementById(
-            'heroPrev'
-        );
+    const prev = document.getElementById('heroPrev');
 
-    const next =
-        document.getElementById(
-            'heroNext'
-        );
+    const next = document.getElementById('heroNext');
 
 
     if (!slides.length) return;
+
+
     let current = 0;
+
     let timer = null;
+
+
     function mostrarSlide(index) {
 
-        current =
-            (index + slides.length) %
-            slides.length;
+        current = (index + slides.length) % slides.length;
 
 
-        slides.forEach(
-            (slide, i) => {
+        slides.forEach((slide, i) => {
 
-                slide.classList.toggle(
-                    'is-active',
-                    i === current
-                );
+            slide.classList.toggle('is-active', i === current);
 
-            }
-        );
+        });
 
 
-        dots.forEach(
-            (dot, i) => {
+        dots.forEach((dot, i) => {
 
-                dot.classList.toggle(
-                    'is-active',
-                    i === current
-                );
+            dot.classList.toggle('is-active', i === current);
 
+            dot.setAttribute(
+                'aria-current',
+                i === current ? 'true' : 'false'
+            );
 
-                dot.setAttribute(
-                    'aria-current',
-                    i === current
-                        ? 'true'
-                        : 'false'
-                );
-
-            }
-        );
+        });
 
     }
 
@@ -2949,75 +2441,47 @@ function setupHeroCarousel() {
 
         clearInterval(timer);
 
+        timer = setInterval(() => {
 
-        timer =
-            setInterval(
-                () => {
+            mostrarSlide(current + 1);
 
-                    mostrarSlide(
-                        current + 1
-                    );
-
-                },
-                5000
-            );
+        }, 5000);
 
     }
 
 
-    prev?.addEventListener(
-        'click',
-        () => {
+    prev?.addEventListener('click', () => {
 
-            mostrarSlide(
-                current - 1
-            );
+        mostrarSlide(current - 1);
 
+        iniciarAutoPlay();
+
+    });
+
+
+    next?.addEventListener('click', () => {
+
+        mostrarSlide(current + 1);
+
+        iniciarAutoPlay();
+
+    });
+
+
+    dots.forEach((dot, index) => {
+
+        dot.addEventListener('click', () => {
+
+            mostrarSlide(index);
 
             iniciarAutoPlay();
 
-        }
-    );
+        });
 
-
-    next?.addEventListener(
-        'click',
-        () => {
-
-            mostrarSlide(
-                current + 1
-            );
-
-
-            iniciarAutoPlay();
-
-        }
-    );
-
-
-    dots.forEach(
-        (dot, index) => {
-
-            dot.addEventListener(
-                'click',
-                () => {
-
-                    mostrarSlide(
-                        index
-                    );
-
-
-                    iniciarAutoPlay();
-
-                }
-            );
-
-        }
-    );
+    });
 
 
     mostrarSlide(0);
-
 
     iniciarAutoPlay();
 
