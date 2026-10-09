@@ -1328,42 +1328,27 @@ async function cargarArchivosPorSemana() {
 }
 
 
-function pintarTrabajo(
-    semanaItem,
-    archivo
-) {
 
-    const trabajoSection =
-        semanaItem.querySelector('.trabajo-section');
-
+function pintarTrabajo(semanaItem, archivo) {
+    const trabajoSection = semanaItem.querySelector('.trabajo-section');
     if (!trabajoSection) return;
 
-    const status =
-        trabajoSection.querySelector('[data-status]');
-
-    const view =
-        trabajoSection.querySelector('[data-view]');
-
-    const download =
-        trabajoSection.querySelector('[data-download]');
-
-    const del =
-        trabajoSection.querySelector('[data-delete]');
+    const status = trabajoSection.querySelector('[data-status]');
+    const view = trabajoSection.querySelector('[data-view]');
+    const download = trabajoSection.querySelector('[data-download]');
+    const del = trabajoSection.querySelector('[data-delete]');
 
     const esAdmin =
         sesionActual.autenticado === true &&
         sesionActual.esAdmin === true;
 
-    /*
-     * Visible solo si hay trabajo, o si es admin.
-     */
+    // Mostrar la sección solo si hay PDF o el usuario es administrador.
     trabajoSection.hidden = !(archivo || esAdmin);
 
     if (archivo) {
-
         if (status) {
             status.textContent =
-                'Subido: ' + truncar(archivo.nombreOriginal, 40);
+                'Subido: ' + truncar(archivo.nombreOriginal || 'Trabajo.pdf', 40);
             status.classList.add('is-uploaded');
         }
 
@@ -1379,18 +1364,15 @@ function pintarTrabajo(
 
         if (del) {
             del.dataset.id = archivo.id;
+            del.hidden = !esAdmin;
 
             if (esAdmin) {
-                del.hidden = false;
                 del.style.removeProperty('display');
             } else {
-                del.hidden = true;
                 del.style.setProperty('display', 'none', 'important');
             }
         }
-
     } else {
-
         if (status) {
             status.textContent = 'Sin trabajo';
             status.classList.remove('is-uploaded');
@@ -1413,6 +1395,7 @@ function pintarTrabajo(
         }
     }
 }
+
 
 
         /* ====================================================
