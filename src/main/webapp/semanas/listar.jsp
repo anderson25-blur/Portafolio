@@ -1501,13 +1501,18 @@ for (
             </div>
 
         </article>
-
+<%
+}   /* cierra el for de infografías (slot) */
+%>
 
     </div>
 
 </section>
 
 </article>
+<%
+}   /* cierra el for de semanas */
+%>
 
 </div>
 
@@ -1561,7 +1566,7 @@ for (
 </div>
 
 
-<script src="../js/main.js?v=2"></script>
+<script src="../js/main.js?v=3"></script>
 
 </body>
 
