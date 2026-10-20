@@ -854,18 +854,21 @@ async function cargarEstadoArchivos() {
 
 /* ============================================================
    CARGAR ARCHIVOS POR UNIDAD + SEMANA
+   - Carga todos los trabajos e infografías.
+   - Muestra todos los PDF de cada semana.
+   - Oculta infografías vacías para los visitantes.
+   - El administrador conserva los espacios para subir archivos.
    ============================================================ */
 
 async function cargarArchivosPorSemana() {
 
     const semanas = document.querySelectorAll('.semana-item');
 
-
     /*
      * Cada semana realiza una consulta:
-     *   /api/archivos?unidad=1&semana=1
-     * Esto devuelve trabajos e infografías
-     * pertenecientes exclusivamente a esa semana.
+     * /api/archivos?unidad=1&semana=1
+     *
+     * Devuelve los trabajos e infografías de esa semana.
      */
 
     await Promise.all(
@@ -873,16 +876,11 @@ async function cargarArchivosPorSemana() {
         [...semanas].map(async (semanaItem) => {
 
             const unidad = semanaItem.dataset.unidad;
-
             const semana = semanaItem.dataset.semana;
 
-
             if (!unidad || !semana) {
-
                 return;
-
             }
-
 
             try {
 
@@ -891,12 +889,8 @@ async function cargarArchivosPorSemana() {
                     '?unidad=' + encodeURIComponent(unidad) +
                     '&semana=' + encodeURIComponent(semana);
 
-
                 const res = await fetch(url);
-
-
                 const data = await res.json();
-
 
                 if (!res.ok || !data.ok) {
 
@@ -906,50 +900,106 @@ async function cargarArchivosPorSemana() {
                     );
 
                     return;
-
                 }
 
+                const archivos = Array.isArray(data.archivos)
+                    ? data.archivos
+                    : [];
 
-                const archivos =
-                    Array.isArray(data.archivos) ? data.archivos : [];
+                // Separar los trabajos y las infografías.
+                const trabajos = archivos.filter(
+                    archivo => archivo.tipo === 'trabajo'
+                );
 
-
-                const trabajos =
-                    archivos.filter(a => a.tipo === 'trabajo');
-
-
-                const infografias =
-                    archivos.filter(a => a.tipo === 'infografia');
-
+                const infografias = archivos.filter(
+                    archivo => archivo.tipo === 'infografia'
+                );
 
                 /*
-                 * Para trabajos mostramos el más reciente.
-                 * El DAO ya los devuelve ordenados por creado_en desc.
+                 * TRABAJOS PDF
+                 *
+                 * Mostrar todos los trabajos de la semana.
+                 * La función pintarTrabajos() debe estar definida
+                 * en el mismo archivo JavaScript.
                  */
 
-                const trabajo = trabajos.length ? trabajos[0] : null;
-
-
-                pintarTrabajo(semanaItem, trabajo);
-
+                pintarTrabajos(semanaItem, trabajos);
 
                 /*
-                 * Las infografías se relacionan mediante su slot.
+                 * IDENTIFICAR SI EL USUARIO ES ADMINISTRADOR
+                 */
+
+                const esAdmin =
+                    sesionActual.autenticado === true &&
+                    sesionActual.esAdmin === true;
+
+                /*
+                 * ORGANIZAR LAS INFOGRAFÍAS POR SLOT
+                 *
+                 * Cada infografía se relaciona con su tarjeta
+                 * mediante el número de slot.
                  */
 
                 const porSlot = new Map();
-
 
                 infografias.forEach((archivo) => {
 
                     if (archivo.slot != null) {
 
-                        porSlot.set(Number(archivo.slot), archivo);
-
+                        porSlot.set(
+                            Number(archivo.slot),
+                            archivo
+                        );
                     }
-
                 });
 
+                /*
+                 * OCULTAR LA SECCIÓN DE INFOGRAFÍAS VACÍA
+                 *
+                 * Visitante:
+                 * - Oculta la sección si no tiene infografías.
+                 * - Muestra la sección si tiene al menos una.
+                 *
+                 * Administrador:
+                 * - Siempre puede ver la sección para subir archivos.
+                 */
+
+                const seccionInfo =
+                    semanaItem.querySelector('.infografias-section');
+
+                if (seccionInfo) {
+
+                    const hayInfografias = infografias.length > 0;
+
+                    const mostrarSeccion =
+                        hayInfografias || esAdmin;
+
+                    seccionInfo.hidden = !mostrarSeccion;
+
+                    if (mostrarSeccion) {
+
+                        seccionInfo.style.removeProperty('display');
+
+                    } else {
+
+                        seccionInfo.style.setProperty(
+                            'display',
+                            'none',
+                            'important'
+                        );
+                    }
+                }
+
+                /*
+                 * OCULTAR LAS TARJETAS DE INFOGRAFÍAS VACÍAS
+                 *
+                 * Visitante:
+                 * - Solo ve las tarjetas que tienen una infografía.
+                 *
+                 * Administrador:
+                 * - Ve todas las tarjetas disponibles para subir
+                 *   nuevas infografías.
+                 */
 
                 semanaItem
                     .querySelectorAll('.info-card')
@@ -957,8 +1007,29 @@ async function cargarArchivosPorSemana() {
 
                         const slot = Number(card.dataset.slot);
 
-                        pintarInfografia(card, porSlot.get(slot) || null);
+                        const archivo =
+                            porSlot.get(slot) || null;
 
+                        // Pintar la infografía o indicar que está vacía.
+                        pintarInfografia(card, archivo);
+
+                        const mostrarTarjeta =
+                            Boolean(archivo) || esAdmin;
+
+                        card.hidden = !mostrarTarjeta;
+
+                        if (mostrarTarjeta) {
+
+                            card.style.removeProperty('display');
+
+                        } else {
+
+                            card.style.setProperty(
+                                'display',
+                                'none',
+                                'important'
+                            );
+                        }
                     });
 
             } catch (err) {
@@ -967,147 +1038,136 @@ async function cargarArchivosPorSemana() {
                     `No se pudo cargar la Semana ${semana} de la Unidad ${unidad}:`,
                     err
                 );
-
             }
-
         })
-
     );
-
 }
 
 
 /* ============================================================
-   PINTAR TRABAJO
-   (NUEVO: oculta la sección si no hay trabajo,
-    excepto para el admin, que necesita subirlo)
+   PINTAR TRABAJOS
+   - Permite mostrar varios PDF por semana.
+   - Oculta la sección si no hay trabajos, excepto para el admin.
+   - Permite al administrador eliminar cada PDF.
    ============================================================ */
 
-function pintarTrabajo(semanaItem, archivo) {
+function pintarTrabajos(semanaItem, trabajos) {
 
     const trabajoSection =
         semanaItem.querySelector('.trabajo-section');
 
     if (!trabajoSection) return;
 
-
-    const status = trabajoSection.querySelector('[data-status]');
-
-    const view = trabajoSection.querySelector('[data-view]');
-
-    const download = trabajoSection.querySelector('[data-download]');
-
-    const del = trabajoSection.querySelector('[data-delete]');
-
-
     const esAdmin =
         sesionActual.autenticado === true &&
         sesionActual.esAdmin === true;
 
+    const hayTrabajos = trabajos.length > 0;
 
-    /*
-     * La sección solo se ve si hay trabajo
-     * o si es administrador.
-     */
+    // Mostrar la sección si hay PDF o si es administrador.
+    trabajoSection.hidden = !(hayTrabajos || esAdmin);
 
-    trabajoSection.hidden = !(archivo || esAdmin);
-
-
-    if (archivo) {
-
-        if (status) {
-
-            status.textContent =
-                'Subido: ' + truncar(archivo.nombreOriginal, 40);
-
-            status.classList.add('is-uploaded');
-
-        }
-
-
-        if (view) {
-
-            view.href = construirUrlVer(archivo.id);
-
-            view.hidden = false;
-
-        }
-
-
-        if (download) {
-
-            download.href = construirUrlDescargar(archivo.id);
-
-            download.hidden = false;
-
-        }
-
-
-        /* ELIMINAR — SOLO ADMIN */
-
-        if (del) {
-
-            del.dataset.id = archivo.id;
-
-            if (esAdmin) {
-
-                del.hidden = false;
-
-                del.style.removeProperty('display');
-
-            } else {
-
-                del.hidden = true;
-
-                del.style.setProperty('display', 'none', 'important');
-
-            }
-
-        }
-
+    if (hayTrabajos || esAdmin) {
+        trabajoSection.style.removeProperty('display');
     } else {
-
-        if (status) {
-
-            status.textContent = 'Sin trabajo';
-
-            status.classList.remove('is-uploaded');
-
-        }
-
-
-        if (view) {
-
-            view.hidden = true;
-
-            view.removeAttribute('href');
-
-        }
-
-
-        if (download) {
-
-            download.hidden = true;
-
-            download.removeAttribute('href');
-
-        }
-
-
-        if (del) {
-
-            del.hidden = true;
-
-            del.style.setProperty('display', 'none', 'important');
-
-            delete del.dataset.id;
-
-        }
-
+        trabajoSection.style.setProperty(
+            'display',
+            'none',
+            'important'
+        );
     }
 
-}
+    // Crear la lista de trabajos si todavía no existe.
+    let lista = trabajoSection.querySelector('.trabajos-lista');
 
+    if (!lista) {
+
+        lista = document.createElement('div');
+        lista.className = 'trabajos-lista';
+
+        const input = trabajoSection.querySelector(
+            '[data-upload-input]'
+        );
+
+        const etiqueta = input
+            ? input.closest('label')
+            : null;
+
+        if (etiqueta) {
+            etiqueta.before(lista);
+        } else {
+            trabajoSection.appendChild(lista);
+        }
+    }
+
+    // Limpiar los PDF anteriores para evitar duplicados.
+    lista.replaceChildren();
+
+    // Ocultar los controles antiguos de un solo archivo.
+    trabajoSection.querySelectorAll(
+        '[data-status], [data-view], [data-download], [data-delete]'
+    ).forEach(elemento => {
+
+        elemento.hidden = true;
+
+        elemento.style.setProperty(
+            'display',
+            'none',
+            'important'
+        );
+    });
+
+    // Mostrar todos los archivos PDF de la semana.
+    trabajos.forEach(archivo => {
+
+        const fila = document.createElement('div');
+        fila.className = 'trabajo-item';
+
+        // Nombre del documento.
+        const nombre = document.createElement('span');
+
+        nombre.textContent =
+            archivo.nombreOriginal || 'Documento PDF';
+
+        fila.appendChild(nombre);
+
+        // Botón/enlace para visualizar.
+        const ver = document.createElement('a');
+
+        ver.href = construirUrlVer(archivo.id);
+        ver.dataset.view = '';
+        ver.dataset.nombre =
+            archivo.nombreOriginal || 'Documento PDF';
+
+        ver.textContent = 'Ver';
+
+        fila.appendChild(ver);
+
+        // Enlace para descargar.
+        const descargar = document.createElement('a');
+
+        descargar.href = construirUrlDescargar(archivo.id);
+        descargar.dataset.download = '';
+        descargar.textContent = 'Descargar';
+
+        fila.appendChild(descargar);
+
+        // El administrador puede eliminar cada documento.
+        if (esAdmin) {
+
+            const eliminar = document.createElement('button');
+
+            eliminar.type = 'button';
+            eliminar.dataset.delete = '';
+            eliminar.dataset.id = archivo.id;
+            eliminar.textContent = 'Eliminar';
+
+            fila.appendChild(eliminar);
+        }
+
+        lista.appendChild(fila);
+    });
+}
 
 /* ============================================================
    CARGAR / PINTAR INFOGRAFÍA
@@ -2372,7 +2432,9 @@ function setupArchivoViewer() {
 
             if (status) {
 
-                nombre = status.textContent.replace('Subido: ', '');
+                nombre =
+                   btn.dataset.nombre ||
+                   (status ? status.textContent.replace('Subido: ', '') : 'Documento PDF');
 
             }
 
