@@ -1229,126 +1229,252 @@ async function cargarArchivosPorSemana() {
 
 
 /* ============================================================
-   PINTAR TRABAJOS
-   - Permite mostrar varios PDF por semana.
-   - Oculta la sección si no hay trabajos, excepto para el admin.
-   - Permite al administrador eliminar cada PDF.
+   PINTAR TRABAJOS PDF
+   - Muestra varios documentos por semana.
+   - Diseño integrado con MiPortafolio.
+   - Oculta la sección vacía para visitantes.
+   - Conserva los botones de administración.
    ============================================================ */
 
 function pintarTrabajos(semanaItem, trabajos) {
 
-    const trabajoSection = semanaItem.querySelector('.trabajo-section');
+    const trabajoSection = semanaItem.querySelector(
+        '.trabajo-section'
+    );
+
     if (!trabajoSection) return;
 
     const esAdmin = esAdministradorActual();
-    const hayTrabajos = Array.isArray(trabajos) && trabajos.length > 0;
+
+    /* Filtrar documentos válidos. */
+
+    const documentos = Array.isArray(trabajos)
+        ? trabajos.filter(archivo =>
+            archivo && archivo.id != null
+        )
+        : [];
+
+    const hayTrabajos = documentos.length > 0;
+
+    /* Mostrar la sección si hay PDF o si es administrador. */
 
     trabajoSection.hidden = !(hayTrabajos || esAdmin);
 
     if (trabajoSection.hidden) {
-        trabajoSection.style.setProperty('display', 'none', 'important');
+        trabajoSection.style.setProperty(
+            'display',
+            'none',
+            'important'
+        );
     } else {
         trabajoSection.style.removeProperty('display');
     }
 
-    // La fila antigua del JSP no se utiliza porque ahora admitimos varios PDF.
-    const filaAntigua = trabajoSection.querySelector(':scope > .archivo-item');
+    /* Ocultar la fila antigua del JSP. */
+
+    const filaAntigua = trabajoSection.querySelector(
+        ':scope > .archivo-item'
+    );
+
     if (filaAntigua) {
         filaAntigua.hidden = true;
-        filaAntigua.style.setProperty('display', 'none', 'important');
+
+        filaAntigua.style.setProperty(
+            'display',
+            'none',
+            'important'
+        );
     }
 
-    // Crear una lista única, colocada debajo de la cabecera (no dentro del flex header).
-    let lista = trabajoSection.querySelector('.trabajos-lista');
+    /* Crear la lista de documentos una sola vez. */
+
+    let lista = trabajoSection.querySelector(
+        '.trabajos-lista'
+    );
 
     if (!lista) {
+
         lista = document.createElement('div');
         lista.className = 'trabajos-lista';
 
-        const cabecera = trabajoSection.querySelector('.material-header');
+        const cabecera = trabajoSection.querySelector(
+            '.material-header'
+        );
+
         if (cabecera) {
-            cabecera.insertAdjacentElement('afterend', lista);
+            cabecera.insertAdjacentElement(
+                'afterend',
+                lista
+            );
         } else {
             trabajoSection.appendChild(lista);
         }
     }
 
+    /* Eliminar filas anteriores para evitar duplicados. */
+
     lista.replaceChildren();
 
-    // Ocultar controles antiguos de un solo archivo.
-    trabajoSection.querySelectorAll(
-        ':scope > .archivo-item [data-status], :scope > .archivo-item [data-view], ' +
-        ':scope > .archivo-item [data-download], :scope > .archivo-item [data-delete]'
-    ).forEach((elemento) => {
-        elemento.hidden = true;
-        elemento.style.setProperty('display', 'none', 'important');
-    });
+    /* Si no hay documentos, informar solamente al administrador. */
 
     if (!hayTrabajos) {
+
         if (esAdmin) {
+
             const vacio = document.createElement('p');
+
             vacio.className = 'trabajos-vacio';
-            vacio.textContent = 'Todavía no has subido documentos PDF para esta semana.';
+
+            vacio.textContent =
+                'Todavía no hay documentos PDF para esta semana. Puedes subir uno usando el botón superior.';
+
             lista.appendChild(vacio);
         }
+
         return;
     }
 
-    trabajos.forEach((archivo) => {
-        if (!archivo || archivo.id == null) return;
+    /* Crear tarjeta para cada documento. */
 
-        const fila = document.createElement('div');
+    documentos.forEach(archivo => {
+
+        const nombreArchivo =
+            archivo.nombreOriginal || 'Documento PDF';
+
+        /* TARJETA PRINCIPAL */
+
+        const fila = document.createElement('article');
+
         fila.className = 'archivo-item trabajo-item';
 
+        /* INFORMACIÓN DEL DOCUMENTO */
+
         const informacion = document.createElement('div');
+
         informacion.className = 'archivo-info';
 
+        /* Icono PDF */
+
+        const icono = document.createElement('span');
+
+        icono.className = 'material-icon trabajo-icono';
+
+        icono.setAttribute('aria-hidden', 'true');
+
+        icono.textContent = '📄';
+
+        /* Contenedor del nombre y el estado */
+
+        const detalles = document.createElement('div');
+
+        detalles.className = 'trabajo-detalles';
+
         const nombre = document.createElement('span');
-        nombre.className = 'archivo-status is-uploaded';
-        nombre.textContent = archivo.nombreOriginal || 'Documento PDF';
-        informacion.appendChild(nombre);
+
+        nombre.className = 'trabajo-nombre';
+
+        nombre.textContent = nombreArchivo;
+
+        nombre.title = nombreArchivo;
+
+        const estado = document.createElement('span');
+
+        estado.className = 'archivo-status is-uploaded';
+
+        estado.textContent = 'Documento disponible';
+
+        detalles.appendChild(nombre);
+        detalles.appendChild(estado);
+
+        informacion.appendChild(icono);
+        informacion.appendChild(detalles);
+
+        /* CONTENEDOR DE BOTONES */
 
         const acciones = document.createElement('div');
+
         acciones.className = 'archivo-actions';
 
+        /* BOTÓN VER */
+
         const ver = document.createElement('a');
+
         ver.className = 'btn btn-small';
+
         ver.href = construirUrlVer(archivo.id);
+
         ver.dataset.view = '';
-        ver.dataset.nombre = archivo.nombreOriginal || 'Documento PDF';
+
+        ver.dataset.nombre = nombreArchivo;
+
         ver.target = '_blank';
-        ver.rel = 'noopener';
+
+        ver.rel = 'noopener noreferrer';
+
         ver.textContent = '👁 Ver';
-        ver.setAttribute('aria-label', 'Ver ' + (archivo.nombreOriginal || 'documento PDF'));
+
+        ver.setAttribute(
+            'aria-label',
+            'Ver ' + nombreArchivo
+        );
+
         acciones.appendChild(ver);
 
+        /* BOTÓN DESCARGAR */
+
         const descargar = document.createElement('a');
+
         descargar.className = 'btn btn-small';
+
         descargar.href = construirUrlDescargar(archivo.id);
+
         descargar.dataset.download = '';
-        descargar.download = archivo.nombreOriginal || 'documento.pdf';
+
+        descargar.download = nombreArchivo;
+
         descargar.textContent = '↓ Descargar';
-        descargar.setAttribute('aria-label', 'Descargar ' + (archivo.nombreOriginal || 'documento PDF'));
+
+        descargar.setAttribute(
+            'aria-label',
+            'Descargar ' + nombreArchivo
+        );
+
         acciones.appendChild(descargar);
 
+        /* BOTÓN ELIMINAR: SOLO ADMINISTRADOR */
+
         if (esAdmin) {
+
             const eliminar = document.createElement('button');
+
             eliminar.type = 'button';
-            eliminar.className = 'btn btn-small btn-danger admin-only';
+
+            eliminar.className =
+                'btn btn-small btn-danger admin-only';
+
             eliminar.dataset.delete = '';
+
             eliminar.dataset.id = String(archivo.id);
+
             eliminar.textContent = '× Eliminar';
-            eliminar.setAttribute('aria-label', 'Eliminar ' + (archivo.nombreOriginal || 'documento PDF'));
+
+            eliminar.setAttribute(
+                'aria-label',
+                'Eliminar ' + nombreArchivo
+            );
+
             acciones.appendChild(eliminar);
         }
 
+        /* ENSAMBLAR LA TARJETA */
+
         fila.appendChild(informacion);
+
         fila.appendChild(acciones);
+
         lista.appendChild(fila);
     });
 }
-
-
 /* ============================================================
    CARGAR / PINTAR INFOGRAFÍA
    ============================================================ */
