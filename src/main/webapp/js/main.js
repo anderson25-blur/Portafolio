@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupArchivoViewer();
 
+    instalarEstilosDinamicosArchivos();
+
+    prepararVistaInicialArchivos();
+
     iniciarSesionYEstado();
 
     setupHeroCarousel();
@@ -530,7 +534,9 @@ function setupUserModal() {
 
                 rol: data.rol || null,
 
-                esAdmin: data.rol === 'admin'
+                esAdmin:
+                    data.esAdmin === true ||
+                    String(data.rol || '').toLowerCase() === 'admin'
 
             };
 
@@ -664,7 +670,7 @@ async function iniciarSesionYEstado() {
 
             esAdmin:
                 data.esAdmin === true ||
-                data.rol === 'admin'
+                String(data.rol || '').toLowerCase() === 'admin'
 
         };
 
@@ -738,6 +744,17 @@ function aplicarEstadoSesion() {
         .forEach((el) => {
 
             if (esAdministrador) {
+
+                /*
+                 * Un control de eliminación solo se muestra cuando
+                 * representa un archivo existente y ya tiene ID.
+                 * Evita mostrar botones de borrar en slots vacíos.
+                 */
+                if (el.matches('[data-delete]') && !el.dataset.id) {
+                    el.hidden = true;
+                    el.style.setProperty('display', 'none', 'important');
+                    return;
+                }
 
                 el.hidden = false;
 
@@ -827,6 +844,161 @@ function aplicarEstadoSesion() {
 
 
 /* ============================================================
+   PREPARACIÓN VISUAL DE ARCHIVOS
+   - Oculta temporalmente secciones vacías mientras se consulta API.
+   - Añade estilos a los elementos de trabajo creados dinámicamente.
+   ============================================================ */
+
+function instalarEstilosDinamicosArchivos() {
+
+    if (document.getElementById('main-archivos-dynamic-css')) return;
+
+    const style = document.createElement('style');
+    style.id = 'main-archivos-dynamic-css';
+    style.textContent = `
+        body.miportafolio-unidad .trabajos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+            margin-top: 14px;
+        }
+
+        body.miportafolio-unidad .trabajo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        body.miportafolio-unidad .trabajo-item .archivo-info {
+            flex: 1 1 220px;
+            min-width: 0;
+        }
+
+        body.miportafolio-unidad .trabajo-item .archivo-status {
+            display: block;
+            overflow-wrap: anywhere;
+            color: #eaf2ea !important;
+            font-weight: 700;
+        }
+
+        body.miportafolio-unidad .trabajos-vacio {
+            margin: 0;
+            padding: 15px;
+            border: 1px dashed #344334;
+            border-radius: 9px;
+            color: #8b978e !important;
+            background: rgba(10, 15, 12, .55) !important;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        body.miportafolio-unidad .trabajo-item .archivo-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        body.miportafolio-unidad .trabajo-item a[data-view] {
+            color: #b9e879 !important;
+            background: rgba(147, 213, 0, .06) !important;
+            border-color: rgba(147, 213, 0, .35) !important;
+        }
+
+        body.miportafolio-unidad .trabajo-item a[data-download] {
+            color: #0a0f0c !important;
+            background: #93d500 !important;
+            border-color: #93d500 !important;
+        }
+
+        body.miportafolio-unidad .trabajo-item button[data-delete] {
+            color: #ff897d !important;
+            background: rgba(255, 70, 48, .07) !important;
+            border-color: rgba(255, 70, 48, .35) !important;
+        }
+
+        body.miportafolio-unidad .trabajo-item button[data-delete]:hover {
+            color: #fff !important;
+            background: #c93425 !important;
+            border-color: #ff4630 !important;
+        }
+
+        @media (max-width: 600px) {
+            body.miportafolio-unidad .trabajo-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            body.miportafolio-unidad .trabajo-item .archivo-actions {
+                width: 100%;
+            }
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+
+
+function prepararVistaInicialArchivos() {
+
+    document.querySelectorAll('.trabajo-section, .infografias-section')
+        .forEach((seccion) => {
+            seccion.hidden = true;
+            seccion.style.setProperty('display', 'none', 'important');
+        });
+}
+
+
+function esAdministradorActual() {
+    return sesionActual.autenticado === true &&
+        sesionActual.esAdmin === true;
+}
+
+
+function actualizarVisibilidadInfografias(seccion) {
+
+    if (!seccion) return;
+
+    const administrador = esAdministradorActual();
+    let hayImagenDisponible = false;
+
+    seccion.querySelectorAll('.info-card').forEach((card) => {
+        const img = card.querySelector('[data-thumb-img]');
+        const disponible = Boolean(
+            img &&
+            !img.hidden &&
+            img.getAttribute('src') &&
+            !img.dataset.loadError
+        );
+
+        if (disponible) hayImagenDisponible = true;
+
+        card.hidden = !(administrador || disponible);
+
+        if (card.hidden) {
+            card.style.setProperty('display', 'none', 'important');
+        } else {
+            card.style.removeProperty('display');
+        }
+    });
+
+    seccion.hidden = !(administrador || hayImagenDisponible);
+
+    if (seccion.hidden) {
+        seccion.style.setProperty('display', 'none', 'important');
+    } else {
+        seccion.style.removeProperty('display');
+    }
+}
+
+
+/* ============================================================
    ESTADO DE ARCHIVOS
    ============================================================ */
 
@@ -898,6 +1070,18 @@ async function cargarArchivosPorSemana() {
                         `Error cargando Unidad ${unidad}, Semana ${semana}:`,
                         data.error
                     );
+
+                    if (esAdministradorActual()) {
+                        const trabajosSection = semanaItem.querySelector('.trabajo-section');
+                        const infoSection = semanaItem.querySelector('.infografias-section');
+
+                        [trabajosSection, infoSection].forEach((seccion) => {
+                            if (seccion) {
+                                seccion.hidden = false;
+                                seccion.style.removeProperty('display');
+                            }
+                        });
+                    }
 
                     return;
                 }
@@ -1053,121 +1237,117 @@ async function cargarArchivosPorSemana() {
 
 function pintarTrabajos(semanaItem, trabajos) {
 
-    const trabajoSection =
-        semanaItem.querySelector('.trabajo-section');
-
+    const trabajoSection = semanaItem.querySelector('.trabajo-section');
     if (!trabajoSection) return;
 
-    const esAdmin =
-        sesionActual.autenticado === true &&
-        sesionActual.esAdmin === true;
+    const esAdmin = esAdministradorActual();
+    const hayTrabajos = Array.isArray(trabajos) && trabajos.length > 0;
 
-    const hayTrabajos = trabajos.length > 0;
-
-    // Mostrar la sección si hay PDF o si es administrador.
     trabajoSection.hidden = !(hayTrabajos || esAdmin);
 
-    if (hayTrabajos || esAdmin) {
-        trabajoSection.style.removeProperty('display');
+    if (trabajoSection.hidden) {
+        trabajoSection.style.setProperty('display', 'none', 'important');
     } else {
-        trabajoSection.style.setProperty(
-            'display',
-            'none',
-            'important'
-        );
+        trabajoSection.style.removeProperty('display');
     }
 
-    // Crear la lista de trabajos si todavía no existe.
+    // La fila antigua del JSP no se utiliza porque ahora admitimos varios PDF.
+    const filaAntigua = trabajoSection.querySelector(':scope > .archivo-item');
+    if (filaAntigua) {
+        filaAntigua.hidden = true;
+        filaAntigua.style.setProperty('display', 'none', 'important');
+    }
+
+    // Crear una lista única, colocada debajo de la cabecera (no dentro del flex header).
     let lista = trabajoSection.querySelector('.trabajos-lista');
 
     if (!lista) {
-
         lista = document.createElement('div');
         lista.className = 'trabajos-lista';
 
-        const input = trabajoSection.querySelector(
-            '[data-upload-input]'
-        );
-
-        const etiqueta = input
-            ? input.closest('label')
-            : null;
-
-        if (etiqueta) {
-            etiqueta.before(lista);
+        const cabecera = trabajoSection.querySelector('.material-header');
+        if (cabecera) {
+            cabecera.insertAdjacentElement('afterend', lista);
         } else {
             trabajoSection.appendChild(lista);
         }
     }
 
-    // Limpiar los PDF anteriores para evitar duplicados.
     lista.replaceChildren();
 
-    // Ocultar los controles antiguos de un solo archivo.
+    // Ocultar controles antiguos de un solo archivo.
     trabajoSection.querySelectorAll(
-        '[data-status], [data-view], [data-download], [data-delete]'
-    ).forEach(elemento => {
-
+        ':scope > .archivo-item [data-status], :scope > .archivo-item [data-view], ' +
+        ':scope > .archivo-item [data-download], :scope > .archivo-item [data-delete]'
+    ).forEach((elemento) => {
         elemento.hidden = true;
-
-        elemento.style.setProperty(
-            'display',
-            'none',
-            'important'
-        );
+        elemento.style.setProperty('display', 'none', 'important');
     });
 
-    // Mostrar todos los archivos PDF de la semana.
-    trabajos.forEach(archivo => {
+    if (!hayTrabajos) {
+        if (esAdmin) {
+            const vacio = document.createElement('p');
+            vacio.className = 'trabajos-vacio';
+            vacio.textContent = 'Todavía no has subido documentos PDF para esta semana.';
+            lista.appendChild(vacio);
+        }
+        return;
+    }
+
+    trabajos.forEach((archivo) => {
+        if (!archivo || archivo.id == null) return;
 
         const fila = document.createElement('div');
-        fila.className = 'trabajo-item';
+        fila.className = 'archivo-item trabajo-item';
 
-        // Nombre del documento.
+        const informacion = document.createElement('div');
+        informacion.className = 'archivo-info';
+
         const nombre = document.createElement('span');
+        nombre.className = 'archivo-status is-uploaded';
+        nombre.textContent = archivo.nombreOriginal || 'Documento PDF';
+        informacion.appendChild(nombre);
 
-        nombre.textContent =
-            archivo.nombreOriginal || 'Documento PDF';
+        const acciones = document.createElement('div');
+        acciones.className = 'archivo-actions';
 
-        fila.appendChild(nombre);
-
-        // Botón/enlace para visualizar.
         const ver = document.createElement('a');
-
+        ver.className = 'btn btn-small';
         ver.href = construirUrlVer(archivo.id);
         ver.dataset.view = '';
-        ver.dataset.nombre =
-            archivo.nombreOriginal || 'Documento PDF';
+        ver.dataset.nombre = archivo.nombreOriginal || 'Documento PDF';
+        ver.target = '_blank';
+        ver.rel = 'noopener';
+        ver.textContent = '👁 Ver';
+        ver.setAttribute('aria-label', 'Ver ' + (archivo.nombreOriginal || 'documento PDF'));
+        acciones.appendChild(ver);
 
-        ver.textContent = 'Ver';
-
-        fila.appendChild(ver);
-
-        // Enlace para descargar.
         const descargar = document.createElement('a');
-
+        descargar.className = 'btn btn-small';
         descargar.href = construirUrlDescargar(archivo.id);
         descargar.dataset.download = '';
-        descargar.textContent = 'Descargar';
+        descargar.download = archivo.nombreOriginal || 'documento.pdf';
+        descargar.textContent = '↓ Descargar';
+        descargar.setAttribute('aria-label', 'Descargar ' + (archivo.nombreOriginal || 'documento PDF'));
+        acciones.appendChild(descargar);
 
-        fila.appendChild(descargar);
-
-        // El administrador puede eliminar cada documento.
         if (esAdmin) {
-
             const eliminar = document.createElement('button');
-
             eliminar.type = 'button';
+            eliminar.className = 'btn btn-small btn-danger admin-only';
             eliminar.dataset.delete = '';
-            eliminar.dataset.id = archivo.id;
-            eliminar.textContent = 'Eliminar';
-
-            fila.appendChild(eliminar);
+            eliminar.dataset.id = String(archivo.id);
+            eliminar.textContent = '× Eliminar';
+            eliminar.setAttribute('aria-label', 'Eliminar ' + (archivo.nombreOriginal || 'documento PDF'));
+            acciones.appendChild(eliminar);
         }
 
+        fila.appendChild(informacion);
+        fila.appendChild(acciones);
         lista.appendChild(fila);
     });
 }
+
 
 /* ============================================================
    CARGAR / PINTAR INFOGRAFÍA
@@ -1176,165 +1356,164 @@ function pintarTrabajos(semanaItem, trabajos) {
 function pintarInfografia(card, archivo) {
 
     const img = card.querySelector('[data-thumb-img]');
-
     const emptyText = card.querySelector('[data-empty-text]');
-
     const view = card.querySelector('[data-view]');
-
     const download = card.querySelector('[data-download]');
-
     const del = card.querySelector('[data-delete]');
-
+    const seccion = card.closest('.infografias-section');
+    const administrador = esAdministradorActual();
 
     if (archivo) {
-
         const viewUrl = construirUrlVer(archivo.id);
-
         const downloadUrl = construirUrlDescargar(archivo.id);
-
-
-        /*
-         * Si es imagen, la mostramos
-         * directamente como miniatura.
-         */
-
-        if (img && esImagen(archivo.nombreOriginal)) {
-
-            img.src = viewUrl;
-
-            img.alt = archivo.nombreOriginal || 'Infografía';
-
-            img.hidden = false;
-
-
-            /*
-             * Si la imagen no puede cargarse,
-             * mostramos el estado vacío.
-             */
-
-            img.onerror = () => {
-
-                img.hidden = true;
-
-                img.removeAttribute('src');
-
-                if (emptyText) {
-
-                    emptyText.textContent =
-                        'No se pudo visualizar la imagen.';
-
-                }
-
-            };
-
-        } else if (img) {
-
-            img.hidden = true;
-
-            img.removeAttribute('src');
-
-        }
-
-
-        if (emptyText) {
-
-            emptyText.textContent =
-                archivo.nombreOriginal || 'Infografía';
-
-        }
-
-
-        if (view) {
-
-            view.href = viewUrl;
-
-            view.hidden = false;
-
-        }
-
-
-        if (download) {
-
-            download.href = downloadUrl;
-
-            download.hidden = false;
-
-        }
-
-
-        /* ELIMINAR — SOLO ADMIN */
-
-        if (del) {
-
-            del.dataset.id = archivo.id;
-
-            if (
-                sesionActual.autenticado === true &&
-                sesionActual.esAdmin === true
-            ) {
-
-                del.hidden = false;
-
-                del.style.removeProperty('display');
-
-            } else {
-
-                del.hidden = true;
-
-                del.style.setProperty('display', 'none', 'important');
-
-            }
-
-        }
-
-    } else {
+        const nombre = archivo.nombreOriginal || 'Infografía';
+        const esArchivoImagen = esImagen(nombre);
 
         if (img) {
+            // Quitar el estado de error anterior antes de cargar el archivo actual.
+            delete img.dataset.loadError;
 
-            img.hidden = true;
+            if (esArchivoImagen) {
+                img.alt = nombre;
+                img.hidden = false;
 
-            img.removeAttribute('src');
+                // Preparar los callbacks antes de asignar src para evitar carreras.
+                img.onload = () => {
+                    delete img.dataset.loadError;
+                    img.hidden = false;
 
+                    if (emptyText) emptyText.hidden = true;
+
+                    card.hidden = false;
+                    card.style.removeProperty('display');
+                    actualizarVisibilidadInfografias(seccion);
+                };
+
+                img.onerror = () => {
+                    img.hidden = true;
+                    img.removeAttribute('src');
+                    img.dataset.loadError = 'true';
+
+                    if (emptyText) {
+                        emptyText.textContent = 'No se pudo cargar la imagen.';
+                        emptyText.hidden = false;
+                    }
+
+                    // No mostrar enlaces rotos a visitantes; el administrador
+                    // puede conservar la tarjeta y eliminar el archivo defectuoso.
+                    if (view) {
+                        view.hidden = true;
+                        view.removeAttribute('href');
+                    }
+
+                    if (download) {
+                        download.hidden = true;
+                        download.removeAttribute('href');
+                    }
+
+                    card.hidden = !esAdministradorActual();
+
+                    if (card.hidden) {
+                        card.style.setProperty('display', 'none', 'important');
+                    } else {
+                        card.style.removeProperty('display');
+                    }
+
+                    actualizarVisibilidadInfografias(seccion);
+                };
+
+                // Evitar asignar otra vez la misma URL si ya está cargándose/cargada.
+                if (img.getAttribute('src') !== viewUrl) {
+                    img.src = viewUrl;
+                } else if (img.complete && img.naturalWidth > 0) {
+                    img.hidden = false;
+                    if (emptyText) emptyText.hidden = true;
+                }
+
+            } else {
+                img.hidden = true;
+                img.removeAttribute('src');
+                img.onload = null;
+                img.onerror = null;
+            }
         }
-
 
         if (emptyText) {
-
-            emptyText.textContent = 'Sin infografía';
-
+            if (esArchivoImagen) {
+                // Se muestra solo si no se puede cargar la miniatura.
+                emptyText.textContent = nombre;
+                emptyText.hidden = Boolean(img && !img.hidden && !img.dataset.loadError);
+            } else {
+                emptyText.textContent = nombre;
+                emptyText.hidden = false;
+            }
         }
-
 
         if (view) {
-
-            view.hidden = true;
-
-            view.removeAttribute('href');
-
+            view.href = viewUrl;
+            view.hidden = false;
+            view.style.removeProperty('display');
         }
-
 
         if (download) {
-
-            download.hidden = true;
-
-            download.removeAttribute('href');
-
+            download.href = downloadUrl;
+            download.download = nombre;
+            download.hidden = false;
+            download.style.removeProperty('display');
         }
-
 
         if (del) {
+            del.dataset.id = String(archivo.id);
+            del.hidden = !administrador;
 
-            del.hidden = true;
-
-            del.style.setProperty('display', 'none', 'important');
-
-            delete del.dataset.id;
-
+            if (administrador) {
+                del.style.removeProperty('display');
+            } else {
+                del.style.setProperty('display', 'none', 'important');
+            }
         }
 
-    }
+        card.hidden = false;
+        card.style.removeProperty('display');
 
+    } else {
+        if (img) {
+            img.onload = null;
+            img.onerror = null;
+            img.hidden = true;
+            img.removeAttribute('src');
+            delete img.dataset.loadError;
+        }
+
+        if (emptyText) {
+            emptyText.textContent = 'Sin infografía';
+            emptyText.hidden = false;
+        }
+
+        if (view) {
+            view.hidden = true;
+            view.removeAttribute('href');
+        }
+
+        if (download) {
+            download.hidden = true;
+            download.removeAttribute('href');
+        }
+
+        if (del) {
+            del.hidden = true;
+            del.style.setProperty('display', 'none', 'important');
+            delete del.dataset.id;
+        }
+
+        card.hidden = !administrador;
+
+        if (card.hidden) {
+            card.style.setProperty('display', 'none', 'important');
+        } else {
+            card.style.removeProperty('display');
+        }
+    }
 }
 
 
