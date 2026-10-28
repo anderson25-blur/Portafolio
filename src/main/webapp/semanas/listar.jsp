@@ -547,48 +547,189 @@ switch (unidad) {
             display: none !important;
         }
 
-        /* =====================================================
-           7. TRABAJOS PDF
-           ===================================================== */
+       /* =========================================================
+   DISEÑO DE TRABAJOS PDF
+   ========================================================= */
 
-        .archivo-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
+.trabajos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    margin-top: 18px;
+}
 
-            min-width: 0;
-            padding: 18px;
+.trabajos-lista .trabajo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 18px;
 
-            border: 1px solid var(--mp-border) !important;
-            border-radius: 12px;
+    width: 100%;
+    min-width: 0;
+    padding: 18px;
 
-            background: var(--mp-card) !important;
-        }
+    border: 1px solid #263127 !important;
+    border-radius: 12px;
 
-        .archivo-info {
-            flex: 1 1 200px;
-            min-width: 0;
-        }
+    background: #171f18 !important;
+    color: #eaf2ea !important;
 
-        .archivo-status {
-            color: var(--mp-muted) !important;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease;
+}
 
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-wrap: anywhere;
-        }
+.trabajos-lista .trabajo-item:hover {
+    border-color: #40503d !important;
+    background: #1a241b !important;
+}
 
-        .archivo-status.is-uploaded {
-            color: var(--mp-green) !important;
-            font-weight: 700;
-        }
+.trabajos-lista .trabajo-item .archivo-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 
-        .trabajo-section[hidden] {
-            display: none !important;
-        }
+    flex: 1 1 220px;
+    min-width: 0;
+}
 
+.trabajos-lista .trabajo-icono {
+    flex-shrink: 0;
+}
+
+.trabajos-lista .trabajo-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.trabajos-lista .trabajo-nombre {
+    color: #eaf2ea !important;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.trabajos-lista .archivo-status {
+    color: #93d500 !important;
+    font-size: 12px;
+}
+
+.trabajos-lista .archivo-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 9px;
+    min-width: 0;
+}
+
+/* BOTÓN VER */
+
+.trabajos-lista a[data-view],
+.trabajos-lista a[data-view]:visited {
+    color: #b9e879 !important;
+    background: rgba(147, 213, 0, .06) !important;
+    border: 1px solid rgba(147, 213, 0, .45) !important;
+}
+
+.trabajos-lista a[data-view]:hover {
+    color: #0a0f0c !important;
+    background: #93d500 !important;
+    border-color: #93d500 !important;
+}
+
+/* BOTÓN DESCARGAR */
+
+.trabajos-lista a[data-download],
+.trabajos-lista a[data-download]:visited {
+    color: #0a0f0c !important;
+    background: #93d500 !important;
+    border: 1px solid #93d500 !important;
+}
+
+.trabajos-lista a[data-download]:hover {
+    color: #0a0f0c !important;
+    background: #c4f36a !important;
+    border-color: #c4f36a !important;
+}
+
+/* BOTÓN ELIMINAR */
+
+.trabajos-lista button[data-delete] {
+    color: #ff897d !important;
+    background: rgba(255, 70, 48, .07) !important;
+    border: 1px solid rgba(255, 70, 48, .4) !important;
+}
+
+.trabajos-lista button[data-delete]:hover {
+    color: #ffffff !important;
+    background: #c93425 !important;
+    border-color: #ff4630 !important;
+}
+
+/* TRANSICIONES Y FOCO */
+
+.trabajos-lista .btn {
+    transition:
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.trabajos-lista .btn:hover {
+    transform: translateY(-2px);
+}
+
+.trabajos-lista .btn:focus-visible {
+    outline: 2px solid #93d500;
+    outline-offset: 3px;
+}
+
+/* MENSAJE DE LISTA VACÍA */
+
+.trabajos-lista .trabajos-vacio {
+    margin: 0;
+    padding: 16px;
+
+    border: 1px dashed #344334;
+    border-radius: 10px;
+
+    color: #8b978e !important;
+    background: #101610 !important;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ADAPTACIÓN MÓVIL */
+
+@media (max-width: 600px) {
+
+    .trabajos-lista .trabajo-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+        padding: 15px;
+    }
+
+    .trabajos-lista .trabajo-item .archivo-info {
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    .trabajos-lista .archivo-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+}
         /* =====================================================
            8. INFOGRAFÍAS
            ===================================================== */
