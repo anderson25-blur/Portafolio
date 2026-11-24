@@ -1459,7 +1459,7 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
             cantidadInfografias = 5;
             break;
         default:
-            cantidadInfografias = 10;
+            cantidadInfografias = 30;
             break;
     }
 %>
