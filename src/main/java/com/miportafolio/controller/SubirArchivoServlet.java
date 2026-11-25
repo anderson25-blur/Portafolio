@@ -145,12 +145,12 @@ public class SubirArchivoServlet extends HttpServlet {
                 slot = Integer.parseInt(slotParam);
 
                 // Ahora se permiten hasta 7 infografías por semana
-                if (slot < 1 || slot > MAX_SLOTS) {
+                if (slot < 1 || slot > 30) {
 
                     JsonRespuesta.error(
                             resp,
                             HttpServletResponse.SC_BAD_REQUEST,
-                            "El slot debe estar entre 1 y " + MAX_SLOTS + "."
+                            "El slot debe estar entre 1 y 30."
                     );
                     return;
                 }
