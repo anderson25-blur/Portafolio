@@ -399,7 +399,7 @@ switch (unidad) {
         }
 
         /* =====================================================
-           6. BOTONES PROFESIONALES
+           6. BOTONES
            ===================================================== */
 
         body.miportafolio-unidad .archivo-actions,
@@ -547,189 +547,178 @@ switch (unidad) {
             display: none !important;
         }
 
-       /* =========================================================
-   DISEÑO DE TRABAJOS PDF
-   ========================================================= */
+        /* =====================================================
+           7. TRABAJOS PDF
+           ===================================================== */
 
-.trabajos-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    min-width: 0;
-    margin-top: 18px;
-}
+        .trabajos-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+            margin-top: 18px;
+        }
 
-.trabajos-lista .trabajo-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 18px;
+        .trabajos-lista .trabajo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
 
-    width: 100%;
-    min-width: 0;
-    padding: 18px;
+            width: 100%;
+            min-width: 0;
+            padding: 18px;
 
-    border: 1px solid #263127 !important;
-    border-radius: 12px;
+            border: 1px solid #263127 !important;
+            border-radius: 12px;
 
-    background: #171f18 !important;
-    color: #eaf2ea !important;
+            background: #171f18 !important;
+            color: #eaf2ea !important;
 
-    transition:
-        border-color .2s ease,
-        background .2s ease,
-        transform .2s ease;
-}
+            transition:
+                border-color .2s ease,
+                background .2s ease,
+                transform .2s ease;
+        }
 
-.trabajos-lista .trabajo-item:hover {
-    border-color: #40503d !important;
-    background: #1a241b !important;
-}
+        .trabajos-lista .trabajo-item:hover {
+            border-color: #40503d !important;
+            background: #1a241b !important;
+        }
 
-.trabajos-lista .trabajo-item .archivo-info {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+        .trabajos-lista .trabajo-item .archivo-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
 
-    flex: 1 1 220px;
-    min-width: 0;
-}
+            flex: 1 1 220px;
+            min-width: 0;
+        }
 
-.trabajos-lista .trabajo-icono {
-    flex-shrink: 0;
-}
+        .trabajos-lista .trabajo-icono {
+            flex-shrink: 0;
+        }
 
-.trabajos-lista .trabajo-detalles {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 0;
-}
+        .trabajos-lista .trabajo-detalles {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
 
-.trabajos-lista .trabajo-nombre {
-    color: #eaf2ea !important;
-    font-size: 14px;
-    font-weight: 800;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
+        .trabajos-lista .trabajo-nombre {
+            color: #eaf2ea !important;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
 
-.trabajos-lista .archivo-status {
-    color: #93d500 !important;
-    font-size: 12px;
-}
+        .trabajos-lista .archivo-status {
+            color: #93d500 !important;
+            font-size: 12px;
+        }
 
-.trabajos-lista .archivo-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 9px;
-    min-width: 0;
-}
+        .trabajos-lista .archivo-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 9px;
+            min-width: 0;
+        }
 
-/* BOTÓN VER */
+        .trabajos-lista a[data-view],
+        .trabajos-lista a[data-view]:visited {
+            color: #b9e879 !important;
+            background: rgba(147, 213, 0, .06) !important;
+            border: 1px solid rgba(147, 213, 0, .45) !important;
+        }
 
-.trabajos-lista a[data-view],
-.trabajos-lista a[data-view]:visited {
-    color: #b9e879 !important;
-    background: rgba(147, 213, 0, .06) !important;
-    border: 1px solid rgba(147, 213, 0, .45) !important;
-}
+        .trabajos-lista a[data-view]:hover {
+            color: #0a0f0c !important;
+            background: #93d500 !important;
+            border-color: #93d500 !important;
+        }
 
-.trabajos-lista a[data-view]:hover {
-    color: #0a0f0c !important;
-    background: #93d500 !important;
-    border-color: #93d500 !important;
-}
+        .trabajos-lista a[data-download],
+        .trabajos-lista a[data-download]:visited {
+            color: #0a0f0c !important;
+            background: #93d500 !important;
+            border: 1px solid #93d500 !important;
+        }
 
-/* BOTÓN DESCARGAR */
+        .trabajos-lista a[data-download]:hover {
+            color: #0a0f0c !important;
+            background: #c4f36a !important;
+            border-color: #c4f36a !important;
+        }
 
-.trabajos-lista a[data-download],
-.trabajos-lista a[data-download]:visited {
-    color: #0a0f0c !important;
-    background: #93d500 !important;
-    border: 1px solid #93d500 !important;
-}
+        .trabajos-lista button[data-delete] {
+            color: #ff897d !important;
+            background: rgba(255, 70, 48, .07) !important;
+            border: 1px solid rgba(255, 70, 48, .4) !important;
+        }
 
-.trabajos-lista a[data-download]:hover {
-    color: #0a0f0c !important;
-    background: #c4f36a !important;
-    border-color: #c4f36a !important;
-}
+        .trabajos-lista button[data-delete]:hover {
+            color: #ffffff !important;
+            background: #c93425 !important;
+            border-color: #ff4630 !important;
+        }
 
-/* BOTÓN ELIMINAR */
+        .trabajos-lista .btn {
+            transition:
+                color .2s ease,
+                background .2s ease,
+                border-color .2s ease,
+                transform .2s ease;
+        }
 
-.trabajos-lista button[data-delete] {
-    color: #ff897d !important;
-    background: rgba(255, 70, 48, .07) !important;
-    border: 1px solid rgba(255, 70, 48, .4) !important;
-}
+        .trabajos-lista .btn:hover {
+            transform: translateY(-2px);
+        }
 
-.trabajos-lista button[data-delete]:hover {
-    color: #ffffff !important;
-    background: #c93425 !important;
-    border-color: #ff4630 !important;
-}
+        .trabajos-lista .btn:focus-visible {
+            outline: 2px solid #93d500;
+            outline-offset: 3px;
+        }
 
-/* TRANSICIONES Y FOCO */
+        .trabajos-lista .trabajos-vacio {
+            margin: 0;
+            padding: 16px;
 
-.trabajos-lista .btn {
-    transition:
-        color .2s ease,
-        background .2s ease,
-        border-color .2s ease,
-        transform .2s ease;
-}
+            border: 1px dashed #344334;
+            border-radius: 10px;
 
-.trabajos-lista .btn:hover {
-    transform: translateY(-2px);
-}
+            color: #8b978e !important;
+            background: #101610 !important;
 
-.trabajos-lista .btn:focus-visible {
-    outline: 2px solid #93d500;
-    outline-offset: 3px;
-}
+            font-size: 13px;
+            line-height: 1.6;
+        }
 
-/* MENSAJE DE LISTA VACÍA */
+        @media (max-width: 600px) {
 
-.trabajos-lista .trabajos-vacio {
-    margin: 0;
-    padding: 16px;
+            .trabajos-lista .trabajo-item {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 14px;
+                padding: 15px;
+            }
 
-    border: 1px dashed #344334;
-    border-radius: 10px;
+            .trabajos-lista .trabajo-item .archivo-info {
+                width: 100%;
+                flex-basis: auto;
+            }
 
-    color: #8b978e !important;
-    background: #101610 !important;
+            .trabajos-lista .archivo-actions {
+                justify-content: flex-start;
+                width: 100%;
+            }
+        }
 
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-/* ADAPTACIÓN MÓVIL */
-
-@media (max-width: 600px) {
-
-    .trabajos-lista .trabajo-item {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 14px;
-        padding: 15px;
-    }
-
-    .trabajos-lista .trabajo-item .archivo-info {
-        width: 100%;
-        flex-basis: auto;
-    }
-
-    .trabajos-lista .archivo-actions {
-        justify-content: flex-start;
-        width: 100%;
-    }
-}
         /* =====================================================
            8. INFOGRAFÍAS
            ===================================================== */
@@ -1443,7 +1432,12 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
             break;
     }
 
-    int cantidadInfografias = 4;
+    /*
+     * Cantidad de espacios (slots) de infografía por semana.
+     * main.js usa este mismo número (data-max-infografias)
+     * para validar el slot al subir.
+     */
+    int cantidadInfografias;
 
     switch (semana) {
         case 1:
@@ -1467,7 +1461,8 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
             <article
                 class="semana-item"
                 data-unidad="<%= unidad %>"
-                data-semana="<%= semana %>">
+                data-semana="<%= semana %>"
+                data-max-infografias="<%= cantidadInfografias %>">
 
                 <!-- CABECERA -->
 
@@ -1507,7 +1502,7 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
 
                             <div>
                                 <h3>Trabajos</h3>
-                                <p>Documento PDF de la semana.</p>
+                                <p>Documentos PDF de la semana.</p>
                             </div>
                         </div>
 
@@ -1523,6 +1518,7 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
 
                     </div>
 
+                    <!-- Fila base: main.js la oculta y crea la lista real -->
                     <div class="archivo-item">
 
                         <div class="archivo-info">
@@ -1803,14 +1799,19 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
 </div>
 
 <!-- =============================================
-     SCRIPT EXISTENTE DE GESTIÓN DE ARCHIVOS
+     SCRIPT PRINCIPAL
+     La marca de tiempo evita que el navegador use
+     una versión vieja guardada en caché.
+     Cuando termines de probar, puedes cambiarla por
+     un número fijo, por ejemplo ?v=10
      ============================================= -->
 
-<script src="../js/main.js?v=3"></script>
+<script src="../js/main.js?v=<%= System.currentTimeMillis() %>"></script>
 
 <script>
 /* =========================================================
-   A. GESTIÓN DE ENLACES POR UNIDAD Y SEMANA
+   GESTIÓN DE ENLACES POR UNIDAD Y SEMANA
+   (se guardan en localStorage: solo se ven en este navegador)
    ========================================================= */
 
 (() => {
@@ -1877,10 +1878,12 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
         return elemento;
     }
 
-    function esAdministrador(semanaElemento) {
-        return Array.from(
-            semanaElemento.querySelectorAll(".admin-only")
-        ).some(elemento => !elemento.hidden);
+    /*
+     * El formulario de enlaces es admin-only: si main.js lo
+     * muestra, el usuario es administrador.
+     */
+    function esAdministrador(formulario) {
+        return !formulario.hidden;
     }
 
     function inicializarEnlaces(semanaElemento) {
@@ -1920,7 +1923,7 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
 
         function renderizar() {
             const enlaces = leerEnlaces(clave);
-            const administrador = esAdministrador(semanaElemento);
+            const administrador = esAdministrador(formulario);
 
             contador.textContent =
                 enlaces.length
@@ -1941,23 +1944,20 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
             }
 
             enlaces.forEach(enlace => {
-                const tarjeta = crearElemento(
-                    "article",
-                    "enlace-card"
-                );
+                const tarjeta = crearElemento("article", "enlace-card");
 
                 const informacion = crearElemento(
                     "div",
                     "enlace-card-info"
                 );
 
-                const titulo = crearElemento(
-                    "h4",
-                    "enlace-card-title",
-                    enlace.titulo
+                informacion.appendChild(
+                    crearElemento(
+                        "h4",
+                        "enlace-card-title",
+                        enlace.titulo
+                    )
                 );
-
-                informacion.appendChild(titulo);
 
                 const enlaceURL = crearElemento(
                     "a",
@@ -1998,37 +1998,36 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
 
                 acciones.appendChild(botonAbrir);
 
-                const botonEliminar = crearElemento(
-                    "button",
-                    "btn btn-small btn-danger admin-only",
-                    "Eliminar"
-                );
+                /* Solo el administrador ve el botón Eliminar. */
 
-                botonEliminar.type = "button";
-                botonEliminar.hidden = !administrador;
-
-                botonEliminar.addEventListener("click", () => {
-                    const confirmar = window.confirm(
-                        "¿Deseas eliminar este enlace?"
+                if (administrador) {
+                    const botonEliminar = crearElemento(
+                        "button",
+                        "btn btn-small btn-danger",
+                        "Eliminar"
                     );
 
-                    if (!confirmar) {
-                        return;
-                    }
+                    botonEliminar.type = "button";
 
-                    const actualizados = leerEnlaces(clave).filter(
-                        elemento => elemento.id !== enlace.id
-                    );
+                    botonEliminar.addEventListener("click", () => {
+                        if (!window.confirm("¿Deseas eliminar este enlace?")) {
+                            return;
+                        }
 
-                    if (!guardarEnlaces(clave, actualizados)) {
-                        alert("No se pudo eliminar el enlace.");
-                        return;
-                    }
+                        const actualizados = leerEnlaces(clave).filter(
+                            elemento => elemento.id !== enlace.id
+                        );
 
-                    renderizar();
-                });
+                        if (!guardarEnlaces(clave, actualizados)) {
+                            alert("No se pudo eliminar el enlace.");
+                            return;
+                        }
 
-                acciones.appendChild(botonEliminar);
+                        renderizar();
+                    });
+
+                    acciones.appendChild(botonEliminar);
+                }
 
                 tarjeta.appendChild(informacion);
                 tarjeta.appendChild(acciones);
@@ -2084,120 +2083,24 @@ for (int semana = semanaInicio; semana <= semanaFin; semana++) {
             renderizar();
         });
 
-        renderizar();
-
-        return renderizar;
-    }
-
-    /* =====================================================
-       B. OCULTAR INFOGRAFÍAS VACÍAS PARA VISITANTES
-       ===================================================== */
-
-    function actualizarInfografias(semanaElemento) {
-        const seccion = semanaElemento.querySelector(
-            ".infografias-section"
-        );
-
-        if (!seccion) {
-            return;
-        }
-
-        const administrador = esAdministrador(semanaElemento);
-
-        const tarjetas = seccion.querySelectorAll(".info-card");
-
-        let cantidadPublicada = 0;
-
-        tarjetas.forEach(tarjeta => {
-            const imagen = tarjeta.querySelector(
-                "img[data-thumb-img]"
-            );
-
-            const tieneImagen =
-                imagen !== null
-                && !imagen.hidden
-                && Boolean(imagen.getAttribute("src"));
-
-            if (tieneImagen) {
-                cantidadPublicada++;
-            }
-
-            const ocultarTarjeta =
-                !administrador && !tieneImagen;
-
-            if (tarjeta.hidden !== ocultarTarjeta) {
-                tarjeta.hidden = ocultarTarjeta;
-            }
-        });
-
         /*
-         * Los visitantes no necesitan ver la sección si
-         * todavía no hay infografías publicadas.
-         *
-         * El administrador conserva los espacios para subir
-         * imágenes nuevas.
+         * Cuando main.js muestra u oculta el formulario
+         * (inicio o cierre de sesión), volvemos a pintar
+         * la lista para mostrar u ocultar "Eliminar".
          */
 
-        const ocultarSeccion =
-            !administrador && cantidadPublicada === 0;
+        new MutationObserver(renderizar).observe(formulario, {
+            attributes: true,
+            attributeFilter: ["hidden"]
+        });
 
-        if (seccion.hidden !== ocultarSeccion) {
-            seccion.hidden = ocultarSeccion;
-        }
+        renderizar();
     }
 
-    /* =====================================================
-       C. INICIALIZAR TODAS LAS SEMANAS
-       ===================================================== */
-
     function iniciar() {
-        document.querySelectorAll(".semana-item").forEach(
-            semanaElemento => {
-                const renderizarEnlaces =
-                    inicializarEnlaces(semanaElemento);
-
-                actualizarInfografias(semanaElemento);
-
-                /*
-                 * main.js controla la subida, eliminación y
-                 * visibilidad de los archivos.
-                 *
-                 * Este observador detecta cambios en los
-                 * atributos de imágenes y controles admin.
-                 * No observa cambios de contenido de la lista
-                 * de enlaces para evitar renderizaciones
-                 * repetitivas.
-                 */
-
-                const observador = new MutationObserver(() => {
-                    actualizarInfografias(semanaElemento);
-
-                    if (renderizarEnlaces) {
-                        renderizarEnlaces();
-                    }
-                });
-
-                observador.observe(semanaElemento, {
-                    subtree: true,
-                    attributes: true,
-                    attributeFilter: ["hidden", "src"]
-                });
-
-                semanaElemento.querySelectorAll(
-                    ".info-card img[data-thumb-img]"
-                ).forEach(imagen => {
-                    imagen.addEventListener(
-                        "load",
-                        () => actualizarInfografias(semanaElemento)
-                    );
-
-                    imagen.addEventListener(
-                        "error",
-                        () => actualizarInfografias(semanaElemento)
-                    );
-                });
-            }
-        );
+        document
+            .querySelectorAll(".semana-item")
+            .forEach(inicializarEnlaces);
     }
 
     if (document.readyState === "loading") {
