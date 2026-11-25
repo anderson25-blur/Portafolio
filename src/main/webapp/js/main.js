@@ -1896,7 +1896,7 @@ async function manejarSubida(input) {
         if (
             !Number.isInteger(slotNumero) ||
             slotNumero < 1 ||
-            slotNumero > 7
+            slotNumero > 30
         ) {
 
             console.error('Slot inválido:', slot);
