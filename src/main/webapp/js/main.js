@@ -73,6 +73,11 @@ const API = {
 };
 
 
+/* Límite de seguridad si no se puede calcular el máximo de slots. */
+
+const MAX_SLOTS_POR_DEFECTO = 30;
+
+
 /* ============================================================
    ESTADO DE SESIÓN
    ============================================================ */
@@ -88,6 +93,69 @@ let sesionActual = {
     rol: null
 
 };
+
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+
+/*
+ * Lee la respuesta como JSON sin romper si el servidor
+ * devolvió HTML u otro formato (por ejemplo un error 500).
+ */
+
+async function leerJSON(res) {
+
+    try {
+
+        return await res.json();
+
+    } catch (err) {
+
+        return {
+            ok: false,
+            error: 'El servidor devolvió una respuesta no válida (HTTP ' +
+                res.status + ').'
+        };
+
+    }
+
+}
+
+
+/*
+ * Máximo de slots de infografía de una semana.
+ * Prioridad:
+ *   1. data-max-infografias en .semana-item (si existe)
+ *   2. cantidad real de tarjetas .info-card de la semana
+ *   3. valor por defecto
+ */
+
+function obtenerMaxSlots(semanaItem) {
+
+    if (semanaItem) {
+
+        const declarado = Number(semanaItem.dataset.maxInfografias);
+
+        if (Number.isInteger(declarado) && declarado > 0) {
+
+            return declarado;
+
+        }
+
+        const tarjetas = semanaItem.querySelectorAll('.info-card').length;
+
+        if (tarjetas > 0) {
+
+            return tarjetas;
+
+        }
+
+    }
+
+    return MAX_SLOTS_POR_DEFECTO;
+
+}
 
 
 /* ============================================================
@@ -506,7 +574,7 @@ function setupUserModal() {
             });
 
 
-            const data = await res.json();
+            const data = await leerJSON(res);
 
 
             if (!res.ok || !data.ok) {
@@ -638,7 +706,7 @@ async function iniciarSesionYEstado() {
         const res = await fetch(API.sesion);
 
 
-        const data = await res.json();
+        const data = await leerJSON(res);
 
 
         /*
@@ -929,6 +997,11 @@ function instalarEstilosDinamicosArchivos() {
             border-color: #ff4630 !important;
         }
 
+        body.miportafolio-unidad label.btn.is-loading {
+            opacity: .6;
+            pointer-events: none;
+        }
+
         @media (max-width: 600px) {
             body.miportafolio-unidad .trabajo-item {
                 align-items: flex-start;
@@ -1062,7 +1135,7 @@ async function cargarArchivosPorSemana() {
                     '&semana=' + encodeURIComponent(semana);
 
                 const res = await fetch(url);
-                const data = await res.json();
+                const data = await leerJSON(res);
 
                 if (!res.ok || !data.ok) {
 
@@ -1101,10 +1174,6 @@ async function cargarArchivosPorSemana() {
 
                 /*
                  * TRABAJOS PDF
-                 *
-                 * Mostrar todos los trabajos de la semana.
-                 * La función pintarTrabajos() debe estar definida
-                 * en el mismo archivo JavaScript.
                  */
 
                 pintarTrabajos(semanaItem, trabajos);
@@ -1113,15 +1182,10 @@ async function cargarArchivosPorSemana() {
                  * IDENTIFICAR SI EL USUARIO ES ADMINISTRADOR
                  */
 
-                const esAdmin =
-                    sesionActual.autenticado === true &&
-                    sesionActual.esAdmin === true;
+                const esAdmin = esAdministradorActual();
 
                 /*
                  * ORGANIZAR LAS INFOGRAFÍAS POR SLOT
-                 *
-                 * Cada infografía se relaciona con su tarjeta
-                 * mediante el número de slot.
                  */
 
                 const porSlot = new Map();
@@ -1138,14 +1202,10 @@ async function cargarArchivosPorSemana() {
                 });
 
                 /*
-                 * OCULTAR LA SECCIÓN DE INFOGRAFÍAS VACÍA
+                 * SECCIÓN DE INFOGRAFÍAS
                  *
-                 * Visitante:
-                 * - Oculta la sección si no tiene infografías.
-                 * - Muestra la sección si tiene al menos una.
-                 *
-                 * Administrador:
-                 * - Siempre puede ver la sección para subir archivos.
+                 * Visitante: solo si hay al menos una infografía.
+                 * Administrador: siempre visible para subir archivos.
                  */
 
                 const seccionInfo =
@@ -1175,14 +1235,10 @@ async function cargarArchivosPorSemana() {
                 }
 
                 /*
-                 * OCULTAR LAS TARJETAS DE INFOGRAFÍAS VACÍAS
+                 * TARJETAS DE INFOGRAFÍAS
                  *
-                 * Visitante:
-                 * - Solo ve las tarjetas que tienen una infografía.
-                 *
-                 * Administrador:
-                 * - Ve todas las tarjetas disponibles para subir
-                 *   nuevas infografías.
+                 * Visitante: solo las que tienen archivo.
+                 * Administrador: todas.
                  */
 
                 semanaItem
@@ -1194,7 +1250,6 @@ async function cargarArchivosPorSemana() {
                         const archivo =
                             porSlot.get(slot) || null;
 
-                        // Pintar la infografía o indicar que está vacía.
                         pintarInfografia(card, archivo);
 
                         const mostrarTarjeta =
@@ -1231,7 +1286,6 @@ async function cargarArchivosPorSemana() {
 /* ============================================================
    PINTAR TRABAJOS PDF
    - Muestra varios documentos por semana.
-   - Diseño integrado con MiPortafolio.
    - Oculta la sección vacía para visitantes.
    - Conserva los botones de administración.
    ============================================================ */
@@ -1475,6 +1529,8 @@ function pintarTrabajos(semanaItem, trabajos) {
         lista.appendChild(fila);
     });
 }
+
+
 /* ============================================================
    CARGAR / PINTAR INFOGRAFÍA
    ============================================================ */
@@ -1577,6 +1633,7 @@ function pintarInfografia(card, archivo) {
 
         if (view) {
             view.href = viewUrl;
+            view.dataset.nombre = nombre;
             view.hidden = false;
             view.style.removeProperty('display');
         }
@@ -1619,6 +1676,7 @@ function pintarInfografia(card, archivo) {
         if (view) {
             view.hidden = true;
             view.removeAttribute('href');
+            delete view.dataset.nombre;
         }
 
         if (download) {
@@ -1780,10 +1838,7 @@ async function manejarSubida(input) {
 
     /* VERIFICAR SESIÓN DE ADMINISTRADOR */
 
-    if (
-        sesionActual.autenticado !== true ||
-        sesionActual.esAdmin !== true
-    ) {
+    if (!esAdministradorActual()) {
 
         alert(
             'Debes iniciar sesión como administrador para subir archivos.'
@@ -1818,8 +1873,7 @@ async function manejarSubida(input) {
 
 
         /*
-         * La información principal debe estar
-         * directamente en .info-card
+         * La información principal está directamente en .info-card
          * (data-unidad, data-semana, data-slot).
          */
 
@@ -1860,6 +1914,10 @@ async function manejarSubida(input) {
 
         const slotNumero = Number(slot);
 
+        /* Máximo real de esta semana (calculado, no fijo). */
+
+        const maxSlots = obtenerMaxSlots(semanaItem);
+
 
         if (
             !Number.isInteger(unidadNumero) ||
@@ -1896,12 +1954,15 @@ async function manejarSubida(input) {
         if (
             !Number.isInteger(slotNumero) ||
             slotNumero < 1 ||
-            slotNumero > 30
+            slotNumero > maxSlots
         ) {
 
-            console.error('Slot inválido:', slot);
+            console.error('Slot inválido:', slot, '(máximo:', maxSlots + ')');
 
-            alert('El número de infografía debe estar entre 1 y 7.');
+            alert(
+                'El número de infografía debe estar entre 1 y ' +
+                maxSlots + '.'
+            );
 
             input.value = '';
 
@@ -2090,7 +2151,7 @@ async function manejarSubida(input) {
 
         /* LEER RESPUESTA */
 
-        const data = await res.json();
+        const data = await leerJSON(res);
 
 
         console.log('Respuesta del servidor:', {
@@ -2099,11 +2160,14 @@ async function manejarSubida(input) {
         });
 
 
-        /* ERROR */
+        /* ERROR (este mensaje viene del servidor) */
 
         if (!res.ok || !data.ok) {
 
-            alert(data.error || 'No se pudo subir el archivo.');
+            alert(
+                (data.error || 'No se pudo subir el archivo.') +
+                '\n\n(Código HTTP ' + res.status + ')'
+            );
 
             return;
         }
@@ -2162,10 +2226,7 @@ async function manejarEliminacion(btn) {
 
     /* SEGURIDAD DEL FRONTEND */
 
-    if (
-        sesionActual.autenticado !== true ||
-        sesionActual.esAdmin !== true
-    ) {
+    if (!esAdministradorActual()) {
 
         return;
 
@@ -2204,7 +2265,7 @@ async function manejarEliminacion(btn) {
         );
 
 
-        const data = await res.json();
+        const data = await leerJSON(res);
 
 
         if (!res.ok || !data.ok) {
@@ -2242,7 +2303,7 @@ async function manejarEliminacion(btn) {
 
 /* ============================================================
    VISOR DE ARCHIVOS
-   (NUEVO: imágenes con zoom; PDF sigue igual en iframe)
+   (imágenes con zoom; PDF en iframe)
    ============================================================ */
 
 function setupArchivoViewer() {
@@ -2589,7 +2650,7 @@ function setupArchivoViewer() {
 
         }
 
-        /* PDF (igual que antes) */
+        /* PDF */
 
         else {
 
@@ -2712,14 +2773,10 @@ function setupArchivoViewer() {
             }
 
 
-            const emptyText = card.querySelector('[data-empty-text]');
-
-
-            if (emptyText) {
-
-                nombre = emptyText.textContent || 'Infografía';
-
-            }
+            nombre =
+                btn.dataset.nombre ||
+                (img && img.alt) ||
+                'Infografía';
 
         }
 
@@ -2727,21 +2784,7 @@ function setupArchivoViewer() {
 
         else {
 
-            const semanaItem = btn.closest('.semana-item');
-
-            const status =
-                semanaItem
-                    ? semanaItem.querySelector('[data-status]')
-                    : null;
-
-
-            if (status) {
-
-                nombre =
-                   btn.dataset.nombre ||
-                   (status ? status.textContent.replace('Subido: ', '') : 'Documento PDF');
-
-            }
+            nombre = btn.dataset.nombre || 'Documento PDF';
 
             tipo = 'pdf';
 
