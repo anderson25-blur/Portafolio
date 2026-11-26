@@ -1352,3 +1352,47 @@ h1, h2, h3, h4, .brand-word, .unidad-num, .unidad-number,
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+
+/* ============================================================
+   ACTUALIZACIÓN DE FONDO: CIRCUITO + SUPERBIKE
+   La imagen se encuentra en /img/fondo-moto-circuito.png
+   y este CSS en /css/style.css.
+   ============================================================ */
+.site {
+  background-color: #05090d;
+  background-image:
+    linear-gradient(180deg, rgba(3,8,12,.58) 0%, rgba(3,8,12,.72) 48%, rgba(3,8,12,.91) 100%),
+    url("../img/fondo-moto-circuito.png"),
+    linear-gradient(rgba(36,48,38,.42) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36,48,38,.42) 1px, transparent 1px);
+  background-size: cover, cover, 64px 64px, 64px 64px;
+  background-position: center, center 42%, center top, center top;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-attachment: fixed, fixed, scroll, scroll;
+}
+.site::before {
+  z-index: 0;
+  opacity: .11;
+  background: repeating-linear-gradient(-35deg, rgba(166,255,0,.30) 0 1px, transparent 1px 100px);
+}
+/* El contenido queda por encima del fondo y mantiene legibilidad. */
+.hud, .hero, section, .site-footer { position: relative; }
+.hero {
+  background: linear-gradient(90deg, rgba(3,8,12,.56), rgba(3,8,12,.12) 68%, rgba(3,8,12,.30));
+}
+.about-card, .unidad-card {
+  background: linear-gradient(145deg, rgba(9,20,27,.88), rgba(4,10,15,.84));
+  border-color: rgba(117,190,194,.34);
+  box-shadow: 0 22px 55px rgba(0,0,0,.40), inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter: blur(15px) saturate(135%);
+}
+.section-head h2, .about-content h3, .unidad-heading h3 {
+  text-shadow: 0 3px 20px rgba(0,0,0,.62);
+}
+@media (max-width: 760px) {
+  .site {
+    background-attachment: scroll, scroll, scroll, scroll;
+    background-position: center, 58% center, center top, center top;
+  }
+}
