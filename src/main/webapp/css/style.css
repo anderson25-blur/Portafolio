@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 /* ============================================================
    MiPortafolio — MOTO FUTURISTA
    Reemplaza TODO tu CSS global (index, listar, sobre mí, etc.)
@@ -1184,4 +1186,169 @@ html[data-theme="day"] .fx-canvas { opacity: .32; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .moto-flame-burst { display: none !important; }
+}
+
+
+/* ============================================================
+   ACTUALIZACION VISUAL PREMIUM — CIRCUITO + PROFUNDIDAD
+   La imagen se carga desde ../img/fondo-moto-circuito.png
+   ============================================================ */
+:root {
+  --font-display: 'Orbitron', 'Rajdhani', sans-serif;
+  --font-body: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --panel: rgba(8, 14, 18, .78);
+  --panel-2: rgba(13, 22, 27, .88);
+  --line: rgba(130, 180, 174, .20);
+  --line-hi: rgba(166, 255, 0, .58);
+  --ink: #f2f7f5;
+  --ink-dim: #a7b7b5;
+}
+
+
+html { background: #05090c; }
+body {
+  background: #05090c;
+  color: var(--ink);
+  letter-spacing: .012em;
+}
+.site {
+  isolation: isolate;
+  background-color: #05090c;
+  background-image:
+    linear-gradient(180deg, rgba(3,8,12,.50), rgba(3,8,12,.78) 48%, rgba(3,8,12,.92)),
+    linear-gradient(90deg, rgba(3,8,12,.80), rgba(3,8,12,.28) 55%, rgba(3,8,12,.66)),
+    url('../img/fondo-moto-circuito.png'),
+    linear-gradient(rgba(36,48,38,.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36,48,38,.16) 1px, transparent 1px);
+  background-size: cover, cover, cover, 72px 72px, 72px 72px;
+  background-position: center, center, center 42%, center top, center top;
+  background-attachment: fixed, fixed, fixed, scroll, scroll;
+}
+.site::before {
+  opacity: .11;
+  background: repeating-linear-gradient(-35deg, rgba(166,255,0,.34) 0 1px, transparent 1px 110px);
+}
+.site::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .18;
+  background: radial-gradient(ellipse at 78% 30%, rgba(34,224,255,.17), transparent 42%),
+              radial-gradient(ellipse at 12% 80%, rgba(255,70,48,.13), transparent 38%);
+}
+.site > * { position: relative; z-index: 1; }
+
+/* Barra superior con acabado de panel de competición */
+.hud {
+  background: rgba(3, 8, 12, .88);
+  border-bottom-color: rgba(166,255,0,.28);
+  box-shadow: 0 12px 35px rgba(0,0,0,.32);
+}
+.brand-word, .hud-nav a, .hud-chip { text-shadow: 0 0 18px rgba(34,224,255,.12); }
+.hud-nav a { font-weight: 700; letter-spacing: .055em; text-transform: uppercase; font-size: 12px; }
+.hud-chip { border-radius: 2px; }
+
+/* Tipografía: titulares con presencia y lectura más limpia */
+h1, h2, h3, h4, .brand-word, .unidad-num, .unidad-number,
+.section-head h2, .hero-cta, .hud-chip {
+  font-family: var(--font-display);
+}
+.hero h1 {
+  font-weight: 900;
+  letter-spacing: -.045em;
+  line-height: .91;
+  text-shadow: 0 8px 32px rgba(0,0,0,.30);
+}
+.hero-sub { color: #d0ddda; font-size: clamp(15px, 1.25vw, 18px); line-height: 1.8; }
+.section-head { border-bottom-color: rgba(166,255,0,.30); }
+.section-head h2 {
+  font-weight: 800;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+  text-shadow: 0 5px 25px rgba(0,0,0,.42);
+}
+.section-head p { color: #b5c4c1; letter-spacing: .06em; text-transform: uppercase; font-size: 11px; }
+
+/* Tarjetas con cristal oscuro, reflejo y profundidad */
+.unidad-grid { gap: 26px; }
+.unidad-card {
+  background: linear-gradient(135deg, rgba(18,34,38,.88), rgba(5,12,17,.86));
+  border: 1px solid rgba(139,190,183,.28);
+  border-radius: 3px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.055);
+  backdrop-filter: blur(13px) saturate(125%);
+  -webkit-backdrop-filter: blur(13px) saturate(125%);
+  transition: transform .32s cubic-bezier(.2,.8,.2,1), border-color .32s, box-shadow .32s, background .32s;
+}
+.unidad-card::before { width: 3px; }
+.unidad-card::after {
+  height: 100%;
+  background: linear-gradient(115deg, transparent 20%, rgba(34,224,255,.075), transparent 70%),
+              radial-gradient(ellipse at 85% 110%, rgba(255,105,0,.22), transparent 58%);
+}
+.unidad-card:hover, .unidad-card.is-open {
+  transform: translateY(-7px) scale(1.008);
+  border-color: rgba(166,255,0,.72);
+  box-shadow: 0 25px 55px rgba(0,0,0,.46), 0 0 0 1px rgba(166,255,0,.12), 0 0 30px rgba(166,255,0,.10);
+}
+.unidad-toggle { padding: 31px 29px; }
+.unidad-num, .unidad-number {
+  font-weight: 900;
+  letter-spacing: -.06em;
+  text-shadow: 0 0 22px rgba(166,255,0,.38);
+}
+.unidad-heading h3, .unidad-content h2 {
+  font-size: clamp(18px, 1.55vw, 23px);
+  font-weight: 800;
+  line-height: 1.24;
+  letter-spacing: -.018em;
+}
+.unidad-meta { color: #b7c6c3; font-size: 12px; letter-spacing: .045em; }
+.semana-list { border-top-color: rgba(139,190,183,.20); }
+.semana-list li { border-bottom-color: rgba(139,190,183,.15); }
+.semana-info h4 { font-weight: 700; letter-spacing: .01em; }
+.semana-info p { color: #aebebb; line-height: 1.65; }
+.semana-status, .semana-btn { border-radius: 2px; }
+.semana-btn { background: rgba(24,39,44,.92); }
+
+/* Paneles, formularios y tablas del portafolio */
+:where(.panel, .card, .admin-card, .content-card, .archivo-card, .form-card, .table-wrap, .tabla-container) {
+  background: linear-gradient(145deg, rgba(16,29,34,.91), rgba(5,12,17,.88));
+  border: 1px solid rgba(139,190,183,.24);
+  box-shadow: 0 16px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.045);
+  backdrop-filter: blur(12px);
+}
+:where(input, select, textarea) {
+  color: #eff8f5;
+  background: rgba(3,10,14,.78);
+  border: 1px solid rgba(139,190,183,.34);
+  border-radius: 3px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+:where(input, select, textarea):focus {
+  border-color: var(--lime);
+  background: rgba(4,14,17,.96);
+  box-shadow: 0 0 0 3px rgba(166,255,0,.10), 0 0 22px rgba(166,255,0,.10);
+}
+:where(button, .btn, .button, .hero-cta) { letter-spacing: .035em; }
+:where(button, .btn, .button):focus-visible, a:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 4px;
+}
+
+/* Accesibilidad y rendimiento en pantallas pequeñas */
+@media (max-width: 760px) {
+  .site {
+    background-attachment: scroll, scroll, scroll, scroll, scroll;
+    background-position: center, center, 62% center, center top, center top;
+  }
+  .hero { background: linear-gradient(180deg, rgba(4,10,14,.45), rgba(4,10,14,.72)); }
+  .unidad-grid { gap: 16px; }
+  .unidad-card:hover, .unidad-card.is-open { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
