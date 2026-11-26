@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=2">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=4">
 </head>
 
 <body>
@@ -126,6 +126,12 @@
           </svg>
 
         </button>
+
+        <div class="theme-switch" role="group" aria-label="Cambiar apariencia">
+          <span class="theme-switch-label">APARIENCIA</span>
+          <button class="theme-btn" type="button" data-theme-choice="day" aria-pressed="false">☀ Día</button>
+          <button class="theme-btn" type="button" data-theme-choice="night" aria-pressed="true">☾ Noche</button>
+        </div>
 
       </div>
 
@@ -719,6 +725,8 @@
 
   <!-- ===================== JAVASCRIPT ===================== -->
   <script src="js/main.js?v=2"></script>
+  <script src="js/tema-moto.js?v=1" defer></script>
+  <script src="js/llamas-hover.js?v=1" defer></script>
 
 </body>
 </html>
