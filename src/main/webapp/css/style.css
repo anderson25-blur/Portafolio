@@ -1356,14 +1356,14 @@ h1, h2, h3, h4, .brand-word, .unidad-num, .unidad-number,
 
 /* ============================================================
    ACTUALIZACIÓN DE FONDO: CIRCUITO + SUPERBIKE
-   La imagen se encuentra en /img/fondo-moto-circuito.png
+   La imagen se encuentra en /images/fondo-moto-circuito.png
    y este CSS en /css/style.css.
    ============================================================ */
 .site {
   background-color: #05090d;
   background-image:
     linear-gradient(180deg, rgba(3,8,12,.58) 0%, rgba(3,8,12,.72) 48%, rgba(3,8,12,.91) 100%),
-    url("../img/fondo-moto-circuito.png"),
+    url("../images/fondo-moto-circuito.png"),
     linear-gradient(rgba(36,48,38,.42) 1px, transparent 1px),
     linear-gradient(90deg, rgba(36,48,38,.42) 1px, transparent 1px);
   background-size: cover, cover, 64px 64px, 64px 64px;
@@ -1394,5 +1394,70 @@ h1, h2, h3, h4, .brand-word, .unidad-num, .unidad-number,
   .site {
     background-attachment: scroll, scroll, scroll, scroll;
     background-position: center, 58% center, center top, center top;
+  }
+}
+
+
+/* ============================================================
+   CORRECCION DEFINITIVA DEL FONDO Y ACABADO VISUAL
+   La imagen se sirve desde /images/ y el CSS desde /css/.
+   ============================================================ */
+html, body { min-height: 100%; background: #03070b !important; }
+.site {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+  background-image: none !important;
+}
+/* Capa fotográfica fija: se mantiene visible detrás del contenido. */
+.site::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg,
+      rgba(2,7,10,.88) 0%,
+      rgba(2,7,10,.69) 34%,
+      rgba(2,7,10,.28) 68%,
+      rgba(2,7,10,.48) 100%),
+    linear-gradient(180deg, rgba(2,7,10,.38) 0%, rgba(2,7,10,.22) 48%, rgba(2,7,10,.82) 100%),
+    url("../images/fondo-moto-circuito.png");
+  background-position: center, center, center center;
+  background-size: cover, cover, cover;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+}
+.site::before {
+  opacity: .035 !important;
+  background: repeating-linear-gradient(-35deg, rgba(166,255,0,.22) 0 1px, transparent 1px 120px) !important;
+}
+/* Todo el contenido del sitio queda por encima de la fotografía. */
+.site > * {
+  position: relative;
+  z-index: 1;
+}
+/* El hero deja ver la fotografía y conserva contraste para el texto. */
+.hero {
+  background: linear-gradient(90deg, rgba(2,7,10,.28), rgba(2,7,10,.06) 72%, rgba(2,7,10,.16)) !important;
+}
+/* Paneles más profundos y legibles sobre la fotografía. */
+.about-card, .unidad-card,
+:where(.panel, .card, .admin-card, .content-card, .archivo-card, .form-card, .table-wrap, .tabla-container) {
+  background: linear-gradient(145deg, rgba(8,19,25,.91), rgba(3,9,14,.88)) !important;
+  border: 1px solid rgba(91,208,220,.34);
+  box-shadow: 0 20px 52px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter: blur(16px) saturate(135%);
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
+}
+.section-head h2, .about-content h3, .unidad-heading h3,
+.unidad-content h2 { text-shadow: 0 3px 24px rgba(0,0,0,.8); }
+.hero h1 { text-shadow: 0 8px 38px rgba(0,0,0,.36); }
+.hud { background: rgba(3,8,12,.88) !important; backdrop-filter: blur(18px); }
+@media (max-width: 760px) {
+  .site::after {
+    background-position: center, center, 62% center;
+    background-size: cover, cover, cover;
   }
 }
